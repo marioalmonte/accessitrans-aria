@@ -125,6 +125,10 @@ Contacto:
 
 == Changelog ==
 
+= 1.3.0 =
+* Refactorización para capturar cadenas que no se estaban detectando
+* Preparaciones y mejoras varias
+
 = 1.2.3 =
 * Mejora de la compatibilidad con Elementor 3.14+
 * Corrección de errores menores

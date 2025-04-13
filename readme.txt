@@ -124,6 +124,9 @@ Contact:
 * LinkedIn: https://www.linkedin.com/in/marioalmonte/
 
 == Changelog ==
+= 1.3.0 =
+* Refactored to capture strings that were not being detected
+* Various preparations and improvements
 
 = 1.2.3 =
 * Improved compatibility with Elementor 3.14+
