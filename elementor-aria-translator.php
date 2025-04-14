@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Elementor ARIA Translator for WPML
  * Plugin URI: https://github.com/marioalmonte/elementor-aria-translator
- * Description: Permite traducir atributos ARIA en Elementor utilizando WPML. Desarrollado por un profesional certificado en Accesibilidad Web (CPWA). Probado con WordPress 6.7, Elementor 3.28.3, WPML 4.7.3 y WPML ST 3.3.2.
- * Version: 1.3.0
+ * Description: Traduce atributos ARIA en Elementor utilizando WPML, mejorando la accesibilidad de tu sitio web multilingüe. Desarrollado por un profesional certificado en Accesibilidad Web (CPWA).
+ * Version: 2.0.1
  * Author: Mario Germán Almonte Moreno
  * Author URI: https://www.linkedin.com/in/marioalmonte/
  * Text Domain: elementor-aria-translator
@@ -15,16 +15,26 @@ if (!defined('ABSPATH')) {
     exit; // Salir si se accede directamente
 }
 
-class WPML_Aria_Translator {
+class Elementor_ARIA_Translator {
     
-    // Singleton
+    /**
+     * Instancia singleton
+     */
     private static $instance = null;
     
-    // Contexto único para todas las traducciones ARIA
+    /**
+     * Contexto único para todas las traducciones ARIA
+     */
     private $context = 'Elementor ARIA Attributes';
-    private $debug = true;
     
-    // Lista de atributos ARIA que contienen texto traducible
+    /**
+     * Opciones del plugin
+     */
+    private $options;
+    
+    /**
+     * Lista de atributos ARIA que contienen texto traducible
+     */
     private $traducible_attrs = [
         'aria-label',
         'aria-description',
@@ -33,35 +43,103 @@ class WPML_Aria_Translator {
         'aria-valuetext'
     ];
     
-    // Constructor privado
+    /**
+     * Cache para evitar procesar múltiples veces el mismo valor
+     */
+    private $processed_values = [];
+    
+    /**
+     * Constructor privado
+     */
     private function __construct() {
+        // Inicializar valores por defecto para nuevas instalaciones
+        if (!get_option('elementor_aria_translator_options')) {
+            update_option('elementor_aria_translator_options', [
+                'captura_total' => true,
+                'captura_elementor' => true,
+                'procesar_templates' => true,
+                'procesar_elementos' => true,
+                'modo_debug' => false,
+                'solo_admin' => true,
+                'formato_valor_directo' => false,
+                'formato_prefijo' => true,
+                'formato_elemento_id' => false
+            ]);
+        }
+        
+        // Cargar opciones
+        $this->options = get_option('elementor_aria_translator_options', [
+            'captura_total' => true,
+            'captura_elementor' => true,
+            'procesar_templates' => true,
+            'procesar_elementos' => true,
+            'modo_debug' => false,
+            'solo_admin' => true,
+            'formato_valor_directo' => false,
+            'formato_prefijo' => true,
+            'formato_elemento_id' => false
+        ]);
+        
+        // Registrar hooks de activación y desactivación
+        register_activation_hook(__FILE__, [$this, 'activate']);
+        register_deactivation_hook(__FILE__, [$this, 'deactivate']);
+        
         // Verificar dependencias básicas
         if (!did_action('elementor/loaded') || !defined('ICL_SITEPRESS_VERSION')) {
+            add_action('admin_notices', [$this, 'show_dependencies_notice']);
             return;
         }
         
-        // MÉTODO 1: Capturar el HTML completo de la página para buscar atributos ARIA
-        add_action('wp_footer', [$this, 'capturar_todo_html'], 999);
+        // Registrar ajustes
+        add_action('admin_menu', [$this, 'add_settings_page']);
+        add_action('admin_init', [$this, 'register_settings']);
         
-        // MÉTODO 2: Hook para procesar el contenido de Elementor
-        add_filter('elementor/frontend/the_content', [$this, 'capturar_aria_en_content'], 999);
+        // Añadir enlaces en la página de plugins
+        add_filter('plugin_action_links_' . plugin_basename(__FILE__), [$this, 'add_action_links']);
+        add_action('after_plugin_row', [$this, 'after_plugin_row'], 10, 3);
         
-        // MÉTODO 3: Hook para traducir el contenido final
-        add_filter('elementor/frontend/the_content', [$this, 'translate_aria_attributes'], 1000);
-        add_filter('the_content', [$this, 'translate_aria_attributes'], 1000);
-        
-        // MÉTODO 4: Hooks de Elementor para capturar widgets y elementos
-        add_action('elementor/frontend/widget/before_render_content', [$this, 'process_element_attributes'], 10, 1);
-        add_action('elementor/frontend/before_render', [$this, 'process_element_attributes'], 10, 1);
-        
-        // MÉTODO 5: Hook para templates de Elementor
-        add_action('elementor/frontend/builder_content_data', [$this, 'process_template_data'], 10, 2);
-        
-        // Debug
-        if ($this->debug) $this->log_debug('Plugin inicializado - Versión captura total');
+        // Inicializar métodos de captura según las opciones configuradas
+        $this->init_capture_methods();
     }
     
-    // Método singleton
+    /**
+     * Inicializa los métodos de captura según la configuración
+     */
+    private function init_capture_methods() {
+        // MÉTODO 1: Capturar el HTML completo si está habilitado
+        if ($this->options['captura_total']) {
+            add_action('wp_footer', [$this, 'capture_full_html'], 999);
+        }
+        
+        // MÉTODO 2: Hook para procesar el contenido de Elementor
+        if ($this->options['captura_elementor']) {
+            add_filter('elementor/frontend/the_content', [$this, 'capture_aria_in_content'], 999);
+            
+            // También aplicar traducciones al contenido final
+            add_filter('elementor/frontend/the_content', [$this, 'translate_aria_attributes'], 1000);
+            add_filter('the_content', [$this, 'translate_aria_attributes'], 1000);
+        }
+        
+        // MÉTODO 3: Hooks de Elementor para capturar widgets y elementos
+        if ($this->options['procesar_elementos']) {
+            add_action('elementor/frontend/widget/before_render_content', [$this, 'process_element_attributes'], 10, 1);
+            add_action('elementor/frontend/before_render', [$this, 'process_element_attributes'], 10, 1);
+        }
+        
+        // MÉTODO 4: Hook para templates de Elementor
+        if ($this->options['procesar_templates']) {
+            add_action('elementor/frontend/builder_content_data', [$this, 'process_template_data'], 10, 2);
+        }
+        
+        // Registro de debug
+        if ($this->options['modo_debug']) {
+            $this->log_debug('Plugin inicializado - Versión 2.0.0');
+        }
+    }
+    
+    /**
+     * Método singleton
+     */
     public static function get_instance() {
         if (null === self::$instance) {
             self::$instance = new self();
@@ -70,24 +148,344 @@ class WPML_Aria_Translator {
     }
     
     /**
-     * Captura el HTML completo de la página para buscar atributos ARIA
-     * Este método es muy agresivo pero efectivo para encontrar todos los atributos
+     * Activación del plugin
      */
-    public function capturar_todo_html() {
-        // Solo ejecutamos esto cuando el usuario está logueado como admin
-        if (!is_admin() && is_user_logged_in() && current_user_can('manage_options')) {
-            // Iniciamos la captura de salida
-            ob_start();
-            
-            // Al finalizar la página, procesamos el HTML completo
-            add_action('shutdown', function() {
-                $html_completo = ob_get_clean();
-                if (!empty($html_completo)) {
-                    $this->extract_aria_from_html($html_completo);
-                    echo $html_completo; // Devolvemos el HTML al navegador
-                }
-            }, 0);
+    public function activate() {
+        // Asegurarse de que las opciones predeterminadas están configuradas
+        if (!get_option('elementor_aria_translator_options')) {
+            update_option('elementor_aria_translator_options', [
+                'captura_total' => true,
+                'captura_elementor' => true,
+                'procesar_templates' => true,
+                'procesar_elementos' => true,
+                'modo_debug' => false,
+                'solo_admin' => true,
+                'formato_valor_directo' => false,
+                'formato_prefijo' => true,
+                'formato_elemento_id' => false
+            ]);
         }
+    }
+    
+    /**
+     * Desactivación del plugin
+     */
+    public function deactivate() {
+        // Limpiar archivos temporales o caché si es necesario
+    }
+    
+    /**
+     * Muestra notificación de dependencias faltantes
+     */
+    public function show_dependencies_notice() {
+        $class = 'notice notice-error';
+        $message = __('Elementor ARIA Translator requiere que Elementor y WPML estén instalados y activados.', 'elementor-aria-translator');
+        printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), esc_html($message));
+    }
+    
+    /**
+     * Añade página de ajustes al menú de administración
+     */
+    public function add_settings_page() {
+        add_submenu_page(
+            'options-general.php',
+            __('Elementor ARIA Translator', 'elementor-aria-translator'),
+            __('Elementor ARIA Translator', 'elementor-aria-translator'),
+            'manage_options',
+            'elementor-aria-translator',
+            [$this, 'settings_page']
+        );
+    }
+    
+    /**
+     * Registra los ajustes del plugin
+     */
+    public function register_settings() {
+        register_setting('elementor_aria_translator', 'elementor_aria_translator_options');
+        
+        add_settings_section(
+            'elementor_aria_translator_main',
+            __('Configuración de métodos de captura', 'elementor-aria-translator'),
+            [$this, 'section_callback'],
+            'elementor-aria-translator'
+        );
+        
+        add_settings_field(
+            'captura_total',
+            __('Captura total de HTML', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_main',
+            ['label_for' => 'captura_total', 'descripcion' => __('Captura todo el HTML de la página. Altamente efectivo pero puede afectar al rendimiento.', 'elementor-aria-translator')]
+        );
+        
+        add_settings_field(
+            'captura_elementor',
+            __('Filtro de contenido de Elementor', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_main',
+            ['label_for' => 'captura_elementor', 'descripcion' => __('Procesa el contenido generado por Elementor.', 'elementor-aria-translator')]
+        );
+        
+        add_settings_field(
+            'procesar_templates',
+            __('Procesar templates de Elementor', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_main',
+            ['label_for' => 'procesar_templates', 'descripcion' => __('Procesa los datos de templates de Elementor.', 'elementor-aria-translator')]
+        );
+        
+        add_settings_field(
+            'procesar_elementos',
+            __('Procesar elementos individuales', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_main',
+            ['label_for' => 'procesar_elementos', 'descripcion' => __('Procesa cada widget y elemento de Elementor individualmente.', 'elementor-aria-translator')]
+        );
+        
+        add_settings_section(
+            'elementor_aria_translator_formats',
+            __('Configuración de formatos de registro', 'elementor-aria-translator'),
+            [$this, 'section_formats_callback'],
+            'elementor-aria-translator'
+        );
+        
+        add_settings_field(
+            'formato_valor_directo',
+            __('Formato directo', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_formats',
+            ['label_for' => 'formato_valor_directo', 'descripcion' => __('Registrar el valor literal como nombre.', 'elementor-aria-translator')]
+        );
+        
+        add_settings_field(
+            'formato_prefijo',
+            __('Formato con prefijo', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_formats',
+            ['label_for' => 'formato_prefijo', 'descripcion' => __('Registrar con formato aria-atributo_valor.', 'elementor-aria-translator')]
+        );
+        
+        add_settings_field(
+            'formato_elemento_id',
+            __('Formato con ID de elemento', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_formats',
+            ['label_for' => 'formato_elemento_id', 'descripcion' => __('Registrar con formato incluyendo ID del elemento.', 'elementor-aria-translator')]
+        );
+        
+        add_settings_section(
+            'elementor_aria_translator_advanced',
+            __('Configuración avanzada', 'elementor-aria-translator'),
+            [$this, 'section_advanced_callback'],
+            'elementor-aria-translator'
+        );
+        
+        add_settings_field(
+            'modo_debug',
+            __('Modo de depuración', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_advanced',
+            ['label_for' => 'modo_debug', 'descripcion' => __('Activa el registro detallado de eventos. Se almacena en wp-content/debug-aria-wpml.log', 'elementor-aria-translator')]
+        );
+        
+        add_settings_field(
+            'solo_admin',
+            __('Captura solo para administradores', 'elementor-aria-translator'),
+            [$this, 'checkbox_callback'],
+            'elementor-aria-translator',
+            'elementor_aria_translator_advanced',
+            ['label_for' => 'solo_admin', 'descripcion' => __('Solo procesa la captura total cuando un administrador está conectado.', 'elementor-aria-translator')]
+        );
+    }
+    
+    /**
+     * Callback para la sección principal de ajustes
+     */
+    public function section_callback() {
+        echo '<p>' . __('Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta.', 'elementor-aria-translator') . '</p>';
+    }
+    
+    /**
+     * Callback para la sección de formatos
+     */
+    public function section_formats_callback() {
+        echo '<p>' . __('Configura los formatos de registro de cadenas para WPML. Elegir más de un formato duplicará las cadenas encontradas en WPML aunque puede aumentar la robustez.', 'elementor-aria-translator') . '</p>';
+    }
+    
+    /**
+     * Callback para la sección avanzada
+     */
+    public function section_advanced_callback() {
+        echo '<p>' . __('Configuración avanzada para rendimiento y depuración.', 'elementor-aria-translator') . '</p>';
+    }
+    
+    /**
+     * Callback para campos checkbox
+     */
+    public function checkbox_callback($args) {
+        $option_name = $args['label_for'];
+        $descripcion = $args['descripcion'];
+        $checked = isset($this->options[$option_name]) && $this->options[$option_name] ? 'checked' : '';
+        
+        echo '<input type="checkbox" id="' . esc_attr($option_name) . '" name="elementor_aria_translator_options[' . esc_attr($option_name) . ']" value="1" ' . $checked . ' />';
+        echo '<label for="' . esc_attr($option_name) . '">' . esc_html($descripcion) . '</label>';
+    }
+    
+    /**
+     * Renderiza la página de ajustes
+     */
+    public function settings_page() {
+        if (!current_user_can('manage_options')) {
+            return;
+        }
+        
+        // Guardar opciones si se ha enviado el formulario
+        if (isset($_POST['submit'])) {
+            check_admin_referer('elementor_aria_translator_settings');
+            
+            $options = isset($_POST['elementor_aria_translator_options']) ? $_POST['elementor_aria_translator_options'] : [];
+            $sanitized_options = [
+                'captura_total' => isset($options['captura_total']),
+                'captura_elementor' => isset($options['captura_elementor']),
+                'procesar_templates' => isset($options['procesar_templates']),
+                'procesar_elementos' => isset($options['procesar_elementos']),
+                'modo_debug' => isset($options['modo_debug']),
+                'solo_admin' => isset($options['solo_admin']),
+                'formato_valor_directo' => isset($options['formato_valor_directo']),
+                'formato_prefijo' => isset($options['formato_prefijo']),
+                'formato_elemento_id' => isset($options['formato_elemento_id'])
+            ];
+            
+            update_option('elementor_aria_translator_options', $sanitized_options);
+            $this->options = $sanitized_options;
+            
+            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', 'elementor-aria-translator') . '</p></div>';
+        }
+        
+        // Contar cadenas registradas
+        $strings_count = 0;
+        if (function_exists('icl_get_string_translations')) {
+            global $wpdb;
+            $strings_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings WHERE context = '{$this->context}'");
+        }
+        
+        // Mostrar formulario de ajustes
+        ?>
+        <div class="wrap">
+            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            
+            <div class="notice notice-info">
+                <p><?php _e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'elementor-aria-translator'); ?></p>
+                <p><?php printf(__('Actualmente hay %d cadenas registradas en el contexto "Elementor ARIA Attributes".', 'elementor-aria-translator'), $strings_count); ?></p>
+            </div>
+            
+            <form method="post" action="">
+                <?php
+                settings_fields('elementor_aria_translator');
+                do_settings_sections('elementor-aria-translator');
+                wp_nonce_field('elementor_aria_translator_settings');
+                submit_button();
+                ?>
+            </form>
+            
+            <div class="card">
+                <h2><?php _e('Instrucciones de uso', 'elementor-aria-translator'); ?></h2>
+                <p><?php _e('Para agregar atributos ARIA en Elementor:', 'elementor-aria-translator'); ?></p>
+                <ol>
+                    <li><?php _e('Edite cualquier elemento en Elementor', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Vaya a la pestaña "Avanzado"', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Encuentre la sección "Atributos personalizados"', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Añada los atributos ARIA que desee traducir (ej: aria-label|Texto a traducir)', 'elementor-aria-translator'); ?></li>
+                </ol>
+                <p><?php _e('Para traducir los atributos:', 'elementor-aria-translator'); ?></p>
+                <ol>
+                    <li><?php _e('Vaya a WPML → Traducción de cadenas', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Filtre por el contexto "Elementor ARIA Attributes"', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Traduzca las cadenas como lo haría normalmente en WPML', 'elementor-aria-translator'); ?></li>
+                </ol>
+            </div>
+            
+            <div class="card">
+                <h2><?php _e('About the author', 'elementor-aria-translator'); ?></h2>
+                <?php
+                // Mostrar información del autor según el idioma
+                $locale = get_locale();
+                if (strpos($locale, 'es_') === 0) {
+                    // Versión en español
+                    ?>
+                    <p>Desarrollado por Mario Germán Almonte Moreno:</p>
+                    <ul>
+                        <li>Miembro de IAAP (International Association of Accessibility Professionals)</li>
+                        <li>Certificado CPWA (CPACC y WAS)</li>
+                        <li>Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)</li>
+                    </ul>
+                    <p><strong>Servicios Profesionales:</strong></p>
+                    <ul>
+                        <li>Formación y consultoría en Accesibilidad Web y eLearning</li>
+                        <li>Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)</li>
+                    </ul>
+                    <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank">Visita mi perfil de LinkedIn</a></p>
+                    <?php
+                } else {
+                    // Versión en inglés
+                    ?>
+                    <p>Developed by Mario Germán Almonte Moreno:</p>
+                    <ul>
+                        <li>Member of IAAP (International Association of Accessibility Professionals)</li>
+                        <li>CPWA Certified (CPACC and WAS)</li>
+                        <li>Professor at the Digital Accessibility Specialization Course (University of Lleida)</li>
+                    </ul>
+                    <p><strong>Professional Services:</strong></p>
+                    <ul>
+                        <li>Training and consulting in Web Accessibility and eLearning</li>
+                        <li>Web accessibility audits according to EN 301 549 (WCAG 2.2, ATAG 2.0)</li>
+                    </ul>
+                    <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank">Visit my LinkedIn profile</a></p>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Añade enlaces a la página de configuración en la lista de plugins
+     */
+    public function add_action_links($links) {
+        $settings_link = '<a href="' . admin_url('options-general.php?page=elementor-aria-translator') . '">' . __('Settings', 'elementor-aria-translator') . '</a>';
+        array_unshift($links, $settings_link);
+        return $links;
+    }
+    
+    /**
+     * Captura el HTML completo de la página para buscar atributos ARIA
+     */
+    public function capture_full_html() {
+        // Verificar si debemos procesar según la configuración
+        if ($this->options['solo_admin'] && !current_user_can('manage_options')) {
+            return;
+        }
+        
+        // Iniciar captura de salida
+        ob_start();
+        
+        // Al finalizar la página, procesar el HTML completo
+        add_action('shutdown', function() {
+            $html_completo = ob_get_clean();
+            if (!empty($html_completo)) {
+                $this->extract_aria_from_html($html_completo);
+                echo $html_completo; // Devolver el HTML al navegador
+            }
+        }, 0);
     }
     
     /**
@@ -98,8 +496,8 @@ class WPML_Aria_Translator {
             return;
         }
         
-        if ($this->debug) {
-            $this->log_debug("Procesando HTML completo para buscar atributos ARIA");
+        if ($this->options['modo_debug']) {
+            $this->log_debug("Procesando HTML para buscar atributos ARIA");
         }
         
         foreach ($this->traducible_attrs as $attr) {
@@ -110,19 +508,19 @@ class WPML_Aria_Translator {
                 foreach ($matches as $match) {
                     $attr_value = $match[2];
                     
-                    // No procesamos valores vacíos o puramente numéricos
+                    // No procesar valores vacíos o puramente numéricos
                     if (empty($attr_value) || is_numeric($attr_value)) {
                         continue;
                     }
                     
-                    // Extraer información contextual para mejorar el registro
+                    // Buscar el ID del elemento que contiene el atributo
                     $element_id = $this->extract_element_id_from_context($html, $match[0]);
                     
-                    // Registrar el valor para traducción con varios nombres
+                    // Registrar el valor para traducción
                     $this->register_value_for_translation($attr, $attr_value, $element_id);
                     
-                    if ($this->debug) {
-                        $this->log_debug("CAPTURA TOTAL - Encontrado $attr = \"$attr_value\" " . ($element_id ? "en elemento ID: $element_id" : ""));
+                    if ($this->options['modo_debug']) {
+                        $this->log_debug("CAPTURA - {$attr} = \"{$attr_value}\"" . ($element_id ? " (ID: {$element_id})" : ""));
                     }
                 }
             }
@@ -155,7 +553,7 @@ class WPML_Aria_Translator {
     /**
      * Procesa el contenido de Elementor para buscar atributos ARIA
      */
-    public function capturar_aria_en_content($content) {
+    public function capture_aria_in_content($content) {
         if (!empty($content) && is_string($content)) {
             $this->extract_aria_from_html($content);
         }
@@ -214,15 +612,15 @@ class WPML_Aria_Translator {
                         // Registrar el valor para traducción
                         $this->register_value_for_translation($attr_name, $value, $element_id);
                         
-                        if ($this->debug) {
-                            $this->log_debug("Encontrado en settings: $attr_name = \"$value\" en elemento ID: $element_id");
+                        if ($this->options['modo_debug']) {
+                            $this->log_debug("Encontrado en settings: {$attr_name} = \"{$value}\" (ID: {$element_id})");
                         }
                     }
                 }
             }
             
         } catch (\Exception $e) {
-            if ($this->debug) {
+            if ($this->options['modo_debug']) {
                 $this->log_debug("Error en process_element_attributes: " . $e->getMessage());
             }
         }
@@ -236,8 +634,8 @@ class WPML_Aria_Translator {
             return $data;
         }
         
-        if ($this->debug) {
-            $this->log_debug("Procesando template data para post ID: $post_id");
+        if ($this->options['modo_debug']) {
+            $this->log_debug("Procesando template data para post ID: {$post_id}");
         }
         
         $this->process_template_elements($data);
@@ -293,8 +691,8 @@ class WPML_Aria_Translator {
                     if (in_array($key, $this->traducible_attrs)) {
                         $this->register_value_for_translation($key, $value, $element_id);
                         
-                        if ($this->debug) {
-                            $this->log_debug("Encontrado atributo: $key = \"$value\" en elemento ID: $element_id");
+                        if ($this->options['modo_debug']) {
+                            $this->log_debug("Encontrado atributo: {$key} = \"{$value}\" (ID: {$element_id})");
                         }
                     }
                 }
@@ -307,8 +705,8 @@ class WPML_Aria_Translator {
                     if (in_array($key, $this->traducible_attrs)) {
                         $this->register_value_for_translation($key, $value, $element_id);
                         
-                        if ($this->debug) {
-                            $this->log_debug("Encontrado atributo pipe: $key = \"$value\" en elemento ID: $element_id");
+                        if ($this->options['modo_debug']) {
+                            $this->log_debug("Encontrado atributo pipe: {$key} = \"{$value}\" (ID: {$element_id})");
                         }
                     }
                 }
@@ -327,8 +725,8 @@ class WPML_Aria_Translator {
                     if (in_array($key, $this->traducible_attrs)) {
                         $this->register_value_for_translation($key, $value, $element_id);
                         
-                        if ($this->debug) {
-                            $this->log_debug("Encontrado atributo multilínea: $key = \"$value\" en elemento ID: $element_id");
+                        if ($this->options['modo_debug']) {
+                            $this->log_debug("Encontrado atributo multilínea: {$key} = \"{$value}\" (ID: {$element_id})");
                         }
                     }
                 }
@@ -337,31 +735,37 @@ class WPML_Aria_Translator {
     }
     
     /**
-     * Registra un valor para traducción con varios nombres para garantizar que se capture
+     * Registra un valor para traducción con varios formatos según la configuración
      */
     private function register_value_for_translation($attr, $value, $element_id = '') {
         if (empty($value)) {
             return;
         }
         
-        // IMPORTANTE: Registrar con múltiples nombres para garantizar la compatibilidad
+        // Usar el cache para evitar procesar el mismo valor varias veces
+        $cache_key = md5($attr . '_' . $value . '_' . $element_id);
+        if (isset($this->processed_values[$cache_key])) {
+            return;
+        }
+        $this->processed_values[$cache_key] = true;
         
-        // 1. Valor directamente como nombre (el más importante)
-        do_action('wpml_register_single_string', $this->context, $value, $value);
+        // Registrar con diferentes formatos según la configuración
         
-        // 2. Formato aria-label_valor
-        $aria_label_name = "aria-label_{$value}";
-        do_action('wpml_register_single_string', $this->context, $aria_label_name, $value);
+        // 1. Valor directamente como nombre
+        if ($this->options['formato_valor_directo']) {
+            do_action('wpml_register_single_string', $this->context, $value, $value);
+        }
         
-        // Si tenemos ID de elemento, registrar formatos específicos
-        if (!empty($element_id)) {
-            // 3. Formato aria_elemento_atributo
+        // 2. Formato aria-atributo_valor
+        if ($this->options['formato_prefijo']) {
+            $prefixed_name = "{$attr}_{$value}";
+            do_action('wpml_register_single_string', $this->context, $prefixed_name, $value);
+        }
+        
+        // 3. Formato con ID de elemento
+        if ($this->options['formato_elemento_id'] && !empty($element_id)) {
             $id_format = "aria_{$element_id}_{$attr}";
             do_action('wpml_register_single_string', $this->context, $id_format, $value);
-            
-            // 4. Formato con prefijo widget
-            $widget_format = "aria_widget_{$element_id}_{$attr}";
-            do_action('wpml_register_single_string', $this->context, $widget_format, $value);
         }
     }
     
@@ -407,48 +811,61 @@ class WPML_Aria_Translator {
             }
             
             // Estrategia de traducción en cascada
+            $translated = $attr_value; // Valor por defecto si no se encuentra traducción
             
             // 1. Intentar traducir directamente con el valor como clave
-            $translated = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $attr_value);
-            
-            // 2. Intentar con formato aria-label_valor
-            if ($translated === $attr_value) {
-                $translated = apply_filters('wpml_translate_single_string', $attr_value, $this->context, "aria-label_{$attr_value}");
+            if ($this->options['formato_valor_directo']) {
+                $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $attr_value);
+                if ($temp !== $attr_value) {
+                    $translated = $temp;
+                }
             }
             
-            // 3. Intentar con formato attr_valor
-            if ($translated === $attr_value) {
-                $translated = apply_filters('wpml_translate_single_string', $attr_value, $this->context, "{$attr_name}_{$attr_value}");
+            // 2. Intentar con formato atributo_valor
+            if ($translated === $attr_value && $this->options['formato_prefijo']) {
+                $prefixed_name = "{$attr_name}_{$attr_value}";
+                $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $prefixed_name);
+                if ($temp !== $attr_value) {
+                    $translated = $temp;
+                }
             }
             
-            // 4. Intentar extraer contexto del elemento
-            if ($translated === $attr_value) {
+            // 3. Intentar con formato específico de ID de elemento
+            if ($translated === $attr_value && $this->options['formato_elemento_id']) {
                 $element_id = $this->extract_element_id_from_context($full_html, $matches[0]);
-                
                 if (!empty($element_id)) {
-                    // Formato específico con ID
                     $id_format = "aria_{$element_id}_{$attr_name}";
-                    $translated = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $id_format);
-                    
-                    // Formato con widget
-                    if ($translated === $attr_value) {
-                        $widget_format = "aria_widget_{$element_id}_{$attr_name}";
-                        $translated = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $widget_format);
+                    $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $id_format);
+                    if ($temp !== $attr_value) {
+                        $translated = $temp;
                     }
                 }
             }
             
-            return " {$attr_name}{$quote_type}{$translated}{$quote_type}";
+            return " {$attr_name}={$quote_type}{$translated}{$quote_type}";
         }, $content);
         
         return $result !== null ? $result : $content;
     }
     
     /**
+     * Añade información en la lista de plugins
+     */
+    public function after_plugin_row($plugin_file, $plugin_data, $status) {
+        if (plugin_basename(__FILE__) == $plugin_file) {
+            echo '<tr class="plugin-update-tr active"><td colspan="4" class="plugin-update colspanchange"><div class="notice inline notice-info" style="margin:0; padding:5px;">';
+            echo '<strong>' . __('Compatibilidad verificada:', 'elementor-aria-translator') . '</strong> WordPress 6.7, Elementor 3.28.3, WPML Multilingual CMS 4.7.3 y WPML String Translation 3.3.2.';
+            echo '</div></td></tr>';
+        }
+    }
+    
+    /**
      * Logger para debug
      */
     private function log_debug($message) {
-        if (!$this->debug) return;
+        if (!$this->options['modo_debug']) {
+            return;
+        }
         
         $log_file = WP_CONTENT_DIR . '/debug-aria-wpml.log';
         
@@ -460,19 +877,7 @@ class WPML_Aria_Translator {
     }
 }
 
-/**
- * Añade información en la lista de plugins
- */
-function eariawpml_after_plugin_row($plugin_file, $plugin_data, $status) {
-    if (plugin_basename(__FILE__) == $plugin_file) {
-        echo '<tr class="plugin-update-tr active"><td colspan="4" class="plugin-update colspanchange"><div class="notice inline notice-info" style="margin:0; padding:5px;">';
-        echo '<strong>Compatibilidad verificada:</strong> WordPress 6.7, Elementor 3.28.3, WPML Multilingual CMS 4.7.3 y WPML String Translation 3.3.2.';
-        echo '</div></td></tr>';
-    }
-}
-add_action('after_plugin_row', 'eariawpml_after_plugin_row', 10, 3);
-
 // Inicializar el plugin
 add_action('plugins_loaded', function() {
-    WPML_Aria_Translator::get_instance();
+    Elementor_ARIA_Translator::get_instance();
 }, 20); // Prioridad 20 para asegurarnos que WPML y Elementor estén cargados
