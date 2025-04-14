@@ -33,9 +33,10 @@ jobs:
 
       # Paso 3: Se sube el ZIP generado como asset de la release.
       - name: Upload ZIP to release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: ncipollo/release-action@v1
         with:
-          files: elementor-aria-translator.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
+          artifacts: "elementor-aria-translator.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          omitBody: true
+          omitName: true
