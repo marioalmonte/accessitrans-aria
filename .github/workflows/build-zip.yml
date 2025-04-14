@@ -37,6 +37,6 @@ jobs:
         with:
           allowUpdates: true
           artifacts: "elementor-aria-translator.zip"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN }}
           omitBody: true
           omitName: true
