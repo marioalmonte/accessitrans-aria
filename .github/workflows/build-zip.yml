@@ -31,11 +31,11 @@ jobs:
         run: |
           git archive --format=zip --prefix=elementor-aria-translator/ ${{ github.ref_name }} -o elementor-aria-translator.zip
 
-# Paso 3: Se sube el ZIP generado como asset de la release.
-- name: Upload ZIP to release
-  uses: softprops/action-gh-release@v1
-  if: startsWith(github.ref, 'refs/tags/')
-  with:
-    files: elementor-aria-translator.zip
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Paso 3: Se sube el ZIP generado como asset de la release.
+      - name: Upload ZIP to release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: elementor-aria-translator.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
