@@ -3,7 +3,7 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-6.7-green.svg)](https://wordpress.org/)
 [![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.3-red.svg)](https://elementor.com/)
 [![WPML Compatible](https://img.shields.io/badge/WPML-4.7.3-blue.svg)](https://wpml.org/)
-[![Version](https://img.shields.io/badge/Version-2.0.1-purple.svg)]()
+[![Version](https://img.shields.io/badge/Version-2.0.2-purple.svg)]()
 
 WordPress plugin that allows translation of ARIA attributes in Elementor sites with WPML, improving accessibility in multilingual environments.
 
@@ -155,6 +155,10 @@ The plugin comes with a settings page that allows you to configure the capture m
 * **Debug Mode**: Enables detailed event logging (stored in wp-content/debug-aria-wpml.log)
 * **Capture for Admins Only**: Only processes full capture when an admin is logged in
 
+## Internationalization
+
+Version 2.0.2 introduces internationalization support, making the plugin ready for translation into multiple languages. The translation files should be placed in the `/languages` directory.
+
 ## Contributions
 
 Contributions are welcome. If you want to improve this plugin:
@@ -185,6 +189,7 @@ Professional services:
 
 Contact:
 * LinkedIn: [https://www.linkedin.com/in/marioalmonte/](https://www.linkedin.com/in/marioalmonte/)
+* Website & Blog: [https://aprendizajeenred.es](https://aprendizajeenred.es)
 
 ---
 

@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.7
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,6 +23,7 @@ The Elementor ARIA Translator for WPML plugin facilitates the translation of ARI
 * Configurable translation registration formats
 * Debug mode for troubleshooting
 * Performance optimization settings
+* Internationalization support
 
 = Compatible ARIA attributes =
 
@@ -189,6 +190,12 @@ For the best experience and website performance, follow these recommendations:
 
 == Changelog ==
 
+= 2.0.2 =
+* Added internationalization support
+* Prepared plugin for translation with language files directory
+* Fixed escaping in admin pages
+* Added website and blog link to author information
+
 = 2.0.1 =
 * Fix for translation registration in complex templates
 * Performance improvements in capture methods
@@ -226,6 +233,9 @@ For the best experience and website performance, follow these recommendations:
 * Initial release
 
 == Upgrade Notice ==
+
+= 2.0.2 =
+This update adds internationalization support, preparing the plugin for translation into multiple languages.
 
 = 2.0.1 =
 This update includes performance improvements and fixes for translation registration in complex templates.

@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.7
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,6 +23,7 @@ El plugin **Elementor ARIA Translator for WPML** facilita la traducción de atri
 * Formatos de registro de traducción configurables
 * Modo de depuración para solución de problemas
 * Configuraciones de optimización de rendimiento
+* Soporte para internacionalización
 
 = Atributos ARIA compatibles =
 
@@ -189,6 +190,12 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 
 == Changelog ==
 
+= 2.0.2 =
+* Añadido soporte para internacionalización
+* Preparado el plugin para traducción con directorio de archivos de idioma
+* Corregido el escape en páginas de administración
+* Añadido enlace al sitio web y blog en información del autor
+
 = 2.0.1 =
 * Corrección para el registro de traducciones en templates complejos
 * Mejoras de rendimiento en los métodos de captura
@@ -226,6 +233,9 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Versión inicial
 
 == Aviso de actualización ==
+
+= 2.0.2 =
+Esta actualización añade soporte para internacionalización, preparando el plugin para su traducción a múltiples idiomas.
 
 = 2.0.1 =
 Esta actualización incluye mejoras de rendimiento y correcciones para el registro de traducciones en templates complejos.
