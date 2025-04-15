@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.7
-Stable tag: 0.0.0
+Stable tag: 0.1.0
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -190,6 +190,15 @@ For the best experience and website performance, follow these recommendations:
 
 == Changelog ==
 
+= 0.1.0 =
+* Improved accessibility of the configuration page:
+  * Enhanced semantic structure with proper ARIA landmarks
+  * Improved page title for better identification
+  * Added proper section elements with semantic headings
+  * Improved notification messages for screen readers
+  * Made status information region properly identifiable
+* Changed admin page title to "Configuration of AccessiTrans"
+
 = 0.0.0 =
 * Plugin renamed from "Elementor ARIA Translator for WPML" to "AccessiTrans - ARIA Translator for WPML & Elementor"
 * Updated plugin slug and internal references
@@ -238,6 +247,9 @@ For the best experience and website performance, follow these recommendations:
 * Initial release
 
 == Upgrade Notice ==
+
+= 0.1.0 =
+This update improves the accessibility of the plugin's configuration page with better semantic structure, ARIA landmarks, and screen reader support.
 
 = 0.0.0 =
 This update includes a name change to "AccessiTrans - ARIA Translator for WPML & Elementor" and maintains compatibility with existing translations.

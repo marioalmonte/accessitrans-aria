@@ -3,7 +3,7 @@
  * Plugin Name: AccessiTrans - ARIA Translator for WPML & Elementor
  * Plugin URI: https://github.com/marioalmonte/accessitrans-aria
  * Description: Traduce atributos ARIA en Elementor utilizando WPML, mejorando la accesibilidad de tu sitio web multilingüe. Desarrollado por un profesional certificado en Accesibilidad Web (CPWA).
- * Version: 0.0.0
+ * Version: 0.1.0
  * Author: Mario Germán Almonte Moreno
  * Author URI: https://www.linkedin.com/in/marioalmonte/
  * Text Domain: accessitrans-aria
@@ -149,7 +149,7 @@ class AccessiTrans_ARIA_Translator {
         
         // Registro de debug
         if ($this->options['modo_debug']) {
-            $this->log_debug('Plugin inicializado - Versión 0.0.0');
+            $this->log_debug('Plugin inicializado - Versión 0.1.0');
         }
     }
     
@@ -205,7 +205,7 @@ class AccessiTrans_ARIA_Translator {
     public function add_settings_page() {
         add_submenu_page(
             'options-general.php',
-            __('AccessiTrans', 'accessitrans-aria'),
+            __('Configuración de', 'accessitrans-aria') . ' AccessiTrans',
             __('AccessiTrans', 'accessitrans-aria'),
             'manage_options',
             'accessitrans-aria',
@@ -383,7 +383,8 @@ class AccessiTrans_ARIA_Translator {
             update_option('accessitrans_aria_options', $sanitized_options);
             $this->options = $sanitized_options;
             
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'accessitrans-aria') . '</p></div>';
+            // Mensaje de éxito con atributos para lectores de pantalla
+            echo '<div class="notice notice-success is-dismissible" role="alert" aria-live="polite"><p>' . esc_html__('Configuración guardada correctamente.', 'accessitrans-aria') . '</p></div>';
         }
         
         // Contar cadenas registradas
@@ -396,11 +397,14 @@ class AccessiTrans_ARIA_Translator {
         // Mostrar formulario de ajustes
         ?>
         <div class="wrap">
-            <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
+            <h1><?php echo esc_html(__('Configuración de', 'accessitrans-aria') . ' AccessiTrans'); ?></h1>
             
-            <div class="notice notice-info">
-                <p><?php _e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'accessitrans-aria'); ?></p>
-                <p><?php printf(__('Actualmente hay %d cadenas registradas en el contexto "Elementor ARIA Attributes".', 'accessitrans-aria'), $strings_count); ?></p>
+            <div class="notice-wrapper">
+                <p class="plugin-description"><?php _e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'accessitrans-aria'); ?></p>
+                
+                <div class="notice notice-info" role="region" aria-label="<?php esc_attr_e('Estado actual', 'accessitrans-aria'); ?>">
+                    <p><?php printf(__('Actualmente hay %d cadenas registradas en el contexto "Elementor ARIA Attributes".', 'accessitrans-aria'), $strings_count); ?></p>
+                </div>
             </div>
             
             <form method="post" action="">
@@ -412,8 +416,8 @@ class AccessiTrans_ARIA_Translator {
                 ?>
             </form>
             
-            <div class="card">
-                <h2><?php _e('Instrucciones de uso', 'accessitrans-aria'); ?></h2>
+            <section class="card" aria-labelledby="instrucciones-uso-titulo">
+                <h2 id="instrucciones-uso-titulo"><?php _e('Instrucciones de uso', 'accessitrans-aria'); ?></h2>
                 <p><?php _e('Para agregar atributos ARIA en Elementor:', 'accessitrans-aria'); ?></p>
                 <ol>
                     <li><?php _e('Edite cualquier elemento en Elementor', 'accessitrans-aria'); ?></li>
@@ -427,10 +431,10 @@ class AccessiTrans_ARIA_Translator {
                     <li><?php _e('Filtre por el contexto "Elementor ARIA Attributes"', 'accessitrans-aria'); ?></li>
                     <li><?php _e('Traduzca las cadenas como lo haría normalmente en WPML', 'accessitrans-aria'); ?></li>
                 </ol>
-            </div>
+            </section>
             
-            <div class="card">
-                <h2><?php _e('Acerca del autor', 'accessitrans-aria'); ?></h2>
+            <section class="card" aria-labelledby="acerca-autor-titulo">
+                <h2 id="acerca-autor-titulo"><?php _e('Acerca del autor', 'accessitrans-aria'); ?></h2>
                 <p><?php _e('Desarrollado por', 'accessitrans-aria'); ?> Mario Germán Almonte Moreno:</p>
                 <ul>
                     <li><?php _e('Miembro de IAAP (International Association of Accessibility Professionals)', 'accessitrans-aria'); ?></li>
@@ -444,7 +448,7 @@ class AccessiTrans_ARIA_Translator {
                 </ul>
                 <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank"><?php _e('Visita mi perfil de LinkedIn', 'accessitrans-aria'); ?></a></p>
                 <p><a href="https://aprendizajeenred.es" target="_blank"><?php _e('Sitio web y blog', 'accessitrans-aria'); ?></a></p>
-            </div>
+            </section>
         </div>
         <?php
     }
