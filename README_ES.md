@@ -1,15 +1,15 @@
-# Elementor ARIA Translator for WPML
+# AccessiTrans - ARIA Translator for WPML & Elementor
 
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-6.7-green.svg)](https://wordpress.org/)
 [![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.3-red.svg)](https://elementor.com/)
 [![WPML Compatible](https://img.shields.io/badge/WPML-4.7.3-blue.svg)](https://wpml.org/)
-[![Version](https://img.shields.io/badge/Version-2.0.2-purple.svg)]()
+[![Version](https://img.shields.io/badge/Version-0.0.0-purple.svg)]()
 
 Plugin para WordPress que permite traducir atributos ARIA en sitios Elementor con WPML, mejorando la accesibilidad en entornos multilingües.
 
 ## Descripción
 
-El plugin **Elementor ARIA Translator for WPML** facilita la traducción de atributos ARIA en sitios desarrollados con Elementor y WPML, garantizando que la información de accesibilidad esté disponible en todos los idiomas de tu sitio web.
+El plugin **AccessiTrans - ARIA Translator for WPML & Elementor** facilita la traducción de atributos ARIA en sitios desarrollados con Elementor y WPML, garantizando que la información de accesibilidad esté disponible en todos los idiomas de tu sitio web.
 
 ### Atributos ARIA compatibles
 
@@ -58,10 +58,10 @@ Funciona con todo tipo de contenido de Elementor:
 
 ## Instalación
 
-1. Descarga el archivo `elementor-aria-translator.zip` desde la página de releases de GitHub
-2. Sube los archivos al directorio `/wp-content/plugins/elementor-aria-translator/` de tu WordPress o instala directamente a través de WordPress subiendo el archivo ZIP
+1. Descarga el archivo `accessitrans-aria.zip` desde la página de releases de GitHub
+2. Sube los archivos al directorio `/wp-content/plugins/accessitrans-aria/` de tu WordPress o instala directamente a través de WordPress subiendo el archivo ZIP
 3. Activa el plugin a través del menú 'Plugins' en WordPress
-4. Ve a Ajustes → Elementor ARIA Translator para configurar las opciones del plugin
+4. Ve a Ajustes → AccessiTrans para configurar las opciones del plugin
 5. Configura los atributos ARIA en Elementor (ver instrucciones de uso)
 
 ## Uso
@@ -157,7 +157,7 @@ El plugin incluye una página de configuración que permite configurar los méto
 
 ## Internacionalización
 
-La versión 2.0.2 introduce soporte para internacionalización, preparando el plugin para su traducción a múltiples idiomas. Los archivos de traducción deben colocarse en el directorio `/languages`.
+El plugin incluye soporte para internacionalización, preparándolo para su traducción a múltiples idiomas. Los archivos de traducción deben colocarse en el directorio `/languages`.
 
 ## Contribuciones
 
@@ -193,4 +193,4 @@ Contacto:
 
 ---
 
-[Documentation in English](https://github.com/marioalmonte/elementor-aria-translator/blob/main/README.md)
+[Documentation in English](https://github.com/marioalmonte/accessitrans-aria/blob/main/README.md)

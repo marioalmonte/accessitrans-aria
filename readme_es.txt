@@ -1,9 +1,9 @@
-=== Elementor ARIA Translator for WPML ===
+=== AccessiTrans - ARIA Translator for WPML & Elementor ===
 Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.7
-Stable tag: 2.0.2
+Stable tag: 0.0.0
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -12,7 +12,7 @@ Plugin para WordPress que permite traducir atributos ARIA en sitios Elementor co
 
 == Descripción ==
 
-El plugin **Elementor ARIA Translator for WPML** facilita la traducción de atributos ARIA en sitios desarrollados con Elementor y WPML, garantizando que la información de accesibilidad esté disponible en todos los idiomas de tu sitio web.
+El plugin **AccessiTrans - ARIA Translator for WPML & Elementor** facilita la traducción de atributos ARIA en sitios desarrollados con Elementor y WPML, garantizando que la información de accesibilidad esté disponible en todos los idiomas de tu sitio web.
 
 = Características principales =
 
@@ -79,10 +79,10 @@ En sitios web multilingües, la información de accesibilidad debe estar disponi
 
 == Instalación ==
 
-1. Descarga el archivo `elementor-aria-translator.zip` desde la página de releases de GitHub
-2. Sube los archivos al directorio `/wp-content/plugins/elementor-aria-translator/` de tu WordPress o instala directamente a través de WordPress subiendo el archivo ZIP
+1. Descarga el archivo `accessitrans-aria.zip` desde la página de releases de GitHub
+2. Sube los archivos al directorio `/wp-content/plugins/accessitrans-aria/` de tu WordPress o instala directamente a través de WordPress subiendo el archivo ZIP
 3. Activa el plugin a través del menú 'Plugins' en WordPress
-4. Ve a Ajustes → Elementor ARIA Translator para configurar las opciones del plugin
+4. Ve a Ajustes → AccessiTrans para configurar las opciones del plugin
 5. Configura los atributos ARIA en Elementor (ver instrucciones de uso)
 
 == Preguntas frecuentes ==
@@ -190,6 +190,11 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 
 == Changelog ==
 
+= 0.0.0 =
+* Plugin renombrado de "Elementor ARIA Translator for WPML" a "AccessiTrans - ARIA Translator for WPML & Elementor"
+* Actualizado el slug del plugin y referencias internas
+* IMPORTANTE: Se mantiene la compatibilidad con traducciones existentes conservando el contexto "Elementor ARIA Attributes" en WPML
+
 = 2.0.2 =
 * Añadido soporte para internacionalización
 * Preparado el plugin para traducción con directorio de archivos de idioma
@@ -233,6 +238,9 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Versión inicial
 
 == Aviso de actualización ==
+
+= 0.0.0 =
+Esta actualización incluye un cambio de nombre a "AccessiTrans - ARIA Translator for WPML & Elementor" y mantiene la compatibilidad con las traducciones existentes.
 
 = 2.0.2 =
 Esta actualización añade soporte para internacionalización, preparando el plugin para su traducción a múltiples idiomas.

@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: Elementor ARIA Translator for WPML
- * Plugin URI: https://github.com/marioalmonte/elementor-aria-translator
+ * Plugin Name: AccessiTrans - ARIA Translator for WPML & Elementor
+ * Plugin URI: https://github.com/marioalmonte/accessitrans-aria
  * Description: Traduce atributos ARIA en Elementor utilizando WPML, mejorando la accesibilidad de tu sitio web multilingüe. Desarrollado por un profesional certificado en Accesibilidad Web (CPWA).
- * Version: 2.0.2
+ * Version: 0.0.0
  * Author: Mario Germán Almonte Moreno
  * Author URI: https://www.linkedin.com/in/marioalmonte/
- * Text Domain: elementor-aria-translator
+ * Text Domain: accessitrans-aria
  * Domain Path: /languages
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -19,16 +19,16 @@ if (!defined('ABSPATH')) {
 /**
  * Carga el dominio de texto para la internacionalización
  */
-function elementor_aria_translator_load_textdomain() {
+function accessitrans_aria_load_textdomain() {
     load_plugin_textdomain(
-        'elementor-aria-translator',
+        'accessitrans-aria',
         false,
         dirname(plugin_basename(__FILE__)) . '/languages'
     );
 }
-add_action('plugins_loaded', 'elementor_aria_translator_load_textdomain', 10);
+add_action('plugins_loaded', 'accessitrans_aria_load_textdomain', 10);
 
-class Elementor_ARIA_Translator {
+class AccessiTrans_ARIA_Translator {
     
     /**
      * Instancia singleton
@@ -37,6 +37,7 @@ class Elementor_ARIA_Translator {
     
     /**
      * Contexto único para todas las traducciones ARIA
+     * IMPORTANTE: Se mantiene "Elementor ARIA Attributes" para compatibilidad
      */
     private $context = 'Elementor ARIA Attributes';
     
@@ -66,8 +67,8 @@ class Elementor_ARIA_Translator {
      */
     private function __construct() {
         // Inicializar valores por defecto para nuevas instalaciones
-        if (!get_option('elementor_aria_translator_options')) {
-            update_option('elementor_aria_translator_options', [
+        if (!get_option('accessitrans_aria_options')) {
+            update_option('accessitrans_aria_options', [
                 'captura_total' => true,
                 'captura_elementor' => true,
                 'procesar_templates' => true,
@@ -81,7 +82,7 @@ class Elementor_ARIA_Translator {
         }
         
         // Cargar opciones
-        $this->options = get_option('elementor_aria_translator_options', [
+        $this->options = get_option('accessitrans_aria_options', [
             'captura_total' => true,
             'captura_elementor' => true,
             'procesar_templates' => true,
@@ -115,6 +116,8 @@ class Elementor_ARIA_Translator {
         $this->init_capture_methods();
     }
     
+
+    
     /**
      * Inicializa los métodos de captura según la configuración
      */
@@ -146,7 +149,7 @@ class Elementor_ARIA_Translator {
         
         // Registro de debug
         if ($this->options['modo_debug']) {
-            $this->log_debug('Plugin inicializado - Versión 2.0.0');
+            $this->log_debug('Plugin inicializado - Versión 0.0.0');
         }
     }
     
@@ -165,8 +168,8 @@ class Elementor_ARIA_Translator {
      */
     public function activate() {
         // Asegurarse de que las opciones predeterminadas están configuradas
-        if (!get_option('elementor_aria_translator_options')) {
-            update_option('elementor_aria_translator_options', [
+        if (!get_option('accessitrans_aria_options')) {
+            update_option('accessitrans_aria_options', [
                 'captura_total' => true,
                 'captura_elementor' => true,
                 'procesar_templates' => true,
@@ -192,7 +195,7 @@ class Elementor_ARIA_Translator {
      */
     public function show_dependencies_notice() {
         $class = 'notice notice-error';
-        $message = __('Elementor ARIA Translator requiere que Elementor y WPML estén instalados y activados.', 'elementor-aria-translator');
+        $message = __('AccessiTrans requiere que Elementor y WPML estén instalados y activados.', 'accessitrans-aria');
         printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), esc_html($message));
     }
     
@@ -202,10 +205,10 @@ class Elementor_ARIA_Translator {
     public function add_settings_page() {
         add_submenu_page(
             'options-general.php',
-            __('Elementor ARIA Translator', 'elementor-aria-translator'),
-            __('Elementor ARIA Translator', 'elementor-aria-translator'),
+            __('AccessiTrans', 'accessitrans-aria'),
+            __('AccessiTrans', 'accessitrans-aria'),
             'manage_options',
-            'elementor-aria-translator',
+            'accessitrans-aria',
             [$this, 'settings_page']
         );
     }
@@ -214,108 +217,108 @@ class Elementor_ARIA_Translator {
      * Registra los ajustes del plugin
      */
     public function register_settings() {
-        register_setting('elementor_aria_translator', 'elementor_aria_translator_options');
+        register_setting('accessitrans_aria', 'accessitrans_aria_options');
         
         add_settings_section(
-            'elementor_aria_translator_main',
-            __('Configuración de métodos de captura', 'elementor-aria-translator'),
+            'accessitrans_aria_main',
+            __('Configuración de métodos de captura', 'accessitrans-aria'),
             [$this, 'section_callback'],
-            'elementor-aria-translator'
+            'accessitrans-aria'
         );
         
         add_settings_field(
             'captura_total',
-            __('Captura total de HTML', 'elementor-aria-translator'),
+            __('Captura total de HTML', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_main',
-            ['label_for' => 'captura_total', 'descripcion' => __('Captura todo el HTML de la página. Altamente efectivo pero puede afectar al rendimiento.', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_main',
+            ['label_for' => 'captura_total', 'descripcion' => __('Captura todo el HTML de la página. Altamente efectivo pero puede afectar al rendimiento.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'captura_elementor',
-            __('Filtro de contenido de Elementor', 'elementor-aria-translator'),
+            __('Filtro de contenido de Elementor', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_main',
-            ['label_for' => 'captura_elementor', 'descripcion' => __('Procesa el contenido generado por Elementor.', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_main',
+            ['label_for' => 'captura_elementor', 'descripcion' => __('Procesa el contenido generado por Elementor.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'procesar_templates',
-            __('Procesar templates de Elementor', 'elementor-aria-translator'),
+            __('Procesar templates de Elementor', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_main',
-            ['label_for' => 'procesar_templates', 'descripcion' => __('Procesa los datos de templates de Elementor.', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_main',
+            ['label_for' => 'procesar_templates', 'descripcion' => __('Procesa los datos de templates de Elementor.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'procesar_elementos',
-            __('Procesar elementos individuales', 'elementor-aria-translator'),
+            __('Procesar elementos individuales', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_main',
-            ['label_for' => 'procesar_elementos', 'descripcion' => __('Procesa cada widget y elemento de Elementor individualmente.', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_main',
+            ['label_for' => 'procesar_elementos', 'descripcion' => __('Procesa cada widget y elemento de Elementor individualmente.', 'accessitrans-aria')]
         );
         
         add_settings_section(
-            'elementor_aria_translator_formats',
-            __('Configuración de formatos de registro', 'elementor-aria-translator'),
+            'accessitrans_aria_formats',
+            __('Configuración de formatos de registro', 'accessitrans-aria'),
             [$this, 'section_formats_callback'],
-            'elementor-aria-translator'
+            'accessitrans-aria'
         );
         
         add_settings_field(
             'formato_valor_directo',
-            __('Formato directo', 'elementor-aria-translator'),
+            __('Formato directo', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_formats',
-            ['label_for' => 'formato_valor_directo', 'descripcion' => __('Registrar el valor literal como nombre.', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_formats',
+            ['label_for' => 'formato_valor_directo', 'descripcion' => __('Registrar el valor literal como nombre.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'formato_prefijo',
-            __('Formato con prefijo', 'elementor-aria-translator'),
+            __('Formato con prefijo', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_formats',
-            ['label_for' => 'formato_prefijo', 'descripcion' => __('Registrar con formato aria-atributo_valor.', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_formats',
+            ['label_for' => 'formato_prefijo', 'descripcion' => __('Registrar con formato aria-atributo_valor.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'formato_elemento_id',
-            __('Formato con ID de elemento', 'elementor-aria-translator'),
+            __('Formato con ID de elemento', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_formats',
-            ['label_for' => 'formato_elemento_id', 'descripcion' => __('Registrar con formato incluyendo ID del elemento.', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_formats',
+            ['label_for' => 'formato_elemento_id', 'descripcion' => __('Registrar con formato incluyendo ID del elemento.', 'accessitrans-aria')]
         );
         
         add_settings_section(
-            'elementor_aria_translator_advanced',
-            __('Configuración avanzada', 'elementor-aria-translator'),
+            'accessitrans_aria_advanced',
+            __('Configuración avanzada', 'accessitrans-aria'),
             [$this, 'section_advanced_callback'],
-            'elementor-aria-translator'
+            'accessitrans-aria'
         );
         
         add_settings_field(
             'modo_debug',
-            __('Modo de depuración', 'elementor-aria-translator'),
+            __('Modo de depuración', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_advanced',
-            ['label_for' => 'modo_debug', 'descripcion' => __('Activa el registro detallado de eventos. Se almacena en wp-content/debug-aria-wpml.log', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_advanced',
+            ['label_for' => 'modo_debug', 'descripcion' => __('Activa el registro detallado de eventos. Se almacena en wp-content/debug-aria-wpml.log', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'solo_admin',
-            __('Captura solo para administradores', 'elementor-aria-translator'),
+            __('Captura solo para administradores', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
-            'elementor-aria-translator',
-            'elementor_aria_translator_advanced',
-            ['label_for' => 'solo_admin', 'descripcion' => __('Solo procesa la captura total cuando un administrador está conectado.', 'elementor-aria-translator')]
+            'accessitrans-aria',
+            'accessitrans_aria_advanced',
+            ['label_for' => 'solo_admin', 'descripcion' => __('Solo procesa la captura total cuando un administrador está conectado.', 'accessitrans-aria')]
         );
     }
     
@@ -323,21 +326,21 @@ class Elementor_ARIA_Translator {
      * Callback para la sección principal de ajustes
      */
     public function section_callback() {
-        echo '<p>' . esc_html__('Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta.', 'elementor-aria-translator') . '</p>';
+        echo '<p>' . esc_html__('Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta.', 'accessitrans-aria') . '</p>';
     }
     
     /**
      * Callback para la sección de formatos
      */
     public function section_formats_callback() {
-        echo '<p>' . esc_html__('Configura los formatos de registro de cadenas para WPML. Elegir más de un formato duplicará las cadenas encontradas en WPML aunque puede aumentar la robustez.', 'elementor-aria-translator') . '</p>';
+        echo '<p>' . esc_html__('Configura los formatos de registro de cadenas para WPML. Elegir más de un formato duplicará las cadenas encontradas en WPML aunque puede aumentar la robustez.', 'accessitrans-aria') . '</p>';
     }
     
     /**
      * Callback para la sección avanzada
      */
     public function section_advanced_callback() {
-        echo '<p>' . esc_html__('Configuración avanzada para rendimiento y depuración.', 'elementor-aria-translator') . '</p>';
+        echo '<p>' . esc_html__('Configuración avanzada para rendimiento y depuración.', 'accessitrans-aria') . '</p>';
     }
     
     /**
@@ -348,7 +351,7 @@ class Elementor_ARIA_Translator {
         $descripcion = $args['descripcion'];
         $checked = isset($this->options[$option_name]) && $this->options[$option_name] ? 'checked' : '';
         
-        echo '<input type="checkbox" id="' . esc_attr($option_name) . '" name="elementor_aria_translator_options[' . esc_attr($option_name) . ']" value="1" ' . $checked . ' />';
+        echo '<input type="checkbox" id="' . esc_attr($option_name) . '" name="accessitrans_aria_options[' . esc_attr($option_name) . ']" value="1" ' . $checked . ' />';
         echo '<label for="' . esc_attr($option_name) . '">' . esc_html($descripcion) . '</label>';
     }
     
@@ -362,9 +365,9 @@ class Elementor_ARIA_Translator {
         
         // Guardar opciones si se ha enviado el formulario
         if (isset($_POST['submit'])) {
-            check_admin_referer('elementor_aria_translator_settings');
+            check_admin_referer('accessitrans_aria_settings');
             
-            $options = isset($_POST['elementor_aria_translator_options']) ? $_POST['elementor_aria_translator_options'] : [];
+            $options = isset($_POST['accessitrans_aria_options']) ? $_POST['accessitrans_aria_options'] : [];
             $sanitized_options = [
                 'captura_total' => isset($options['captura_total']),
                 'captura_elementor' => isset($options['captura_elementor']),
@@ -377,10 +380,10 @@ class Elementor_ARIA_Translator {
                 'formato_elemento_id' => isset($options['formato_elemento_id'])
             ];
             
-            update_option('elementor_aria_translator_options', $sanitized_options);
+            update_option('accessitrans_aria_options', $sanitized_options);
             $this->options = $sanitized_options;
             
-            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'elementor-aria-translator') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'accessitrans-aria') . '</p></div>';
         }
         
         // Contar cadenas registradas
@@ -396,51 +399,51 @@ class Elementor_ARIA_Translator {
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             
             <div class="notice notice-info">
-                <p><?php _e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'elementor-aria-translator'); ?></p>
-                <p><?php printf(__('Actualmente hay %d cadenas registradas en el contexto "Elementor ARIA Attributes".', 'elementor-aria-translator'), $strings_count); ?></p>
+                <p><?php _e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'accessitrans-aria'); ?></p>
+                <p><?php printf(__('Actualmente hay %d cadenas registradas en el contexto "Elementor ARIA Attributes".', 'accessitrans-aria'), $strings_count); ?></p>
             </div>
             
             <form method="post" action="">
                 <?php
-                settings_fields('elementor_aria_translator');
-                do_settings_sections('elementor-aria-translator');
-                wp_nonce_field('elementor_aria_translator_settings');
+                settings_fields('accessitrans_aria');
+                do_settings_sections('accessitrans-aria');
+                wp_nonce_field('accessitrans_aria_settings');
                 submit_button();
                 ?>
             </form>
             
             <div class="card">
-                <h2><?php _e('Instrucciones de uso', 'elementor-aria-translator'); ?></h2>
-                <p><?php _e('Para agregar atributos ARIA en Elementor:', 'elementor-aria-translator'); ?></p>
+                <h2><?php _e('Instrucciones de uso', 'accessitrans-aria'); ?></h2>
+                <p><?php _e('Para agregar atributos ARIA en Elementor:', 'accessitrans-aria'); ?></p>
                 <ol>
-                    <li><?php _e('Edite cualquier elemento en Elementor', 'elementor-aria-translator'); ?></li>
-                    <li><?php _e('Vaya a la pestaña "Avanzado"', 'elementor-aria-translator'); ?></li>
-                    <li><?php _e('Encuentre la sección "Atributos personalizados"', 'elementor-aria-translator'); ?></li>
-                    <li><?php _e('Añada los atributos ARIA que desee traducir (ej: aria-label|Texto a traducir)', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Edite cualquier elemento en Elementor', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Vaya a la pestaña "Avanzado"', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Encuentre la sección "Atributos personalizados"', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Añada los atributos ARIA que desee traducir (ej: aria-label|Texto a traducir)', 'accessitrans-aria'); ?></li>
                 </ol>
-                <p><?php _e('Para traducir los atributos:', 'elementor-aria-translator'); ?></p>
+                <p><?php _e('Para traducir los atributos:', 'accessitrans-aria'); ?></p>
                 <ol>
-                    <li><?php _e('Vaya a WPML → Traducción de cadenas', 'elementor-aria-translator'); ?></li>
-                    <li><?php _e('Filtre por el contexto "Elementor ARIA Attributes"', 'elementor-aria-translator'); ?></li>
-                    <li><?php _e('Traduzca las cadenas como lo haría normalmente en WPML', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Vaya a WPML → Traducción de cadenas', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Filtre por el contexto "Elementor ARIA Attributes"', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Traduzca las cadenas como lo haría normalmente en WPML', 'accessitrans-aria'); ?></li>
                 </ol>
             </div>
             
             <div class="card">
-                <h2><?php _e('Acerca del autor', 'elementor-aria-translator'); ?></h2>
-                <p><?php _e('Desarrollado por', 'elementor-aria-translator'); ?> Mario Germán Almonte Moreno:</p>
+                <h2><?php _e('Acerca del autor', 'accessitrans-aria'); ?></h2>
+                <p><?php _e('Desarrollado por', 'accessitrans-aria'); ?> Mario Germán Almonte Moreno:</p>
                 <ul>
-                    <li><?php _e('Miembro de IAAP (International Association of Accessibility Professionals)', 'elementor-aria-translator'); ?></li>
-                    <li><?php _e('Certificado CPWA (CPACC y WAS)', 'elementor-aria-translator'); ?></li>
-                    <li><?php _e('Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Miembro de IAAP (International Association of Accessibility Professionals)', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Certificado CPWA (CPACC y WAS)', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)', 'accessitrans-aria'); ?></li>
                 </ul>
-                <p><strong><?php _e('Servicios Profesionales:', 'elementor-aria-translator'); ?></strong></p>
+                <p><strong><?php _e('Servicios Profesionales:', 'accessitrans-aria'); ?></strong></p>
                 <ul>
-                    <li><?php _e('Formación y consultoría en Accesibilidad Web y eLearning', 'elementor-aria-translator'); ?></li>
-                    <li><?php _e('Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Formación y consultoría en Accesibilidad Web y eLearning', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)', 'accessitrans-aria'); ?></li>
                 </ul>
-                <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank"><?php _e('Visita mi perfil de LinkedIn', 'elementor-aria-translator'); ?></a></p>
-                <p><a href="https://aprendizajeenred.es" target="_blank"><?php _e('Sitio web y blog', 'elementor-aria-translator'); ?></a></p>
+                <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank"><?php _e('Visita mi perfil de LinkedIn', 'accessitrans-aria'); ?></a></p>
+                <p><a href="https://aprendizajeenred.es" target="_blank"><?php _e('Sitio web y blog', 'accessitrans-aria'); ?></a></p>
             </div>
         </div>
         <?php
@@ -450,7 +453,7 @@ class Elementor_ARIA_Translator {
      * Añade enlaces a la página de configuración en la lista de plugins
      */
     public function add_action_links($links) {
-        $settings_link = '<a href="' . admin_url('options-general.php?page=elementor-aria-translator') . '">' . __('Settings', 'elementor-aria-translator') . '</a>';
+        $settings_link = '<a href="' . admin_url('options-general.php?page=accessitrans-aria') . '">' . __('Settings', 'accessitrans-aria') . '</a>';
         array_unshift($links, $settings_link);
         return $links;
     }
@@ -843,7 +846,7 @@ class Elementor_ARIA_Translator {
     public function after_plugin_row($plugin_file, $plugin_data, $status) {
         if (plugin_basename(__FILE__) == $plugin_file) {
             echo '<tr class="plugin-update-tr active"><td colspan="4" class="plugin-update colspanchange"><div class="notice inline notice-info" style="margin:0; padding:5px;">';
-            echo '<strong>' . __('Compatibilidad verificada:', 'elementor-aria-translator') . '</strong> WordPress 6.7, Elementor 3.28.3, WPML Multilingual CMS 4.7.3 y WPML String Translation 3.3.2.';
+            echo '<strong>' . __('Compatibilidad verificada:', 'accessitrans-aria') . '</strong> WordPress 6.7, Elementor 3.28.3, WPML Multilingual CMS 4.7.3 y WPML String Translation 3.3.2.';
             echo '</div></td></tr>';
         }
     }
@@ -868,5 +871,5 @@ class Elementor_ARIA_Translator {
 
 // Inicializar el plugin
 add_action('plugins_loaded', function() {
-    Elementor_ARIA_Translator::get_instance();
+    AccessiTrans_ARIA_Translator::get_instance();
 }, 20); // Prioridad 20 para asegurarnos que WPML y Elementor estén cargados

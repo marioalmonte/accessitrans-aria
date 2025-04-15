@@ -1,7 +1,7 @@
 # ============================================================
 # Workflow para generar un ZIP "limpio" para el plugin de WordPress.
 # Cada vez que se publique una release, se creará un ZIP con
-# la carpeta raíz 'elementor-aria-translator' (sin la etiqueta de versión)
+# la carpeta raíz 'accessitrans-aria' (sin la etiqueta de versión)
 # y se subirá como asset a la release.
 #
 # Esta explicación interna es solo para referencia y no afecta la
@@ -10,7 +10,6 @@
 
 name: Build WordPress Plugin ZIP
 
-# Se activa cuando se publica una release en GitHub.
 on:
   release:
     types: [published]
@@ -20,23 +19,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Se descarga el código del repositorio en el runner.
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Paso 2: Se crea el ZIP usando el comando git archive.
-      # La opción --prefix=elementor-aria-translator/ hace que, al descomprimir,
-      # se genere una carpeta con ese nombre (sin el número de versión).
       - name: Create plugin ZIP archive
         run: |
-          git archive --format=zip --prefix=elementor-aria-translator/ ${{ github.ref_name }} -o elementor-aria-translator.zip
+          git archive --format=zip --prefix=accessitrans-aria/ ${{ github.ref_name }} -o accessitrans-aria.zip
 
-      # Paso 3: Se sube el ZIP generado como asset de la release.
       - name: Upload ZIP to release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "elementor-aria-translator.zip"
+          artifacts: "accessitrans-aria.zip"
           token: ${{ secrets.RELEASE_TOKEN }}
           omitBody: true
           omitName: true
