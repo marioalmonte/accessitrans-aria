@@ -3,10 +3,11 @@
  * Plugin Name: Elementor ARIA Translator for WPML
  * Plugin URI: https://github.com/marioalmonte/elementor-aria-translator
  * Description: Traduce atributos ARIA en Elementor utilizando WPML, mejorando la accesibilidad de tu sitio web multilingüe. Desarrollado por un profesional certificado en Accesibilidad Web (CPWA).
- * Version: 2.0.1
+ * Version: 2.0.2
  * Author: Mario Germán Almonte Moreno
  * Author URI: https://www.linkedin.com/in/marioalmonte/
  * Text Domain: elementor-aria-translator
+ * Domain Path: /languages
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -14,6 +15,18 @@
 if (!defined('ABSPATH')) {
     exit; // Salir si se accede directamente
 }
+
+/**
+ * Carga el dominio de texto para la internacionalización
+ */
+function elementor_aria_translator_load_textdomain() {
+    load_plugin_textdomain(
+        'elementor-aria-translator',
+        false,
+        dirname(plugin_basename(__FILE__)) . '/languages'
+    );
+}
+add_action('plugins_loaded', 'elementor_aria_translator_load_textdomain', 10);
 
 class Elementor_ARIA_Translator {
     
@@ -310,21 +323,21 @@ class Elementor_ARIA_Translator {
      * Callback para la sección principal de ajustes
      */
     public function section_callback() {
-        echo '<p>' . __('Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta.', 'elementor-aria-translator') . '</p>';
+        echo '<p>' . esc_html__('Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta.', 'elementor-aria-translator') . '</p>';
     }
     
     /**
      * Callback para la sección de formatos
      */
     public function section_formats_callback() {
-        echo '<p>' . __('Configura los formatos de registro de cadenas para WPML. Elegir más de un formato duplicará las cadenas encontradas en WPML aunque puede aumentar la robustez.', 'elementor-aria-translator') . '</p>';
+        echo '<p>' . esc_html__('Configura los formatos de registro de cadenas para WPML. Elegir más de un formato duplicará las cadenas encontradas en WPML aunque puede aumentar la robustez.', 'elementor-aria-translator') . '</p>';
     }
     
     /**
      * Callback para la sección avanzada
      */
     public function section_advanced_callback() {
-        echo '<p>' . __('Configuración avanzada para rendimiento y depuración.', 'elementor-aria-translator') . '</p>';
+        echo '<p>' . esc_html__('Configuración avanzada para rendimiento y depuración.', 'elementor-aria-translator') . '</p>';
     }
     
     /**
@@ -367,7 +380,7 @@ class Elementor_ARIA_Translator {
             update_option('elementor_aria_translator_options', $sanitized_options);
             $this->options = $sanitized_options;
             
-            echo '<div class="notice notice-success is-dismissible"><p>' . __('Configuración guardada correctamente.', 'elementor-aria-translator') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__('Configuración guardada correctamente.', 'elementor-aria-translator') . '</p></div>';
         }
         
         // Contar cadenas registradas
@@ -414,44 +427,20 @@ class Elementor_ARIA_Translator {
             </div>
             
             <div class="card">
-                <h2><?php _e('About the author', 'elementor-aria-translator'); ?></h2>
-                <?php
-                // Mostrar información del autor según el idioma
-                $locale = get_locale();
-                if (strpos($locale, 'es_') === 0) {
-                    // Versión en español
-                    ?>
-                    <p>Desarrollado por Mario Germán Almonte Moreno:</p>
-                    <ul>
-                        <li>Miembro de IAAP (International Association of Accessibility Professionals)</li>
-                        <li>Certificado CPWA (CPACC y WAS)</li>
-                        <li>Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)</li>
-                    </ul>
-                    <p><strong>Servicios Profesionales:</strong></p>
-                    <ul>
-                        <li>Formación y consultoría en Accesibilidad Web y eLearning</li>
-                        <li>Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)</li>
-                    </ul>
-                    <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank">Visita mi perfil de LinkedIn</a></p>
-                    <?php
-                } else {
-                    // Versión en inglés
-                    ?>
-                    <p>Developed by Mario Germán Almonte Moreno:</p>
-                    <ul>
-                        <li>Member of IAAP (International Association of Accessibility Professionals)</li>
-                        <li>CPWA Certified (CPACC and WAS)</li>
-                        <li>Professor at the Digital Accessibility Specialization Course (University of Lleida)</li>
-                    </ul>
-                    <p><strong>Professional Services:</strong></p>
-                    <ul>
-                        <li>Training and consulting in Web Accessibility and eLearning</li>
-                        <li>Web accessibility audits according to EN 301 549 (WCAG 2.2, ATAG 2.0)</li>
-                    </ul>
-                    <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank">Visit my LinkedIn profile</a></p>
-                    <?php
-                }
-                ?>
+                <h2><?php _e('Acerca del autor', 'elementor-aria-translator'); ?></h2>
+                <p><?php _e('Desarrollado por', 'elementor-aria-translator'); ?> Mario Germán Almonte Moreno:</p>
+                <ul>
+                    <li><?php _e('Miembro de IAAP (International Association of Accessibility Professionals)', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Certificado CPWA (CPACC y WAS)', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)', 'elementor-aria-translator'); ?></li>
+                </ul>
+                <p><strong><?php _e('Servicios Profesionales:', 'elementor-aria-translator'); ?></strong></p>
+                <ul>
+                    <li><?php _e('Formación y consultoría en Accesibilidad Web y eLearning', 'elementor-aria-translator'); ?></li>
+                    <li><?php _e('Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)', 'elementor-aria-translator'); ?></li>
+                </ul>
+                <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank"><?php _e('Visita mi perfil de LinkedIn', 'elementor-aria-translator'); ?></a></p>
+                <p><a href="https://aprendizajeenred.es" target="_blank"><?php _e('Sitio web y blog', 'elementor-aria-translator'); ?></a></p>
             </div>
         </div>
         <?php
