@@ -3,13 +3,16 @@
  * Plugin Name: AccessiTrans - ARIA Translator for WPML & Elementor
  * Plugin URI: https://github.com/marioalmonte/accessitrans-aria
  * Description: Traduce atributos ARIA en Elementor utilizando WPML, mejorando la accesibilidad de tu sitio web multilingüe. Desarrollado por un profesional certificado en Accesibilidad Web (CPWA).
- * Version: 0.1.0
+ * Version: 0.2.0
  * Author: Mario Germán Almonte Moreno
  * Author URI: https://www.linkedin.com/in/marioalmonte/
  * Text Domain: accessitrans-aria
  * Domain Path: /languages
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires at least: 5.6
+ * Tested up to: 6.8
+ * Requires PHP: 7.2
  */
 
 if (!defined('ABSPATH')) {
@@ -36,10 +39,16 @@ class AccessiTrans_ARIA_Translator {
     private static $instance = null;
     
     /**
-     * Contexto único para todas las traducciones ARIA
-     * IMPORTANTE: Se mantiene "Elementor ARIA Attributes" para compatibilidad
+     * Contexto base para todas las traducciones ARIA
      */
-    private $context = 'Elementor ARIA Attributes';
+    private $base_context = 'AccessiTrans ARIA Attributes';
+    
+    /**
+     * Contextos específicos para cada método de registro
+     */
+    private $direct_context;
+    private $prefix_context;
+    private $id_context;
     
     /**
      * Opciones del plugin
@@ -63,9 +72,19 @@ class AccessiTrans_ARIA_Translator {
     private $processed_values = [];
     
     /**
+     * Cache de traducciones fallidas para reintento
+     */
+    private $failed_translations = [];
+    
+    /**
      * Constructor privado
      */
     private function __construct() {
+        // Inicializar los contextos
+        $this->direct_context = $this->base_context . '_Direct';
+        $this->prefix_context = $this->base_context . '_Prefix';
+        $this->id_context = $this->base_context . '_ID';
+        
         // Inicializar valores por defecto para nuevas instalaciones
         if (!get_option('accessitrans_aria_options')) {
             update_option('accessitrans_aria_options', [
@@ -75,9 +94,11 @@ class AccessiTrans_ARIA_Translator {
                 'procesar_elementos' => true,
                 'modo_debug' => false,
                 'solo_admin' => true,
-                'formato_valor_directo' => false,
+                'formato_valor_directo' => true,
                 'formato_prefijo' => true,
-                'formato_elemento_id' => false
+                'formato_elemento_id' => true,
+                'reintentar_traducciones' => true,
+                'prioridad_traduccion' => 9999
             ]);
         }
         
@@ -89,9 +110,11 @@ class AccessiTrans_ARIA_Translator {
             'procesar_elementos' => true,
             'modo_debug' => false,
             'solo_admin' => true,
-            'formato_valor_directo' => false,
+            'formato_valor_directo' => true,
             'formato_prefijo' => true,
-            'formato_elemento_id' => false
+            'formato_elemento_id' => true,
+            'reintentar_traducciones' => true,
+            'prioridad_traduccion' => 9999
         ]);
         
         // Registrar hooks de activación y desactivación
@@ -114,9 +137,10 @@ class AccessiTrans_ARIA_Translator {
         
         // Inicializar métodos de captura según las opciones configuradas
         $this->init_capture_methods();
+        
+        // Agregar función para forzar actualización
+        add_action('wp_ajax_accessitrans_force_refresh', [$this, 'force_refresh_callback']);
     }
-    
-
     
     /**
      * Inicializa los métodos de captura según la configuración
@@ -131,9 +155,17 @@ class AccessiTrans_ARIA_Translator {
         if ($this->options['captura_elementor']) {
             add_filter('elementor/frontend/the_content', [$this, 'capture_aria_in_content'], 999);
             
-            // También aplicar traducciones al contenido final
-            add_filter('elementor/frontend/the_content', [$this, 'translate_aria_attributes'], 1000);
-            add_filter('the_content', [$this, 'translate_aria_attributes'], 1000);
+            // También aplicar traducciones al contenido final con prioridad alta
+            $priority = intval($this->options['prioridad_traduccion']);
+            add_filter('elementor/frontend/the_content', [$this, 'translate_aria_attributes'], $priority);
+            add_filter('the_content', [$this, 'translate_aria_attributes'], $priority);
+            
+            // Hook en wp_loaded para asegurar que WPML esté completamente cargado
+            add_action('wp_loaded', function() {
+                $priority = intval($this->options['prioridad_traduccion']);
+                add_filter('elementor/frontend/the_content', [$this, 'translate_aria_attributes'], $priority);
+                add_filter('the_content', [$this, 'translate_aria_attributes'], $priority);
+            }, 20);
         }
         
         // MÉTODO 3: Hooks de Elementor para capturar widgets y elementos
@@ -149,7 +181,12 @@ class AccessiTrans_ARIA_Translator {
         
         // Registro de debug
         if ($this->options['modo_debug']) {
-            $this->log_debug('Plugin inicializado - Versión 0.1.0');
+            $this->log_debug('Plugin inicializado - Versión 0.2.0');
+        }
+        
+        // Retry para traducciones fallidas
+        if ($this->options['reintentar_traducciones']) {
+            add_action('shutdown', [$this, 'retry_failed_translations'], 999);
         }
     }
     
@@ -176,9 +213,11 @@ class AccessiTrans_ARIA_Translator {
                 'procesar_elementos' => true,
                 'modo_debug' => false,
                 'solo_admin' => true,
-                'formato_valor_directo' => false,
+                'formato_valor_directo' => true,
                 'formato_prefijo' => true,
-                'formato_elemento_id' => false
+                'formato_elemento_id' => true,
+                'reintentar_traducciones' => true,
+                'prioridad_traduccion' => 9999
             ]);
         }
     }
@@ -304,6 +343,24 @@ class AccessiTrans_ARIA_Translator {
         );
         
         add_settings_field(
+            'reintentar_traducciones',
+            __('Reintentar traducciones fallidas', 'accessitrans-aria'),
+            [$this, 'checkbox_callback'],
+            'accessitrans-aria',
+            'accessitrans_aria_advanced',
+            ['label_for' => 'reintentar_traducciones', 'descripcion' => __('Intenta nuevamente aplicar traducciones que fallaron en el primer intento.', 'accessitrans-aria')]
+        );
+        
+        add_settings_field(
+            'prioridad_traduccion',
+            __('Prioridad de traducción', 'accessitrans-aria'),
+            [$this, 'number_callback'],
+            'accessitrans-aria',
+            'accessitrans_aria_advanced',
+            ['label_for' => 'prioridad_traduccion', 'descripcion' => __('Prioridad de los filtros de traducción. Valores más altos se ejecutan más tarde (9999 por defecto).', 'accessitrans-aria')]
+        );
+        
+        add_settings_field(
             'modo_debug',
             __('Modo de depuración', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
@@ -333,7 +390,7 @@ class AccessiTrans_ARIA_Translator {
      * Callback para la sección de formatos
      */
     public function section_formats_callback() {
-        echo '<p>' . esc_html__('Configura los formatos de registro de cadenas para WPML. Elegir más de un formato duplicará las cadenas encontradas en WPML aunque puede aumentar la robustez.', 'accessitrans-aria') . '</p>';
+        echo '<p>' . esc_html__('Configura los formatos de registro de cadenas para WPML. Se recomienda mantener activados todos los formatos para mayor robustez.', 'accessitrans-aria') . '</p>';
     }
     
     /**
@@ -352,6 +409,18 @@ class AccessiTrans_ARIA_Translator {
         $checked = isset($this->options[$option_name]) && $this->options[$option_name] ? 'checked' : '';
         
         echo '<input type="checkbox" id="' . esc_attr($option_name) . '" name="accessitrans_aria_options[' . esc_attr($option_name) . ']" value="1" ' . $checked . ' />';
+        echo '<label for="' . esc_attr($option_name) . '">' . esc_html($descripcion) . '</label>';
+    }
+    
+    /**
+     * Callback para campos number
+     */
+    public function number_callback($args) {
+        $option_name = $args['label_for'];
+        $descripcion = $args['descripcion'];
+        $value = isset($this->options[$option_name]) ? intval($this->options[$option_name]) : 9999;
+        
+        echo '<input type="number" id="' . esc_attr($option_name) . '" name="accessitrans_aria_options[' . esc_attr($option_name) . ']" value="' . esc_attr($value) . '" min="1" max="100000" />';
         echo '<label for="' . esc_attr($option_name) . '">' . esc_html($descripcion) . '</label>';
     }
     
@@ -377,7 +446,9 @@ class AccessiTrans_ARIA_Translator {
                 'solo_admin' => isset($options['solo_admin']),
                 'formato_valor_directo' => isset($options['formato_valor_directo']),
                 'formato_prefijo' => isset($options['formato_prefijo']),
-                'formato_elemento_id' => isset($options['formato_elemento_id'])
+                'formato_elemento_id' => isset($options['formato_elemento_id']),
+                'reintentar_traducciones' => isset($options['reintentar_traducciones']),
+                'prioridad_traduccion' => isset($options['prioridad_traduccion']) ? intval($options['prioridad_traduccion']) : 9999
             ];
             
             update_option('accessitrans_aria_options', $sanitized_options);
@@ -387,11 +458,50 @@ class AccessiTrans_ARIA_Translator {
             echo '<div class="notice notice-success is-dismissible" role="alert" aria-live="polite"><p>' . esc_html__('Configuración guardada correctamente.', 'accessitrans-aria') . '</p></div>';
         }
         
-        // Contar cadenas registradas
-        $strings_count = 0;
+        // Script para la función de forzar actualización
+        ?>
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('#accessitrans-force-refresh').on('click', function(e) {
+                e.preventDefault();
+                
+                $('#accessitrans-force-refresh').prop('disabled', true);
+                $('#refresh-status').html('<?php echo esc_js(__('Procesando...', 'accessitrans-aria')); ?>');
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'accessitrans_force_refresh',
+                        nonce: '<?php echo wp_create_nonce('accessitrans-force-refresh'); ?>'
+                    },
+                    success: function(response) {
+                        $('#refresh-status').html(response.data);
+                        $('#accessitrans-force-refresh').prop('disabled', false);
+                    },
+                    error: function() {
+                        $('#refresh-status').html('<?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?>');
+                        $('#accessitrans-force-refresh').prop('disabled', false);
+                    }
+                });
+            });
+        });
+        </script>
+        <?php
+        
+        // Contar cadenas registradas por contexto
+        $strings_count = [
+            'direct' => 0,
+            'prefix' => 0,
+            'id' => 0
+        ];
+        
         if (function_exists('icl_get_string_translations')) {
             global $wpdb;
-            $strings_count = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings WHERE context = '{$this->context}'");
+            // Contar para cada contexto
+            $strings_count['direct'] = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings WHERE context = %s", $this->direct_context));
+            $strings_count['prefix'] = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings WHERE context = %s", $this->prefix_context));
+            $strings_count['id'] = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings WHERE context = %s", $this->id_context));
         }
         
         // Mostrar formulario de ajustes
@@ -403,7 +513,17 @@ class AccessiTrans_ARIA_Translator {
                 <p class="plugin-description"><?php _e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'accessitrans-aria'); ?></p>
                 
                 <div class="notice notice-info" role="region" aria-label="<?php esc_attr_e('Estado actual', 'accessitrans-aria'); ?>">
-                    <p><?php printf(__('Actualmente hay %d cadenas registradas en el contexto "Elementor ARIA Attributes".', 'accessitrans-aria'), $strings_count); ?></p>
+                    <p>
+                        <?php 
+                        // Mostrar conteo por tipo de registro
+                        printf(
+                            __('Cadenas registradas: %d directas, %d con prefijo, %d con ID.', 'accessitrans-aria'),
+                            $strings_count['direct'],
+                            $strings_count['prefix'],
+                            $strings_count['id']
+                        ); 
+                        ?>
+                    </p>
                 </div>
             </div>
             
@@ -416,7 +536,14 @@ class AccessiTrans_ARIA_Translator {
                 ?>
             </form>
             
-            <section class="card" aria-labelledby="instrucciones-uso-titulo">
+            <div class="card" style="max-width:800px;">
+                <h2><?php _e('Forzar actualización de traducciones', 'accessitrans-aria'); ?></h2>
+                <p><?php _e('Si encuentras problemas con las traducciones, puedes intentar forzar una actualización que limpiará las cachés internas.', 'accessitrans-aria'); ?></p>
+                <p><button id="accessitrans-force-refresh" class="button button-secondary"><?php _e('Forzar actualización', 'accessitrans-aria'); ?></button> <span id="refresh-status"></span></p>
+                <p><em><?php _e('Nota: Esta operación puede tardar unos segundos y puede generar carga en el servidor.', 'accessitrans-aria'); ?></em></p>
+            </div>
+            
+            <section class="card" aria-labelledby="instrucciones-uso-titulo" style="max-width:800px;">
                 <h2 id="instrucciones-uso-titulo"><?php _e('Instrucciones de uso', 'accessitrans-aria'); ?></h2>
                 <p><?php _e('Para agregar atributos ARIA en Elementor:', 'accessitrans-aria'); ?></p>
                 <ol>
@@ -428,12 +555,18 @@ class AccessiTrans_ARIA_Translator {
                 <p><?php _e('Para traducir los atributos:', 'accessitrans-aria'); ?></p>
                 <ol>
                     <li><?php _e('Vaya a WPML → Traducción de cadenas', 'accessitrans-aria'); ?></li>
-                    <li><?php _e('Filtre por el contexto "Elementor ARIA Attributes"', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Filtre por alguno de los contextos "AccessiTrans ARIA Attributes_XXX"', 'accessitrans-aria'); ?></li>
                     <li><?php _e('Traduzca las cadenas como lo haría normalmente en WPML', 'accessitrans-aria'); ?></li>
                 </ol>
+                <p><?php _e('Prácticas recomendadas:', 'accessitrans-aria'); ?></p>
+                <ul>
+                    <li><?php _e('Mantenga activados todos los formatos de registro para mayor robustez', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Si una traducción no aparece, pruebe a utilizar la función "Forzar actualización"', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Una vez capturadas todas las cadenas, puede desactivar los métodos de captura para mejorar el rendimiento', 'accessitrans-aria'); ?></li>
+                </ul>
             </section>
             
-            <section class="card" aria-labelledby="acerca-autor-titulo">
+            <section class="card" aria-labelledby="acerca-autor-titulo" style="max-width:800px;">
                 <h2 id="acerca-autor-titulo"><?php _e('Acerca del autor', 'accessitrans-aria'); ?></h2>
                 <p><?php _e('Desarrollado por', 'accessitrans-aria'); ?> Mario Germán Almonte Moreno:</p>
                 <ul>
@@ -441,7 +574,7 @@ class AccessiTrans_ARIA_Translator {
                     <li><?php _e('Certificado CPWA (CPACC y WAS)', 'accessitrans-aria'); ?></li>
                     <li><?php _e('Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)', 'accessitrans-aria'); ?></li>
                 </ul>
-                <p><strong><?php _e('Servicios Profesionales:', 'accessitrans-aria'); ?></strong></p>
+                <h3><?php _e('Servicios Profesionales:', 'accessitrans-aria'); ?></h3>
                 <ul>
                     <li><?php _e('Formación y consultoría en Accesibilidad Web y eLearning', 'accessitrans-aria'); ?></li>
                     <li><?php _e('Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)', 'accessitrans-aria'); ?></li>
@@ -451,6 +584,50 @@ class AccessiTrans_ARIA_Translator {
             </section>
         </div>
         <?php
+    }
+    
+    /**
+     * Callback para la acción AJAX de forzar actualización
+     */
+    public function force_refresh_callback() {
+        // Verificar nonce
+        check_ajax_referer('accessitrans-force-refresh', 'nonce');
+        
+        // Verificar permisos
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            return;
+        }
+        
+        // Limpiar cachés internas
+        $this->processed_values = [];
+        $this->failed_translations = [];
+        
+        // Limpiar caché de WPML si está disponible
+        if (function_exists('icl_cache_clear')) {
+            icl_cache_clear();
+        }
+        
+        if (function_exists('wpml_st_flush_caches')) {
+            wpml_st_flush_caches();
+        } elseif (function_exists('icl_st_update_string_actions')) {
+            icl_st_update_string_actions(true);
+        }
+        
+        // Limpiar caché de objetos de WordPress
+        wp_cache_flush();
+        
+        // Limpiar opciones transientes
+        global $wpdb;
+        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '%_transient_%'");
+        
+        // Registrar en el log
+        if ($this->options['modo_debug']) {
+            $this->log_debug("Forzada actualización manual de traducciones y caché");
+        }
+        
+        // Responder al AJAX
+        wp_send_json_success(__('Actualización completada correctamente.', 'accessitrans-aria'));
     }
     
     /**
@@ -749,19 +926,31 @@ class AccessiTrans_ARIA_Translator {
         
         // 1. Valor directamente como nombre
         if ($this->options['formato_valor_directo']) {
-            do_action('wpml_register_single_string', $this->context, $value, $value);
+            do_action('wpml_register_single_string', $this->direct_context, $value, $value);
+            
+            if ($this->options['modo_debug']) {
+                $this->log_debug("Registrado en contexto directo: \"{$value}\"");
+            }
         }
         
         // 2. Formato aria-atributo_valor
         if ($this->options['formato_prefijo']) {
             $prefixed_name = "{$attr}_{$value}";
-            do_action('wpml_register_single_string', $this->context, $prefixed_name, $value);
+            do_action('wpml_register_single_string', $this->prefix_context, $prefixed_name, $value);
+            
+            if ($this->options['modo_debug']) {
+                $this->log_debug("Registrado en contexto prefijo: \"{$prefixed_name}\"");
+            }
         }
         
         // 3. Formato con ID de elemento
         if ($this->options['formato_elemento_id'] && !empty($element_id)) {
             $id_format = "aria_{$element_id}_{$attr}";
-            do_action('wpml_register_single_string', $this->context, $id_format, $value);
+            do_action('wpml_register_single_string', $this->id_context, $id_format, $value);
+            
+            if ($this->options['modo_debug']) {
+                $this->log_debug("Registrado en contexto ID: \"{$id_format}\"");
+            }
         }
     }
     
@@ -796,8 +985,11 @@ class AccessiTrans_ARIA_Translator {
         // Guardar referencia al HTML completo
         $full_html = $content;
         
+        // Para depuración
+        $debug_translations = [];
+        
         // Traducir atributos
-        $result = preg_replace_callback($pattern, function($matches) use ($full_html) {
+        $result = preg_replace_callback($pattern, function($matches) use ($full_html, &$debug_translations) {
             $attr_name = $matches[1];
             $quote_type = $matches[2];
             $attr_value = $matches[3];
@@ -806,36 +998,90 @@ class AccessiTrans_ARIA_Translator {
                 return $matches[0];
             }
             
+            // Para depuración
+            if ($this->options['modo_debug']) {
+                $debug_translations[$attr_value] = [
+                    'attr' => $attr_name,
+                    'original' => $attr_value,
+                    'methods' => []
+                ];
+            }
+            
             // Estrategia de traducción en cascada
             $translated = $attr_value; // Valor por defecto si no se encuentra traducción
+            $translation_found = false;
             
             // 1. Intentar traducir directamente con el valor como clave
             if ($this->options['formato_valor_directo']) {
-                $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $attr_value);
+                $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->direct_context, $attr_value);
+                
+                if ($this->options['modo_debug']) {
+                    $debug_translations[$attr_value]['methods']['direct'] = ($temp !== $attr_value);
+                }
+                
                 if ($temp !== $attr_value) {
                     $translated = $temp;
+                    $translation_found = true;
                 }
             }
             
             // 2. Intentar con formato atributo_valor
-            if ($translated === $attr_value && $this->options['formato_prefijo']) {
+            if (!$translation_found && $this->options['formato_prefijo']) {
                 $prefixed_name = "{$attr_name}_{$attr_value}";
-                $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $prefixed_name);
+                $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->prefix_context, $prefixed_name);
+                
+                if ($this->options['modo_debug']) {
+                    $debug_translations[$attr_value]['methods']['prefix'] = ($temp !== $attr_value);
+                }
+                
                 if ($temp !== $attr_value) {
                     $translated = $temp;
+                    $translation_found = true;
                 }
             }
             
             // 3. Intentar con formato específico de ID de elemento
-            if ($translated === $attr_value && $this->options['formato_elemento_id']) {
+            if (!$translation_found && $this->options['formato_elemento_id']) {
                 $element_id = $this->extract_element_id_from_context($full_html, $matches[0]);
                 if (!empty($element_id)) {
                     $id_format = "aria_{$element_id}_{$attr_name}";
-                    $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->context, $id_format);
+                    $temp = apply_filters('wpml_translate_single_string', $attr_value, $this->id_context, $id_format);
+                    
+                    if ($this->options['modo_debug']) {
+                        $debug_translations[$attr_value]['methods']['id'] = ($temp !== $attr_value);
+                        $debug_translations[$attr_value]['element_id'] = $element_id;
+                    }
+                    
                     if ($temp !== $attr_value) {
                         $translated = $temp;
+                        $translation_found = true;
                     }
                 }
+            }
+            
+            // Si no se encontró traducción y está habilitado el reintento, agregar a la lista de fallidos
+            if (!$translation_found && $this->options['reintentar_traducciones']) {
+                $this->failed_translations[] = [
+                    'attr_name' => $attr_name,
+                    'attr_value' => $attr_value,
+                    'element_id' => $this->extract_element_id_from_context($full_html, $matches[0])
+                ];
+            }
+            
+            // Registrar resultados en el log
+            if ($this->options['modo_debug'] && isset($debug_translations[$attr_value])) {
+                $debug_info = $debug_translations[$attr_value];
+                $result_text = $translation_found ? "TRADUCIDO: {$attr_value} → {$translated}" : "NO TRADUCIDO: {$attr_value}";
+                $method_text = '';
+                
+                foreach ($debug_info['methods'] as $method => $success) {
+                    if ($success) {
+                        $method_text = "Usando método: {$method}";
+                        break;
+                    }
+                }
+                
+                $this->log_debug($result_text . ($method_text ? " ({$method_text})" : ''));
             }
             
             return " {$attr_name}={$quote_type}{$translated}{$quote_type}";
@@ -845,12 +1091,77 @@ class AccessiTrans_ARIA_Translator {
     }
     
     /**
+     * Reintenta las traducciones que fallaron en el primer intento
+     */
+    public function retry_failed_translations() {
+        if (empty($this->failed_translations)) {
+            return;
+        }
+        
+        if ($this->options['modo_debug']) {
+            $this->log_debug("Reintentando " . count($this->failed_translations) . " traducciones fallidas");
+        }
+        
+        // Intentar nuevamente las traducciones fallidas
+        foreach ($this->failed_translations as $item) {
+            $attr_name = $item['attr_name'];
+            $attr_value = $item['attr_value'];
+            $element_id = $item['element_id'];
+            
+            // Intentar todos los métodos nuevamente
+            $success = false;
+            
+            // 1. Directo
+            if ($this->options['formato_valor_directo']) {
+                $translated = apply_filters('wpml_translate_single_string', $attr_value, $this->direct_context, $attr_value);
+                if ($translated !== $attr_value) {
+                    $success = true;
+                    if ($this->options['modo_debug']) {
+                        $this->log_debug("Reintento exitoso (directo): {$attr_value} → {$translated}");
+                    }
+                }
+            }
+            
+            // 2. Prefijo
+            if (!$success && $this->options['formato_prefijo']) {
+                $prefixed_name = "{$attr_name}_{$attr_value}";
+                $translated = apply_filters('wpml_translate_single_string', $attr_value, $this->prefix_context, $prefixed_name);
+                if ($translated !== $attr_value) {
+                    $success = true;
+                    if ($this->options['modo_debug']) {
+                        $this->log_debug("Reintento exitoso (prefijo): {$attr_value} → {$translated}");
+                    }
+                }
+            }
+            
+            // 3. ID
+            if (!$success && $this->options['formato_elemento_id'] && !empty($element_id)) {
+                $id_format = "aria_{$element_id}_{$attr_name}";
+                $translated = apply_filters('wpml_translate_single_string', $attr_value, $this->id_context, $id_format);
+                if ($translated !== $attr_value) {
+                    $success = true;
+                    if ($this->options['modo_debug']) {
+                        $this->log_debug("Reintento exitoso (ID): {$attr_value} → {$translated}");
+                    }
+                }
+            }
+            
+            if (!$success && $this->options['modo_debug']) {
+                $this->log_debug("Reintento fallido para: {$attr_value}");
+            }
+        }
+        
+        // Limpiar la lista de traducciones fallidas
+        $this->failed_translations = [];
+    }
+    
+    /**
      * Añade información en la lista de plugins
      */
     public function after_plugin_row($plugin_file, $plugin_data, $status) {
         if (plugin_basename(__FILE__) == $plugin_file) {
             echo '<tr class="plugin-update-tr active"><td colspan="4" class="plugin-update colspanchange"><div class="notice inline notice-info" style="margin:0; padding:5px;">';
-            echo '<strong>' . __('Compatibilidad verificada:', 'accessitrans-aria') . '</strong> WordPress 6.7, Elementor 3.28.3, WPML Multilingual CMS 4.7.3 y WPML String Translation 3.3.2.';
+            echo '<strong>' . __('Compatibilidad verificada:', 'accessitrans-aria') . '</strong> WordPress 6.7-6.8, Elementor 3.28.3, WPML Multilingual CMS 4.7.3, WPML String Translation 3.3.2.';
             echo '</div></td></tr>';
         }
     }

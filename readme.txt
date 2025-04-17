@@ -2,8 +2,8 @@
 Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
-Tested up to: 6.7
-Stable tag: 0.1.0
+Tested up to: 6.8
+Stable tag: 0.2.0
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -21,6 +21,9 @@ The AccessiTrans - ARIA Translator for WPML & Elementor plugin facilitates the t
 * Compatible with all Elementor elements and templates
 * Multiple capture methods to ensure comprehensive detection
 * Configurable translation registration formats
+* Translation retry mechanism for failed translations
+* Force refresh function to clear all caches
+* Configurable translation priority
 * Debug mode for troubleshooting
 * Performance optimization settings
 * Internationalization support
@@ -52,8 +55,12 @@ The plugin supports multiple formats for registering strings for translation:
 2. **Prefix Format**: Registers with the format `aria-attribute_value`
 3. **Element ID Format**: Registers with a format that includes the element ID
 
+**Important:** It is recommended to enable all three formats for maximum robustness.
+
 = Advanced Settings =
 
+* **Retry Failed Translations**: Automatically retries translations that failed on first attempt
+* **Translation Priority**: Configure the priority of translation filters
 * **Debug Mode**: Enables detailed event logging
 * **Admin-Only Capture**: Limits resource-intensive capture methods to admin users
 
@@ -68,7 +75,7 @@ Works with all types of Elementor content:
 * Popups and other dynamic elements
 
 **Tested with:**
-* WordPress 6.7
+* WordPress 6.8
 * Elementor 3.28.3
 * WPML Multilingual CMS 4.7.3
 * WPML String Translation 3.3.2
@@ -106,6 +113,10 @@ The plugin includes several performance optimization options. By default, the mo
 = Can I use this plugin with Elementor Free? =
 
 Yes, the plugin works with both Elementor Free and Elementor Pro.
+
+= What should I do if translations aren't working correctly? =
+
+Try using the "Force Refresh" button in the plugin settings. This will clear all caches and reinitialize the translation system. Also, make sure you have all three registration formats enabled for maximum compatibility.
 
 = How do I know if the ARIA attributes are being translated correctly? =
 
@@ -159,18 +170,25 @@ This will generate the corresponding HTML attributes in the frontend:
 
 1. Once you've added the attributes, save the page or template
 2. Go to WPML → String Translation
-3. Filter by the context "Elementor ARIA Attributes"
+3. Filter by one of the "AccessiTrans ARIA Attributes_XXX" contexts
 4. Translate the strings as you would with any other text in WPML
 
 = Best practices for optimal performance =
 
 For the best experience and website performance, follow these recommendations:
 
-1. **Only browse your site in the primary language** while generating strings for translation. This prevents the plugin from registering strings that may have already been translated through other systems.
+1. **Enable all three registration formats** for maximum robustness:
+   * Direct format
+   * Prefix format
+   * Element ID format
 
-2. **Disable capture methods after initial setup**:
-   * Once you've captured all ARIA attributes for translation, we strongly recommend disabling all capture methods and registration formats in the plugin settings
-   * This significantly improves site performance and prevents additional strings from being registered in WPML
+2. **Use the Force Refresh function** when translations aren't appearing as expected
+
+3. **Only browse your site in the primary language** while generating strings for translation. This prevents the plugin from registering strings that may have already been translated through other systems.
+
+4. **Disable capture methods after initial setup**:
+   * Once you've captured all ARIA attributes for translation, we recommend disabling all capture methods in the plugin settings
+   * This improves site performance and prevents additional strings from being registered in WPML
    * Re-enable the capture methods temporarily when you make changes to your site that include new ARIA attributes
 
 = Practical examples =
@@ -190,6 +208,16 @@ For the best experience and website performance, follow these recommendations:
 
 == Changelog ==
 
+= 0.2.0 =
+* New feature: Multiple translation registration formats with separate contexts
+* New feature: Translation retry mechanism for failed translations
+* New feature: Force refresh button to clear all caches and update translations
+* New feature: Configurable translation priority
+* Enhanced debugging information with detailed logging of translation methods
+* Improved robustness with cascading translation fallback methods
+* Improved accessibility of the configuration page
+* Updated compatibility to WordPress 6.8
+
 = 0.1.0 =
 * Improved accessibility of the configuration page:
   * Enhanced semantic structure with proper ARIA landmarks
@@ -202,7 +230,6 @@ For the best experience and website performance, follow these recommendations:
 = 0.0.0 =
 * Plugin renamed from "Elementor ARIA Translator for WPML" to "AccessiTrans - ARIA Translator for WPML & Elementor"
 * Updated plugin slug and internal references
-* IMPORTANT: Maintained compatibility with existing translations by preserving the "Elementor ARIA Attributes" context in WPML
 
 = 2.0.2 =
 * Added internationalization support
@@ -248,11 +275,14 @@ For the best experience and website performance, follow these recommendations:
 
 == Upgrade Notice ==
 
+= 0.2.0 =
+This version introduces multiple translation formats with separate contexts, a translation retry mechanism, a force refresh function, and improved robustness when translating ARIA attributes.
+
 = 0.1.0 =
 This update improves the accessibility of the plugin's configuration page with better semantic structure, ARIA landmarks, and screen reader support.
 
 = 0.0.0 =
-This update includes a name change to "AccessiTrans - ARIA Translator for WPML & Elementor" and maintains compatibility with existing translations.
+This update includes a name change to "AccessiTrans - ARIA Translator for WPML & Elementor".
 
 = 2.0.2 =
 This update adds internationalization support, preparing the plugin for translation into multiple languages.
@@ -261,7 +291,7 @@ This update adds internationalization support, preparing the plugin for translat
 This update includes performance improvements and fixes for translation registration in complex templates.
 
 = 2.0.0 =
-Major update with multiple capture methods, configurable translation formats, advanced settings, and improved compatibility with all Elementor content types.
+This update adds multiple capture methods, configurable translation formats, advanced settings, and improved compatibility with all Elementor content types.
 
 == Author ==
 

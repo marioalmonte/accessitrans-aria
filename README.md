@@ -1,9 +1,9 @@
 # AccessiTrans - ARIA Translator for WPML & Elementor
 
-[![WordPress Compatible](https://img.shields.io/badge/WordPress-6.7-green.svg)](https://wordpress.org/)
+[![WordPress Compatible](https://img.shields.io/badge/WordPress-6.8-green.svg)](https://wordpress.org/)
 [![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.3-red.svg)](https://elementor.com/)
 [![WPML Compatible](https://img.shields.io/badge/WPML-4.7.3-blue.svg)](https://wpml.org/)
-[![Version](https://img.shields.io/badge/Version-0.0.0-purple.svg)]()
+[![Version](https://img.shields.io/badge/Version-0.2.0-purple.svg)]()
 
 WordPress plugin that allows translation of ARIA attributes in Elementor sites with WPML, improving accessibility in multilingual environments.
 
@@ -40,6 +40,15 @@ The plugin supports multiple formats for registering strings for translation:
 2. **Prefix Format**: Registers with the format `aria-attribute_value`
 3. **Element ID Format**: Registers with a format that includes the element ID
 
+**Important:** It is recommended to keep all three formats enabled for maximum robustness. Each format provides a different fallback method for accessing translations.
+
+### Additional Features
+
+* **Translation Retry Mechanism**: Automatically retries failed translations to improve success rate
+* **Force Refresh Function**: Button to clear all caches and force update translations
+* **Configurable Translation Priority**: Adjust the priority of translation filters
+* **Debug Mode**: Detailed logging for troubleshooting
+
 ### Compatibility
 
 Works with all types of Elementor content:
@@ -51,7 +60,7 @@ Works with all types of Elementor content:
 * Popups and other dynamic elements
 
 **Tested with:**
-* WordPress 6.7
+* WordPress 6.8
 * Elementor 3.28.3
 * WPML Multilingual CMS 4.7.3
 * WPML String Translation 3.3.2
@@ -97,19 +106,29 @@ This will generate the corresponding HTML attributes in the frontend:
 
 1. Once you've added the attributes, save the page or template
 2. Go to WPML → String Translation
-3. Filter by the context "Elementor ARIA Attributes"
+3. Filter by one of the "AccessiTrans ARIA Attributes_XXX" contexts
 4. Translate the strings as you would with any other text in WPML
 
-**Note:** Each text might appear multiple times with different identifiers. This is normal and part of the mechanism that ensures translations work in all content types and capture methods.
+**Note:** Each text might appear in multiple contexts with different identifiers. This is normal and part of the mechanism that ensures translations work in all content types and capture methods.
 
 ## Best Practices
 
 For optimal performance and efficiency, follow these recommended practices:
 
-1. **Only browse the site in the primary language** while generating strings for translation. This prevents the plugin from registering strings that may have already been translated through other systems.
+1. **Enable all three registration formats**: This provides maximum robustness by offering multiple fallback methods
+   * Direct format
+   * Prefix format
+   * Element ID format
 
-2. **Disable capture methods after initial setup**:
-   * Once you've captured all ARIA attributes for translation, consider disabling all capture methods and registration formats
+2. **Use the "Force Refresh" function when needed**:
+   * If a translation doesn't appear as expected
+   * After making significant changes to your site
+   * When adding new ARIA attributes to existing elements
+
+3. **Only browse the site in the primary language** while generating strings for translation. This prevents the plugin from registering strings that may have already been translated through other systems.
+
+4. **Disable capture methods after initial setup**:
+   * Once you've captured all ARIA attributes for translation, consider disabling all capture methods
    * This will improve site performance and prevent additional strings from being registered in WPML
    * Re-enable the capture methods temporarily when you make changes to your site that include new ARIA attributes
 
@@ -152,6 +171,8 @@ The plugin comes with a settings page that allows you to configure the capture m
 * **Element ID Format**: Register with format including element ID
 
 ### Advanced Settings
+* **Retry Failed Translations**: Attempts to reapply translations that failed on first try
+* **Translation Priority**: Priority of translation filters (higher values execute later)
 * **Debug Mode**: Enables detailed event logging (stored in wp-content/debug-aria-wpml.log)
 * **Capture for Admins Only**: Only processes full capture when an admin is logged in
 
