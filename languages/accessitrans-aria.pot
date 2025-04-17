@@ -1,0 +1,228 @@
+# Copyright (C) 2025 Mario Germán Almonte Moreno
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: AccessiTrans - ARIA Translator for WPML & Elementor 0.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/accessitrans-aria\n"
+"POT-Creation-Date: 2025-04-15T00:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: WP-CLI 2.8.1\n"
+"X-Domain: accessitrans-aria\n"
+
+#: accessitrans-aria.php:65
+msgid "AccessiTrans requiere que Elementor y WPML estén instalados y activados."
+msgstr ""
+
+#: accessitrans-aria.php:76
+msgid "Configuración de"
+msgstr ""
+
+#: accessitrans-aria.php:77
+msgid "AccessiTrans"
+msgstr ""
+
+#: accessitrans-aria.php:88
+msgid "Configuración de métodos de captura"
+msgstr ""
+
+#: accessitrans-aria.php:96
+msgid "Captura total de HTML"
+msgstr ""
+
+#: accessitrans-aria.php:98
+msgid "Captura todo el HTML de la página. Altamente efectivo pero puede afectar al rendimiento."
+msgstr ""
+
+#: accessitrans-aria.php:104
+msgid "Filtro de contenido de Elementor"
+msgstr ""
+
+#: accessitrans-aria.php:106
+msgid "Procesa el contenido generado por Elementor."
+msgstr ""
+
+#: accessitrans-aria.php:112
+msgid "Procesar templates de Elementor"
+msgstr ""
+
+#: accessitrans-aria.php:114
+msgid "Procesa los datos de templates de Elementor."
+msgstr ""
+
+#: accessitrans-aria.php:120
+msgid "Procesar elementos individuales"
+msgstr ""
+
+#: accessitrans-aria.php:122
+msgid "Procesa cada widget y elemento de Elementor individualmente."
+msgstr ""
+
+#: accessitrans-aria.php:128
+msgid "Configuración de formatos de registro"
+msgstr ""
+
+#: accessitrans-aria.php:136
+msgid "Formato directo"
+msgstr ""
+
+#: accessitrans-aria.php:138
+msgid "Registrar el valor literal como nombre."
+msgstr ""
+
+#: accessitrans-aria.php:144
+msgid "Formato con prefijo"
+msgstr ""
+
+#: accessitrans-aria.php:146
+msgid "Registrar con formato aria-atributo_valor."
+msgstr ""
+
+#: accessitrans-aria.php:152
+msgid "Formato con ID de elemento"
+msgstr ""
+
+#: accessitrans-aria.php:154
+msgid "Registrar con formato incluyendo ID del elemento."
+msgstr ""
+
+#: accessitrans-aria.php:160
+msgid "Configuración avanzada"
+msgstr ""
+
+#: accessitrans-aria.php:168
+msgid "Modo de depuración"
+msgstr ""
+
+#: accessitrans-aria.php:170
+msgid "Activa el registro detallado de eventos. Se almacena en wp-content/debug-aria-wpml.log"
+msgstr ""
+
+#: accessitrans-aria.php:176
+msgid "Captura solo para administradores"
+msgstr ""
+
+#: accessitrans-aria.php:178
+msgid "Solo procesa la captura total cuando un administrador está conectado."
+msgstr ""
+
+#: accessitrans-aria.php:186
+msgid "Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta."
+msgstr ""
+
+#: accessitrans-aria.php:193
+msgid "Configura los formatos de registro de cadenas para WPML. Elegir más de un formato duplicará las cadenas encontradas en WPML aunque puede aumentar la robustez."
+msgstr ""
+
+#: accessitrans-aria.php:200
+msgid "Configuración avanzada para rendimiento y depuración."
+msgstr ""
+
+#: accessitrans-aria.php:232
+msgid "Configuración guardada correctamente."
+msgstr ""
+
+#: accessitrans-aria.php:246
+msgid "Estado actual"
+msgstr ""
+
+#: accessitrans-aria.php:247
+msgid "Actualmente hay %d cadenas registradas en el contexto \"Elementor ARIA Attributes\"."
+msgstr ""
+
+#: accessitrans-aria.php:252
+msgid "Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML."
+msgstr ""
+
+#: accessitrans-aria.php:266
+msgid "Instrucciones de uso"
+msgstr ""
+
+#: accessitrans-aria.php:267
+msgid "Para agregar atributos ARIA en Elementor:"
+msgstr ""
+
+#: accessitrans-aria.php:269
+msgid "Edite cualquier elemento en Elementor"
+msgstr ""
+
+#: accessitrans-aria.php:270
+msgid "Vaya a la pestaña \"Avanzado\""
+msgstr ""
+
+#: accessitrans-aria.php:271
+msgid "Encuentre la sección \"Atributos personalizados\""
+msgstr ""
+
+#: accessitrans-aria.php:272
+msgid "Añada los atributos ARIA que desee traducir (ej: aria-label|Texto a traducir)"
+msgstr ""
+
+#: accessitrans-aria.php:274
+msgid "Para traducir los atributos:"
+msgstr ""
+
+#: accessitrans-aria.php:276
+msgid "Vaya a WPML → Traducción de cadenas"
+msgstr ""
+
+#: accessitrans-aria.php:277
+msgid "Filtre por el contexto \"Elementor ARIA Attributes\""
+msgstr ""
+
+#: accessitrans-aria.php:278
+msgid "Traduzca las cadenas como lo haría normalmente en WPML"
+msgstr ""
+
+#: accessitrans-aria.php:282
+msgid "Acerca del autor"
+msgstr ""
+
+#: accessitrans-aria.php:283
+msgid "Desarrollado por"
+msgstr ""
+
+#: accessitrans-aria.php:285
+msgid "Miembro de IAAP (International Association of Accessibility Professionals)"
+msgstr ""
+
+#: accessitrans-aria.php:286
+msgid "Certificado CPWA (CPACC y WAS)"
+msgstr ""
+
+#: accessitrans-aria.php:287
+msgid "Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)"
+msgstr ""
+
+#: accessitrans-aria.php:289
+msgid "Servicios Profesionales:"
+msgstr ""
+
+#: accessitrans-aria.php:291
+msgid "Formación y consultoría en Accesibilidad Web y eLearning"
+msgstr ""
+
+#: accessitrans-aria.php:292
+msgid "Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)"
+msgstr ""
+
+#: accessitrans-aria.php:294
+msgid "Visita mi perfil de LinkedIn"
+msgstr ""
+
+#: accessitrans-aria.php:295
+msgid "Sitio web y blog"
+msgstr ""
+
+#: accessitrans-aria.php:308
+msgid "Compatibilidad verificada:"
+msgstr ""
+
+#: accessitrans-aria.php:405
+msgid "Settings"
+msgstr ""
