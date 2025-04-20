@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 0.2.3
+Stable tag: 0.2.3r
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -196,6 +196,9 @@ For the best experience and website performance, follow these recommendations:
 * Attribute: `aria-description|Navigate through product images`
 
 == Changelog ==
+
+= 0.2.3 =
+* Restructuring of the plugin's file system
 
 = 0.2.3 =
 * Added persistent translation cache system to improve performance
