@@ -32,6 +32,12 @@ class AccessiTrans_Admin {
         // Añadir enlaces en la página de plugins
         add_filter('plugin_action_links_' . plugin_basename(ACCESSITRANS_PATH . 'accessitrans-aria.php'), [$this, 'add_action_links']);
         add_action('after_plugin_row', [$this, 'after_plugin_row'], 10, 3);
+        
+        // Agregar estilos para la interfaz de administración
+        add_action('admin_head-settings_page_accessitrans-aria', [$this, 'add_admin_styles']);
+        
+        // Nueva función AJAX para toggle
+        add_action('wp_ajax_accessitrans_toggle_scan', [$this, 'toggle_scan_callback']);
     }
     
     /**
@@ -53,6 +59,30 @@ class AccessiTrans_Admin {
      */
     public function register_settings() {
         register_setting('accessitrans_aria', 'accessitrans_aria_options');
+        
+        // Esta sección no se usa directamente en el render, está configurada 
+        // solo para mantener compatibilidad con la API de WordPress
+        
+        // Nueva sección general para el interruptor principal
+        add_settings_section(
+            'accessitrans_aria_general',
+            __('Configuración general', 'accessitrans-aria'),
+            [$this, 'section_general_callback'],
+            'accessitrans-aria'
+        );
+        
+        // Nuevo campo para el interruptor principal de escaneo
+        add_settings_field(
+            'permitir_escaneo',
+            __('Permitir escaneo de nuevas cadenas', 'accessitrans-aria'),
+            [$this, 'toggle_callback'],
+            'accessitrans-aria',
+            'accessitrans_aria_general',
+            [
+                'label_for' => 'permitir_escaneo', 
+                'descripcion' => __('Activa la captura de nuevas cadenas ARIA. Desactívalo después de capturar todas las cadenas para mejorar el rendimiento.', 'accessitrans-aria')
+            ]
+        );
         
         add_settings_section(
             'accessitrans_aria_main',
@@ -133,6 +163,48 @@ class AccessiTrans_Admin {
     }
     
     /**
+     * Callback para la acción AJAX de activar/desactivar escaneo
+     */
+    public function toggle_scan_callback() {
+        // Verificar nonce
+        check_ajax_referer('accessitrans-toggle-scan', 'nonce');
+        
+        // Verificar permisos
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            return;
+        }
+        
+        $enabled = isset($_POST['enabled']) && (int)$_POST['enabled'] === 1;
+        
+        // Obtener opciones actuales
+        $options = get_option('accessitrans_aria_options', []);
+        
+        // Actualizar la opción de escaneo
+        $options['permitir_escaneo'] = $enabled;
+        
+        // Guardar opciones
+        update_option('accessitrans_aria_options', $options);
+        
+        // Actualizar opciones en el objeto core
+        $this->core->options = $options;
+        
+        // Mensaje para el usuario
+        if ($enabled) {
+            wp_send_json_success(__('Escaneo de cadenas activado. Los cambios se han guardado.', 'accessitrans-aria'));
+        } else {
+            wp_send_json_success(__('Escaneo de cadenas desactivado. Los cambios se han guardado.', 'accessitrans-aria'));
+        }
+    }
+    
+    /**
+     * Callback para la sección general
+     */
+    public function section_general_callback() {
+        echo '<p>' . esc_html__('Configuración general del plugin.', 'accessitrans-aria') . '</p>';
+    }
+    
+    /**
      * Callback para la sección principal de ajustes
      */
     public function section_callback() {
@@ -147,19 +219,364 @@ class AccessiTrans_Admin {
     }
     
     /**
+     * Agrega estilos CSS para la interfaz de administración
+     */
+    public function add_admin_styles() {
+        ?>
+        <style>
+            /* Estilos generales */
+            .accessitrans-admin-container {
+                max-width: 800px !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            .accessitrans-admin-container .card {
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                padding: 15px 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Estilos para fieldsets y leyendas */
+            .accessitrans-admin-container fieldset {
+                border: 1px solid #ddd;
+                padding: 15px;
+                margin-bottom: 20px;
+                border-radius: 4px;
+                background-color: #fff;
+                width: 100% !important;
+                box-sizing: border-box !important;
+                min-width: 0 !important; /* Evitar que se desborde */
+            }
+            
+            .accessitrans-admin-container legend {
+                background-color: #fff;
+                padding: 0 10px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+            
+            /* Estilo para campos de formulario */
+            .accessitrans-field {
+                margin-bottom: 12px;
+                padding: 8px 0;
+                width: 100%;
+            }
+            
+            .accessitrans-field.indent {
+                margin-left: 20px;
+                position: relative;
+            }
+            
+            .accessitrans-field.indent::before {
+                content: "";
+                position: absolute;
+                left: -12px;
+                top: 0;
+                height: 100%;
+                border-left: 2px solid #ddd;
+            }
+            
+            .accessitrans-field label {
+                display: inline-block;
+                margin-left: 8px;
+                vertical-align: middle;
+            }
+            
+            /* Estilos para campos desactivados */
+            .accessitrans-field.disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+            
+            .accessitrans-field.disabled input,
+            .accessitrans-field.disabled select,
+            .accessitrans-field.disabled textarea {
+                pointer-events: none;
+            }
+            
+            /* Estilos para el interruptor tipo toggle */
+            .accessitrans-switch {
+                position: relative;
+                display: inline-block;
+                width: 60px;
+                height: 34px;
+                vertical-align: middle;
+            }
+            
+            .accessitrans-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            
+            .accessitrans-slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: #ccc;
+                transition: .4s;
+            }
+            
+            .accessitrans-slider:before {
+                position: absolute;
+                content: "";
+                height: 26px;
+                width: 26px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+            }
+            
+            input:checked + .accessitrans-slider {
+                background-color: #2196F3;
+            }
+            
+            input:focus + .accessitrans-slider {
+                box-shadow: 0 0 3px #2196F3;
+                outline: 2px solid #2196F3;
+            }
+            
+            input:checked + .accessitrans-slider:before {
+                transform: translateX(26px);
+            }
+            
+            .accessitrans-slider.round {
+                border-radius: 34px;
+            }
+            
+            .accessitrans-slider.round:before {
+                border-radius: 50%;
+            }
+            
+            /* Estilos para status en tools */
+            .tool-section {
+                margin-bottom: 20px;
+                padding-bottom: 20px;
+                border-bottom: 1px solid #eee;
+                width: 100%;
+            }
+            
+            .tool-section:last-child {
+                border-bottom: none;
+            }
+            
+            /* Estilo específico para el diagnóstico para mantener el tamaño limitado del campo */
+            .diagnostics-form {
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                flex-wrap: nowrap;
+                gap: 10px;
+                width: 80%;
+            }
+            
+            .diagnostics-form label {
+                flex: 0 0 auto;
+                white-space: nowrap;
+            }
+            
+            .diagnostics-form input[type="text"] {
+                flex: 1 1 auto;
+                min-width: 200px;
+            }
+            
+            .diagnostics-form button {
+                flex: 0 0 auto;
+            }
+            
+            /* En pantallas pequeñas, permitir el wrapping */
+            @media (max-width: 782px) {
+                .diagnostics-form {
+                    flex-wrap: wrap;
+                }
+                
+                .diagnostics-form input[type="text"] {
+                    flex: 1 1 100%;
+                }
+            }
+            
+            .diagnostic-results, 
+            .health-results {
+                margin-top: 15px;
+                padding: 10px;
+                background: #f8f8f8;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                max-height: 300px;
+                overflow-y: auto;
+                display: none;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .diagnostic-results.active, 
+            .health-results.active {
+                display: block;
+            }
+            
+            .diagnostic-item {
+                margin-bottom: 5px;
+                padding: 5px;
+                border-bottom: 1px dotted #eee;
+            }
+            
+            .diagnostic-success {
+                color: green;
+            }
+            
+            .diagnostic-error {
+                color: #d63638;
+            }
+            
+            #refresh-status {
+                margin-left: 10px;
+                display: inline-block;
+            }
+            
+            .screen-reader-text {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                white-space: nowrap;
+                border: 0;
+            }
+            
+            /* Estilos para avisos informativos */
+            .accessitrans-notice {
+                background-color: #f0f6fc;
+                border-left: 4px solid #72aee6;
+                padding: 10px 12px;
+                margin: 10px 0;
+                border-radius: 2px;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .accessitrans-notice strong {
+                display: block;
+                margin-bottom: 5px;
+            }
+            
+            /* Estilos específicos para WordPress admin */
+            .wrap.accessitrans-admin-container {
+                margin-right: 0 !important;
+                margin-left: 0 !important;
+            }
+            
+            /* Forzar ancho completo para todos los elementos internos */
+            .accessitrans-admin-container * {
+                max-width: 100% !important;
+            }
+        </style>
+        <?php
+    }
+    
+    /**
      * Callback para campos checkbox
      */
     public function checkbox_callback($args) {
         $option_name = $args['label_for'];
         $descripcion = $args['descripcion'];
         $checked = isset($this->core->options[$option_name]) && $this->core->options[$option_name] ? 'checked' : '';
+        $disabled = '';
+        $disabled_attr = '';
         
-        echo '<input type="checkbox" id="' . esc_attr($option_name) . '" name="accessitrans_aria_options[' . esc_attr($option_name) . ']" value="1" ' . $checked . ' />';
+        // Desactivar los controles dependientes si el escaneo está desactivado
+        if (in_array($option_name, ['captura_total', 'captura_elementor', 'procesar_templates', 'procesar_elementos']) && 
+            isset($this->core->options['permitir_escaneo']) && 
+            !$this->core->options['permitir_escaneo']) {
+            $disabled = 'disabled';
+            $disabled_attr = 'disabled aria-disabled="true"';
+        }
+        
+        echo '<div class="accessitrans-field ' . $disabled . '">';
+        echo '<input type="checkbox" id="' . esc_attr($option_name) . '" name="accessitrans_aria_options[' . esc_attr($option_name) . ']" value="1" ' . $checked . ' ' . $disabled_attr . ' />';
         echo '<label for="' . esc_attr($option_name) . '">' . esc_html($descripcion) . '</label>';
+        echo '</div>';
     }
     
     /**
-     * Renderiza la página de ajustes
+     * Callback para campos toggle (interruptor on/off)
+     */
+    public function toggle_callback($args) {
+        $option_name = $args['label_for'];
+        $descripcion = $args['descripcion'];
+        $checked = isset($this->core->options[$option_name]) && $this->core->options[$option_name] ? 'checked' : '';
+        
+        echo '<div class="accessitrans-field">';
+        echo '<label class="accessitrans-switch" for="' . esc_attr($option_name) . '">';
+        echo '<input type="checkbox" id="' . esc_attr($option_name) . '" name="accessitrans_aria_options[' . esc_attr($option_name) . ']" value="1" ' . $checked . ' aria-describedby="desc-' . esc_attr($option_name) . '" role="switch" />';
+        echo '<span class="accessitrans-slider round"></span>';
+        echo '</label>';
+        echo '<p class="description" id="desc-' . esc_attr($option_name) . '">' . esc_html($descripcion) . '</p>';
+        
+        // Mensaje informativo destacado sobre la desactivación del escaneo
+        echo '<div class="accessitrans-notice">';
+        echo '<strong>' . esc_html__('Consejo de rendimiento:', 'accessitrans-aria') . '</strong>';
+        echo esc_html__('Una vez hayas capturado todas las cadenas ARIA de tu sitio, puedes desactivar el escaneo para mejorar el rendimiento. Las traducciones seguirán funcionando.', 'accessitrans-aria');
+        echo '</div>';
+        
+        echo '</div>';
+        
+        // Agregar JavaScript para controlar los campos dependientes
+        echo '<script>
+            jQuery(document).ready(function($) {
+                // Función para actualizar estados de campos dependientes
+                function updateDependentFields() {
+                    var enabled = $("#' . esc_attr($option_name) . '").is(":checked");
+                    
+                    // Obtener todos los campos de métodos de captura
+                    $(".accessitrans-methods-fieldset input[type=checkbox]").prop("disabled", !enabled);
+                    $(".accessitrans-methods-fieldset .accessitrans-field").toggleClass("disabled", !enabled);
+                    
+                    // Actualizar atributos ARIA
+                    if (!enabled) {
+                        $(".accessitrans-methods-fieldset input[type=checkbox]").attr("aria-disabled", "true");
+                        $(".accessitrans-methods-fieldset").attr("aria-describedby", "scan-disabled-message");
+                    } else {
+                        $(".accessitrans-methods-fieldset input[type=checkbox]").removeAttr("aria-disabled");
+                        $(".accessitrans-methods-fieldset").removeAttr("aria-describedby");
+                    }
+                    
+                    // Anunciar cambio para lectores de pantalla
+                    if (window.accessitrans_announce) {
+                        clearTimeout(window.accessitrans_announce);
+                    }
+                    
+                    window.accessitrans_announce = setTimeout(function() {
+                        var message = enabled ? 
+                            "' . esc_js(__('Escaneo activado. Los métodos de captura están disponibles.', 'accessitrans-aria')) . '" : 
+                            "' . esc_js(__('Escaneo desactivado. Los métodos de captura están deshabilitados.', 'accessitrans-aria')) . '";
+                            
+                        $("#accessitrans-aria-live").text(message);
+                    }, 100);
+                }
+                
+                // Inicializar
+                updateDependentFields();
+                
+                // Actualizar cuando cambie
+                $("#' . esc_attr($option_name) . '").on("change", updateDependentFields);
+            });
+        </script>';
+    }
+    
+    /**
+     * Renderiza la página de ajustes usando estructura semántica con fieldset/legend
      */
     public function settings_page() {
         if (!current_user_can('manage_options')) {
@@ -171,6 +588,25 @@ class AccessiTrans_Admin {
             check_admin_referer('accessitrans_aria_settings');
             
             $options = isset($_POST['accessitrans_aria_options']) ? $_POST['accessitrans_aria_options'] : [];
+            
+            // Verificar el campo oculto que refleja el estado del toggle AJAX
+            if (isset($_POST['hidden_permitir_escaneo'])) {
+                $permitir_escaneo = ($_POST['hidden_permitir_escaneo'] == '1');
+                
+                // Si el escaneo está desactivado, preservar los valores actuales de los métodos de captura
+                if (!$permitir_escaneo) {
+                    // Recuperar los valores actuales de los métodos de captura
+                    $options['captura_total'] = $this->core->options['captura_total'] ?? false;
+                    $options['captura_elementor'] = $this->core->options['captura_elementor'] ?? false;
+                    $options['procesar_templates'] = $this->core->options['procesar_templates'] ?? false;
+                    $options['procesar_elementos'] = $this->core->options['procesar_elementos'] ?? false;
+                }
+                
+                // Asignar el valor correcto a permitir_escaneo
+                $options['permitir_escaneo'] = $permitir_escaneo;
+            }
+            
+            // Opciones sanitizadas
             $sanitized_options = [
                 'captura_total' => isset($options['captura_total']),
                 'captura_elementor' => isset($options['captura_elementor']),
@@ -178,7 +614,8 @@ class AccessiTrans_Admin {
                 'procesar_elementos' => isset($options['procesar_elementos']),
                 'modo_debug' => isset($options['modo_debug']),
                 'solo_admin' => isset($options['solo_admin']),
-                'captura_en_idioma_principal' => isset($options['captura_en_idioma_principal'])
+                'captura_en_idioma_principal' => isset($options['captura_en_idioma_principal']),
+                'permitir_escaneo' => isset($options['permitir_escaneo'])
             ];
             
             update_option('accessitrans_aria_options', $sanitized_options);
@@ -201,36 +638,113 @@ class AccessiTrans_Admin {
             ));
         }
         
-        // Mostrar formulario de ajustes
+        // Área para anuncios ARIA live
+        echo '<div id="accessitrans-aria-live" class="screen-reader-text" aria-live="polite"></div>';
+        
+        // Mensaje para cuando el escaneo está desactivado
+        echo '<div id="scan-disabled-message" class="screen-reader-text">' . esc_html__('El escaneo global está desactivado. Estos controles no están disponibles.', 'accessitrans-aria') . '</div>';
+        
+        // Mostrar formulario de ajustes con estructura semántica mejorada
         ?>
-        <div class="wrap">
+        <div class="wrap accessitrans-admin-container">
             <h1><?php echo esc_html(__('Configuración de', 'accessitrans-aria') . ' AccessiTrans'); ?></h1>
             
-            <div class="notice-wrapper">
-                <p class="plugin-description"><?php _e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'accessitrans-aria'); ?></p>
-                
-                <div class="notice notice-info" role="region" aria-label="<?php esc_attr_e('Estado actual', 'accessitrans-aria'); ?>">
-                    <p>
-                        <?php 
-                        printf(
-                            __('Cadenas registradas: %d', 'accessitrans-aria'),
-                            $strings_count
-                        ); 
-                        ?>
-                    </p>
-                </div>
+            <p class="plugin-description"><?php _e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'accessitrans-aria'); ?></p>
+            
+            <div class="notice notice-info" role="region" aria-label="<?php esc_attr_e('Estado actual', 'accessitrans-aria'); ?>">
+                <p>
+                    <strong><?php _e('Estado actual:', 'accessitrans-aria'); ?></strong>
+                    <?php 
+                    printf(
+                        __('Cadenas registradas: %d', 'accessitrans-aria'),
+                        $strings_count
+                    ); 
+                    ?>
+                </p>
             </div>
             
-            <form method="post" action="">
-                <?php
-                settings_fields('accessitrans_aria');
-                do_settings_sections('accessitrans-aria');
-                wp_nonce_field('accessitrans_aria_settings');
-                submit_button();
-                ?>
-            </form>
+            <!-- Activación general (independiente) con AJAX -->
+            <section class="card" aria-labelledby="activacion-general-titulo">
+                <h2 id="activacion-general-titulo"><?php _e('Activación general', 'accessitrans-aria'); ?></h2>
+                
+                <div class="accessitrans-field">
+                    <label class="accessitrans-switch" for="permitir_escaneo_ajax">
+                        <input type="checkbox" id="permitir_escaneo_ajax" <?php echo isset($this->core->options['permitir_escaneo']) && $this->core->options['permitir_escaneo'] ? 'checked' : ''; ?> aria-describedby="desc-permitir_escaneo_ajax" role="switch" />
+                        <span class="accessitrans-slider round"></span>
+                    </label>
+                    <span style="display: inline-block; margin-left: 10px; vertical-align: middle;"><?php _e('Permitir escaneo de nuevas cadenas', 'accessitrans-aria'); ?></span>
+                    <p class="description" id="desc-permitir_escaneo_ajax"><?php _e('Activa la captura de nuevas cadenas ARIA. Desactívalo después de capturar todas las cadenas para mejorar el rendimiento.', 'accessitrans-aria'); ?></p>
+                    
+                    <div class="accessitrans-notice">
+                        <strong><?php _e('Consejo de rendimiento:', 'accessitrans-aria'); ?></strong>
+                        <?php _e('Una vez hayas capturado todas las cadenas ARIA de tu sitio, puedes desactivar el escaneo para mejorar el rendimiento. Las traducciones seguirán funcionando.', 'accessitrans-aria'); ?>
+                    </div>
+                    
+                    <div id="switch-status" aria-live="polite" style="margin-top: 10px;"></div>
+                </div>
+            </section>
             
-            <section class="card" aria-labelledby="herramientas-titulo" style="max-width:800px;">
+            <!-- Formulario principal -->
+            <section class="card" aria-labelledby="configuracion-detallada-titulo">
+                <h2 id="configuracion-detallada-titulo"><?php _e('Configuración detallada', 'accessitrans-aria'); ?></h2>
+                <form method="post" action="" id="accessitrans-settings-form">
+                    <?php wp_nonce_field('accessitrans_aria_settings'); ?>
+                    
+                    <!-- Campo oculto para mantener el valor actual del permitir_escaneo -->
+                    <input type="hidden" id="hidden_permitir_escaneo" name="hidden_permitir_escaneo" value="<?php echo isset($this->core->options['permitir_escaneo']) && $this->core->options['permitir_escaneo'] ? '1' : '0'; ?>" />
+                    
+                    <fieldset class="accessitrans-methods-fieldset">
+                        <legend><?php _e('Métodos de captura', 'accessitrans-aria'); ?></legend>
+                        
+                        <p class="description"><?php _e('Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta.', 'accessitrans-aria'); ?></p>
+                        
+                        <?php 
+                        // Renderizar los campos de métodos de captura
+                        $capture_fields = [
+                            'captura_total' => __('Captura todo el HTML de la página. Altamente efectivo pero puede afectar al rendimiento.', 'accessitrans-aria'),
+                            'captura_elementor' => __('Procesa el contenido generado por Elementor.', 'accessitrans-aria'),
+                            'procesar_templates' => __('Procesa los datos de templates de Elementor.', 'accessitrans-aria'),
+                            'procesar_elementos' => __('Procesa cada widget y elemento de Elementor individualmente.', 'accessitrans-aria')
+                        ];
+                        
+                        foreach ($capture_fields as $field => $desc) {
+                            $args = [
+                                'label_for' => $field,
+                                'descripcion' => $desc
+                            ];
+                            $this->checkbox_callback($args);
+                        }
+                        ?>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <legend><?php _e('Configuración avanzada', 'accessitrans-aria'); ?></legend>
+                        
+                        <p class="description"><?php _e('Configuración avanzada para rendimiento y depuración.', 'accessitrans-aria'); ?></p>
+                        
+                        <?php 
+                        // Renderizar los campos avanzados
+                        $advanced_fields = [
+                            'modo_debug' => __('Activa el registro detallado de eventos. Se almacena en wp-content/debug-aria-wpml.log', 'accessitrans-aria'),
+                            'solo_admin' => __('Solo procesa la captura total cuando un administrador está conectado.', 'accessitrans-aria'),
+                            'captura_en_idioma_principal' => __('Solo captura cadenas cuando se navega en el idioma principal. Previene duplicados.', 'accessitrans-aria')
+                        ];
+                        
+                        foreach ($advanced_fields as $field => $desc) {
+                            $args = [
+                                'label_for' => $field,
+                                'descripcion' => $desc
+                            ];
+                            $this->checkbox_callback($args);
+                        }
+                        ?>
+                    </fieldset>
+                    
+                    <?php submit_button(); ?>
+                </form>
+            </section>
+            
+            <section class="card" aria-labelledby="herramientas-titulo">
                 <h2 id="herramientas-titulo"><?php _e('Herramientas de mantenimiento', 'accessitrans-aria'); ?></h2>
                 
                 <div class="tool-section">
@@ -282,7 +796,7 @@ class AccessiTrans_Admin {
                 </div>
             </section>
             
-            <section class="card" aria-labelledby="instrucciones-uso-titulo" style="max-width:800px;">
+            <section class="card" aria-labelledby="instrucciones-uso-titulo">
                 <h2 id="instrucciones-uso-titulo"><?php _e('Instrucciones de uso', 'accessitrans-aria'); ?></h2>
                 <p><?php _e('Para agregar atributos ARIA en Elementor:', 'accessitrans-aria'); ?></p>
                 <ol>
@@ -301,12 +815,12 @@ class AccessiTrans_Admin {
                 <ul>
                     <li><?php _e('Navega por el sitio en el idioma principal mientras capturas cadenas para evitar duplicados', 'accessitrans-aria'); ?></li>
                     <li><?php _e('Si una traducción no aparece, utiliza la herramienta "Forzar actualización" o el diagnóstico', 'accessitrans-aria'); ?></li>
-                    <li><?php _e('Una vez capturadas todas las cadenas, puedes desactivar los métodos de captura para mejorar el rendimiento', 'accessitrans-aria'); ?></li>
+                    <li><?php _e('Una vez capturadas todas las cadenas, puedes desactivar el escaneo para mejorar el rendimiento', 'accessitrans-aria'); ?></li>
                     <li><?php _e('Si cambias un texto en el idioma original, deberás traducirlo nuevamente en WPML', 'accessitrans-aria'); ?></li>
                 </ul>
             </section>
             
-            <section class="card" aria-labelledby="acerca-autor-titulo" style="max-width:800px;">
+            <section class="card" aria-labelledby="acerca-autor-titulo">
                 <h2 id="acerca-autor-titulo"><?php _e('Acerca del autor', 'accessitrans-aria'); ?></h2>
                 <p><?php _e('Desarrollado por', 'accessitrans-aria'); ?> Mario Germán Almonte Moreno:</p>
                 <ul>
@@ -322,63 +836,6 @@ class AccessiTrans_Admin {
                 <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank"><?php _e('Visita mi perfil de LinkedIn', 'accessitrans-aria'); ?></a></p>
                 <p><a href="https://aprendizajeenred.es" target="_blank"><?php _e('Sitio web y blog', 'accessitrans-aria'); ?></a></p>
             </section>
-            
-            <style>
-                .tool-section {
-                    margin-bottom: 20px;
-                    padding-bottom: 20px;
-                    border-bottom: 1px solid #eee;
-                }
-                .tool-section:last-child {
-                    border-bottom: none;
-                }
-                .diagnostics-form {
-                    margin-bottom: 10px;
-                    display: flex;
-                    align-items: center;
-                    flex-wrap: wrap;
-                    gap: 10px;
-                }
-                .diagnostic-results, .health-results {
-                    margin-top: 15px;
-                    padding: 10px;
-                    background: #f8f8f8;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    max-height: 300px;
-                    overflow-y: auto;
-                    display: none;
-                }
-                .diagnostic-results.active, .health-results.active {
-                    display: block;
-                }
-                .diagnostic-item {
-                    margin-bottom: 5px;
-                    padding: 5px;
-                    border-bottom: 1px dotted #eee;
-                }
-                .diagnostic-success {
-                    color: green;
-                }
-                .diagnostic-error {
-                    color: #d63638;
-                }
-                #refresh-status {
-                    margin-left: 10px;
-                    display: inline-block;
-                }
-                .screen-reader-text {
-                    position: absolute;
-                    width: 1px;
-                    height: 1px;
-                    padding: 0;
-                    margin: -1px;
-                    overflow: hidden;
-                    clip: rect(0, 0, 0, 0);
-                    white-space: nowrap;
-                    border: 0;
-                }
-            </style>
         </div>
         <?php
     }
@@ -390,6 +847,81 @@ class AccessiTrans_Admin {
         ?>
         <script type="text/javascript">
         jQuery(document).ready(function($) {
+            // Switch AJAX para activar/desactivar escaneo
+            $('#permitir_escaneo_ajax').on('change', function() {
+                const $switch = $(this);
+                const $status = $('#switch-status');
+                const enabled = $switch.is(':checked');
+                
+                $switch.prop('disabled', true);
+                $status.html('<?php echo esc_js(__('Guardando...', 'accessitrans-aria')); ?>');
+                
+                $.ajax({
+                    url: ajaxurl,
+                    type: 'POST',
+                    data: {
+                        action: 'accessitrans_toggle_scan',
+                        nonce: '<?php echo wp_create_nonce('accessitrans-toggle-scan'); ?>',
+                        enabled: enabled ? 1 : 0
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $status.html('<div class="notice notice-success inline"><p>' + response.data + '</p></div>');
+                            
+                            // Actualizar los campos dependientes
+                            updateDependentFields(enabled);
+                            
+                            // Actualizar campo oculto en el formulario
+                            $('#hidden_permitir_escaneo').val(enabled ? '1' : '0');
+                            
+                            // Anuncio para lectores de pantalla
+                            $('#accessitrans-aria-live').text(response.data);
+                        } else {
+                            $status.html('<div class="notice notice-error inline"><p>' + response.data + '</p></div>');
+                            $switch.prop('checked', !enabled); // Revertir estado
+                        }
+                        
+                        $switch.prop('disabled', false);
+                        
+                        // Ocultar mensaje después de 3 segundos
+                        setTimeout(function() {
+                            $status.empty();
+                        }, 3000);
+                    },
+                    error: function() {
+                        $status.html('<div class="notice notice-error inline"><p><?php echo esc_js(__('Error al guardar la configuración.', 'accessitrans-aria')); ?></p></div>');
+                        $switch.prop('checked', !enabled); // Revertir estado
+                        $switch.prop('disabled', false);
+                    }
+                });
+            });
+            
+            // Función para actualizar estados de campos dependientes
+            function updateDependentFields(enabled) {
+                // Obtener todos los campos de métodos de captura
+                $(".accessitrans-methods-fieldset input[type=checkbox]").prop("disabled", !enabled);
+                $(".accessitrans-methods-fieldset .accessitrans-field").toggleClass("disabled", !enabled);
+                
+                // Actualizar atributos ARIA
+                if (!enabled) {
+                    $(".accessitrans-methods-fieldset input[type=checkbox]").attr("aria-disabled", "true");
+                    $(".accessitrans-methods-fieldset").attr("aria-describedby", "scan-disabled-message");
+                } else {
+                    $(".accessitrans-methods-fieldset input[type=checkbox]").removeAttr("aria-disabled");
+                    $(".accessitrans-methods-fieldset").removeAttr("aria-describedby");
+                }
+            }
+            
+            // Actualizar la interfaz cuando se carga la página
+            $(window).on('load', function() {
+                // Asegurarse de que los controles AJAX y hidden estén sincronizados
+                var enabled = $('#hidden_permitir_escaneo').val() === '1';
+                $('#permitir_escaneo_ajax').prop('checked', enabled);
+                
+                // Actualizar la UI dependiente
+                updateDependentFields(enabled);
+            });
+            
             // Forzar actualización de traducciones
             $('#accessitrans-force-refresh').on('click', function(e) {
                 e.preventDefault();
@@ -410,10 +942,16 @@ class AccessiTrans_Admin {
                     success: function(response) {
                         $status.html(response.data);
                         $button.prop('disabled', false);
+                        
+                        // Anuncio para lectores de pantalla
+                        $('#accessitrans-aria-live').text(response.data);
                     },
                     error: function() {
                         $status.html('<?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?>');
                         $button.prop('disabled', false);
+                        
+                        // Anuncio para lectores de pantalla
+                        $('#accessitrans-aria-live').text('<?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?>');
                     }
                 });
             });
@@ -430,6 +968,9 @@ class AccessiTrans_Admin {
                 if (!stringToCheck) {
                     $results.html('<div class="diagnostic-error"><?php echo esc_js(__('Por favor, ingresa una cadena para verificar.', 'accessitrans-aria')); ?></div>');
                     $results.addClass('active');
+                    
+                    // Anuncio para lectores de pantalla
+                    $proceso.text('<?php echo esc_js(__('Error: No se ha ingresado una cadena para verificar.', 'accessitrans-aria')); ?>');
                     return;
                 }
                 
@@ -525,17 +1066,20 @@ class AccessiTrans_Admin {
                                     '<pre style="font-size: 11px; overflow: auto; max-height: 150px;">' + JSON.stringify(data.debug_info, null, 2) + '</pre>' +
                                     '</details>');
                             }
+                            
+                            // Anuncio para lectores de pantalla
+                            $proceso.text('<?php echo esc_js(__('Análisis completado. Se encontraron resultados para la cadena', 'accessitrans-aria')); ?> ' + data.string);
                         } else {
                             $results.html('<div class="diagnostic-error">' + response.data + '</div>');
+                            $proceso.text('<?php echo esc_js(__('Error en el análisis:', 'accessitrans-aria')); ?> ' + response.data);
                         }
                         
                         $button.prop('disabled', false);
-                        $proceso.text('<?php echo esc_js(__('Análisis completado.', 'accessitrans-aria')); ?>');
                     },
                     error: function() {
                         $results.html('<div class="diagnostic-error"><?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?></div>');
                         $button.prop('disabled', false);
-                        $proceso.text('<?php echo esc_js(__('Error al realizar el análisis.', 'accessitrans-aria')); ?>');
+                        $proceso.text('<?php echo esc_js(__('Error al realizar el análisis. No se pudo contactar con el servidor.', 'accessitrans-aria')); ?>');
                     }
                 });
             };
@@ -637,17 +1181,22 @@ class AccessiTrans_Admin {
                             // Información del sistema
                             $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Fecha del servidor:', 'accessitrans-aria')); ?></strong> ' + data.system_time + '</div>');
                             $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Versión del plugin:', 'accessitrans-aria')); ?></strong> ' + data.plugin_version + '</div>');
+                            
+                            // Anuncio para lectores de pantalla
+                            $proceso.text('<?php echo esc_js(__('Verificación completada. Se encontraron', 'accessitrans-aria')); ?> ' + 
+                                data.string_count + ' <?php echo esc_js(__('cadenas registradas y', 'accessitrans-aria')); ?> ' + 
+                                data.translation_count + ' <?php echo esc_js(__('traducciones.', 'accessitrans-aria')); ?>');
                         } else {
                             $results.html('<div class="diagnostic-error">' + response.data + '</div>');
+                            $proceso.text('<?php echo esc_js(__('Error en la verificación:', 'accessitrans-aria')); ?> ' + response.data);
                         }
                         
                         $button.prop('disabled', false);
-                        $proceso.text('<?php echo esc_js(__('Verificación completada.', 'accessitrans-aria')); ?>');
                     },
                     error: function() {
                         $results.html('<div class="diagnostic-error"><?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?></div>');
                         $button.prop('disabled', false);
-                        $proceso.text('<?php echo esc_js(__('Error al realizar la verificación.', 'accessitrans-aria')); ?>');
+                        $proceso.text('<?php echo esc_js(__('Error al realizar la verificación. No se pudo contactar con el servidor.', 'accessitrans-aria')); ?>');
                     }
                 });
             });

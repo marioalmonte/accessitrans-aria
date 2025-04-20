@@ -38,6 +38,14 @@ class AccessiTrans_Capture {
      * Inicializa los métodos de captura según la configuración
      */
     private function init_capture_methods() {
+        // Verificar si el escaneo está permitido globalmente
+        if (!isset($this->core->options['permitir_escaneo']) || !$this->core->options['permitir_escaneo']) {
+            if ($this->core->options['modo_debug']) {
+                $this->core->log_debug("Escaneo global desactivado - No se inicializarán métodos de captura");
+            }
+            return;
+        }
+        
         // MÉTODO 1: Capturar el HTML completo si está habilitado
         if ($this->core->options['captura_total']) {
             add_action('wp_footer', [$this, 'capture_full_html'], 999);
@@ -69,8 +77,8 @@ class AccessiTrans_Capture {
             return;
         }
         
-        // Verificar idioma usando el método mejorado
-        if (!$this->core->should_capture_in_current_language()) {
+        // Verificar si debe capturar usando el método centralizado
+        if (!$this->core->should_capture()) {
             return;
         }
         
@@ -106,8 +114,8 @@ class AccessiTrans_Capture {
             $this->core->log_debug("Procesando HTML para buscar atributos ARIA");
         }
         
-        // Verificar si estamos en el idioma principal usando el método mejorado
-        if (!$this->core->should_capture_in_current_language()) {
+        // Verificar si debemos capturar usando el método centralizado
+        if (!$this->core->should_capture()) {
             return;
         }
         
@@ -173,8 +181,8 @@ class AccessiTrans_Capture {
      * Procesa el contenido de Elementor para buscar atributos ARIA
      */
     public function capture_aria_in_content($content) {
-        // Verificar idioma usando el método mejorado
-        if (!$this->core->should_capture_in_current_language()) {
+        // Verificar si debe capturar usando el método centralizado
+        if (!$this->core->should_capture()) {
             return $content;
         }
         
@@ -188,8 +196,8 @@ class AccessiTrans_Capture {
      * Procesa cualquier elemento de Elementor
      */
     public function process_element_attributes($element) {
-        // Verificar idioma usando el método mejorado
-        if (!$this->core->should_capture_in_current_language()) {
+        // Verificar si debe capturar usando el método centralizado
+        if (!$this->core->should_capture()) {
             return;
         }
         
@@ -265,8 +273,8 @@ class AccessiTrans_Capture {
      * Procesa datos de template de Elementor
      */
     public function process_template_data($data, $post_id) {
-        // Verificar idioma usando el método mejorado
-        if (!$this->core->should_capture_in_current_language()) {
+        // Verificar si debe capturar usando el método centralizado
+        if (!$this->core->should_capture()) {
             return $data;
         }
         

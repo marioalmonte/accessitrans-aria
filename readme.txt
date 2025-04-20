@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 0.2.4
+Stable tag: 0.2.5
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -197,12 +197,20 @@ For the best experience and website performance, follow these recommendations:
 
 == Changelog ==
 
+= 0.2.5 =
+* Added main toggle to enable/disable scanning for new strings
+* Improved the entire admin interface with accessible semantic structure
+* Implemented screen reader announcements for interactive processes
+* Redesigned the interface using fieldset/legend replacing tables
+* Enhanced visual styles and activation/deactivation of dependent fields
+* Optimized performance when scanning is disabled
+
 = 0.2.4 =
-* Mejorado sistema de verificación de idioma para captura de cadenas
-* Implementado sistema robusto para prevenir duplicados en WPML
-* Optimizado el sistema de caché con persistencia mejorada y control de tamaño
-* Corregido problema de entradas duplicadas en la herramienta de diagnóstico
-* Mejorado rendimiento general reduciendo consultas a la base de datos
+* Improved language verification system for string capture
+* Implemented robust system to prevent duplicates in WPML
+* Optimized cache system with enhanced persistence and size control
+* Fixed issue with duplicate entries in the diagnostics tool
+* Improved overall performance by reducing database queries
 
 = 0.2.3 =
 * Restructuring of the plugin's file system

@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 0.2.4
+Stable tag: 0.2.5
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -196,6 +196,14 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Atributo: `aria-description|Navega por las imágenes del producto`
 
 == Registro de cambios ==
+
+= 0.2.5 =
+* Añadido interruptor principal para activar/desactivar el escaneo de nuevas cadenas
+* Mejorada toda la interfaz de administración con estructura semántica accesible 
+* Implementados anuncios para lectores de pantalla en procesos interactivos
+* Rediseñada la interfaz con fieldset/legend reemplazando tablas
+* Mejorados los estilos visuales y la activación/desactivación de campos dependientes
+* Optimizado el rendimiento cuando el escaneo está desactivado
 
 = 0.2.4 =
 * Mejorado sistema de verificación de idioma para captura de cadenas

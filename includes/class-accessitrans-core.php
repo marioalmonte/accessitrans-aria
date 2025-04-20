@@ -48,7 +48,7 @@ class AccessiTrans_ARIA_Translator {
     /**
      * Versión del plugin (para gestión de caché)
      */
-    private $version = '0.2.4';
+    private $version = '0.2.5';
     
     /**
      * Instancias de los componentes
@@ -71,7 +71,8 @@ class AccessiTrans_ARIA_Translator {
                 'procesar_elementos' => true,
                 'modo_debug' => false,
                 'solo_admin' => true,
-                'captura_en_idioma_principal' => true
+                'captura_en_idioma_principal' => true,
+                'permitir_escaneo' => true // Nuevo: activado por defecto
             ]);
         }
         
@@ -83,7 +84,8 @@ class AccessiTrans_ARIA_Translator {
             'procesar_elementos' => true,
             'modo_debug' => false,
             'solo_admin' => true,
-            'captura_en_idioma_principal' => true
+            'captura_en_idioma_principal' => true,
+            'permitir_escaneo' => true // Nuevo: activado por defecto
         ]);
         
         // Registrar hooks de activación y desactivación
@@ -157,7 +159,8 @@ class AccessiTrans_ARIA_Translator {
                 'procesar_elementos' => true,
                 'modo_debug' => false,
                 'solo_admin' => true,
-                'captura_en_idioma_principal' => true
+                'captura_en_idioma_principal' => true,
+                'permitir_escaneo' => true // Nuevo: activado por defecto
             ]);
         }
         
@@ -311,5 +314,22 @@ class AccessiTrans_ARIA_Translator {
         }
         
         return $result;
+    }
+    
+    /**
+     * Verifica si debe realizar captura basado en opciones generales
+     * @return bool True si debe capturar, False si no
+     */
+    public function should_capture() {
+        // Si la captura está globalmente desactivada, no realizar captura
+        if (isset($this->options['permitir_escaneo']) && !$this->options['permitir_escaneo']) {
+            if ($this->options['modo_debug']) {
+                $this->log_debug("Captura omitida - Escaneo global desactivado");
+            }
+            return false;
+        }
+        
+        // Verificar idioma actual
+        return $this->should_capture_in_current_language();
     }
 }
