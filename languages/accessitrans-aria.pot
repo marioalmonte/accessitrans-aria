@@ -2,9 +2,9 @@
 # This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: AccessiTrans - ARIA Translator for WPML & Elementor 0.1.0\n"
+"Project-Id-Version: AccessiTrans - ARIA Translator for WPML & Elementor 0.2.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/accessitrans-aria\n"
-"POT-Creation-Date: 2025-04-15T00:00:00+00:00\n"
+"POT-Creation-Date: 2025-04-20T00:00:00+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,214 +15,593 @@ msgstr ""
 "X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: accessitrans-aria\n"
 
-#: accessitrans-aria.php:65
+#: accessitrans-aria.php:3
+msgid "Traduce atributos ARIA en Elementor utilizando WPML, mejorando la accesibilidad de tu sitio web multilingüe. Desarrollado por un profesional certificado en Accesibilidad Web (CPWA)."
+msgstr ""
+
+#: includes/class-accessitrans-core.php:170
 msgid "AccessiTrans requiere que Elementor y WPML estén instalados y activados."
 msgstr ""
 
-#: accessitrans-aria.php:76
+#: includes/class-accessitrans-admin.php:52
 msgid "Configuración de"
 msgstr ""
 
-#: accessitrans-aria.php:77
+#: includes/class-accessitrans-admin.php:53
 msgid "AccessiTrans"
 msgstr ""
 
-#: accessitrans-aria.php:88
+#: includes/class-accessitrans-admin.php:64
+msgid "Configuración general"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:72
+#: includes/class-accessitrans-admin.php:480
+msgid "Permitir escaneo de nuevas cadenas"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:74
+#: includes/class-accessitrans-admin.php:481
+msgid "Activa la captura de nuevas cadenas ARIA. Desactívalo después de capturar todas las cadenas para mejorar el rendimiento."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:81
 msgid "Configuración de métodos de captura"
 msgstr ""
 
-#: accessitrans-aria.php:96
+#: includes/class-accessitrans-admin.php:89
 msgid "Captura total de HTML"
 msgstr ""
 
-#: accessitrans-aria.php:98
+#: includes/class-accessitrans-admin.php:91
+#: includes/class-accessitrans-admin.php:528
 msgid "Captura todo el HTML de la página. Altamente efectivo pero puede afectar al rendimiento."
 msgstr ""
 
-#: accessitrans-aria.php:104
+#: includes/class-accessitrans-admin.php:97
 msgid "Filtro de contenido de Elementor"
 msgstr ""
 
-#: accessitrans-aria.php:106
+#: includes/class-accessitrans-admin.php:99
+#: includes/class-accessitrans-admin.php:529
 msgid "Procesa el contenido generado por Elementor."
 msgstr ""
 
-#: accessitrans-aria.php:112
+#: includes/class-accessitrans-admin.php:105
 msgid "Procesar templates de Elementor"
 msgstr ""
 
-#: accessitrans-aria.php:114
+#: includes/class-accessitrans-admin.php:107
+#: includes/class-accessitrans-admin.php:530
 msgid "Procesa los datos de templates de Elementor."
 msgstr ""
 
-#: accessitrans-aria.php:120
+#: includes/class-accessitrans-admin.php:113
 msgid "Procesar elementos individuales"
 msgstr ""
 
-#: accessitrans-aria.php:122
+#: includes/class-accessitrans-admin.php:115
+#: includes/class-accessitrans-admin.php:531
 msgid "Procesa cada widget y elemento de Elementor individualmente."
 msgstr ""
 
-#: accessitrans-aria.php:128
-msgid "Configuración de formatos de registro"
-msgstr ""
-
-#: accessitrans-aria.php:136
-msgid "Formato directo"
-msgstr ""
-
-#: accessitrans-aria.php:138
-msgid "Registrar el valor literal como nombre."
-msgstr ""
-
-#: accessitrans-aria.php:144
-msgid "Formato con prefijo"
-msgstr ""
-
-#: accessitrans-aria.php:146
-msgid "Registrar con formato aria-atributo_valor."
-msgstr ""
-
-#: accessitrans-aria.php:152
-msgid "Formato con ID de elemento"
-msgstr ""
-
-#: accessitrans-aria.php:154
-msgid "Registrar con formato incluyendo ID del elemento."
-msgstr ""
-
-#: accessitrans-aria.php:160
+#: includes/class-accessitrans-admin.php:121
 msgid "Configuración avanzada"
 msgstr ""
 
-#: accessitrans-aria.php:168
+#: includes/class-accessitrans-admin.php:129
 msgid "Modo de depuración"
 msgstr ""
 
-#: accessitrans-aria.php:170
+#: includes/class-accessitrans-admin.php:131
+#: includes/class-accessitrans-admin.php:547
 msgid "Activa el registro detallado de eventos. Se almacena en wp-content/debug-aria-wpml.log"
 msgstr ""
 
-#: accessitrans-aria.php:176
+#: includes/class-accessitrans-admin.php:137
 msgid "Captura solo para administradores"
 msgstr ""
 
-#: accessitrans-aria.php:178
+#: includes/class-accessitrans-admin.php:139
+#: includes/class-accessitrans-admin.php:548
 msgid "Solo procesa la captura total cuando un administrador está conectado."
 msgstr ""
 
-#: accessitrans-aria.php:186
+#: includes/class-accessitrans-admin.php:145
+msgid "Capturar solo en idioma principal"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:147
+msgid "Solo captura cadenas cuando se navega en el idioma principal. Previene duplicados."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:159
+msgid "No tienes permisos para realizar esta acción."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:172
+msgid "Escaneo de cadenas activado. Los cambios se han guardado."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:174
+msgid "Escaneo de cadenas desactivado. Los cambios se han guardado."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:182
+msgid "Configuración general del plugin."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:190
 msgid "Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta."
 msgstr ""
 
-#: accessitrans-aria.php:193
-msgid "Configura los formatos de registro de cadenas para WPML. Elegir más de un formato duplicará las cadenas encontradas en WPML aunque puede aumentar la robustez."
-msgstr ""
-
-#: accessitrans-aria.php:200
+#: includes/class-accessitrans-admin.php:198
 msgid "Configuración avanzada para rendimiento y depuración."
 msgstr ""
 
-#: accessitrans-aria.php:232
+#: includes/class-accessitrans-admin.php:486
+#: includes/class-accessitrans-admin.php:492
+msgid "Consejo de rendimiento:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:487
+#: includes/class-accessitrans-admin.php:493
+msgid "Una vez hayas capturado todas las cadenas ARIA de tu sitio, puedes desactivar el escaneo para mejorar el rendimiento. Las traducciones seguirán funcionando."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:506
+msgid "Escaneo activado. Los métodos de captura están disponibles."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:507
+msgid "Escaneo desactivado. Los métodos de captura están deshabilitados."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:573
 msgid "Configuración guardada correctamente."
 msgstr ""
 
-#: accessitrans-aria.php:246
+#: includes/class-accessitrans-admin.php:584
+msgid "El escaneo global está desactivado. Estos controles no están disponibles."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:591
 msgid "Estado actual"
 msgstr ""
 
-#: accessitrans-aria.php:247
-msgid "Actualmente hay %d cadenas registradas en el contexto \"Elementor ARIA Attributes\"."
+#: includes/class-accessitrans-admin.php:597
+msgid "Estado actual:"
 msgstr ""
 
-#: accessitrans-aria.php:252
-msgid "Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML."
+#: includes/class-accessitrans-admin.php:599
+msgid "Cadenas registradas: %d"
 msgstr ""
 
-#: accessitrans-aria.php:266
+#: includes/class-accessitrans-admin.php:609
+msgid "Activación general"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:626
+msgid "Configuración detallada"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:637
+msgid "Métodos de captura"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:639
+msgid "Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:696
+msgid "Herramientas de mantenimiento"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:699
+msgid "Forzar actualización de traducciones"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:700
+msgid "Si encuentras problemas con las traducciones, puedes intentar forzar una actualización que limpiará las cachés internas y renovará el estado del plugin."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:702
+msgid "Forzar actualización"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:705
+msgid "Esta operación limpia todas las cachés de WordPress y WPML y puede resolver problemas donde las traducciones están registradas pero no se muestran correctamente."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:710
+msgid "Diagnóstico de traducciones"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:711
+msgid "Si una cadena específica no se traduce correctamente, puedes diagnosticar el problema aquí:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:714
+msgid "Cadena a verificar:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:715
+msgid "Ejemplo: Next"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:716
+msgid "Ejecutar diagnóstico"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:724
+msgid "Esta herramienta verifica si una cadena está correctamente registrada para traducción y si tiene traducciones asignadas."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:729
+msgid "Verificar salud del sistema"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:730
+msgid "Comprueba el estado general de las traducciones y la configuración del plugin:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:733
+msgid "Verificar salud"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:740
+msgid "Esta herramienta verifica la configuración general del sistema y muestra estadísticas sobre las traducciones registradas."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:746
 msgid "Instrucciones de uso"
 msgstr ""
 
-#: accessitrans-aria.php:267
+#: includes/class-accessitrans-admin.php:747
 msgid "Para agregar atributos ARIA en Elementor:"
 msgstr ""
 
-#: accessitrans-aria.php:269
-msgid "Edite cualquier elemento en Elementor"
+#: includes/class-accessitrans-admin.php:749
+msgid "Edita cualquier elemento en Elementor"
 msgstr ""
 
-#: accessitrans-aria.php:270
-msgid "Vaya a la pestaña \"Avanzado\""
+#: includes/class-accessitrans-admin.php:750
+msgid "Ve a la pestaña \"Avanzado\""
 msgstr ""
 
-#: accessitrans-aria.php:271
-msgid "Encuentre la sección \"Atributos personalizados\""
+#: includes/class-accessitrans-admin.php:751
+msgid "Encuentra la sección \"Atributos personalizados\""
 msgstr ""
 
-#: accessitrans-aria.php:272
-msgid "Añada los atributos ARIA que desee traducir (ej: aria-label|Texto a traducir)"
+#: includes/class-accessitrans-admin.php:752
+msgid "Añade los atributos ARIA que desees traducir (ej: aria-label|Texto a traducir)"
 msgstr ""
 
-#: accessitrans-aria.php:274
+#: includes/class-accessitrans-admin.php:754
 msgid "Para traducir los atributos:"
 msgstr ""
 
-#: accessitrans-aria.php:276
-msgid "Vaya a WPML → Traducción de cadenas"
+#: includes/class-accessitrans-admin.php:756
+msgid "Ve a WPML → Traducción de cadenas"
 msgstr ""
 
-#: accessitrans-aria.php:277
-msgid "Filtre por el contexto \"Elementor ARIA Attributes\""
+#: includes/class-accessitrans-admin.php:757
+msgid "Filtra por el contexto \"AccessiTrans ARIA Attributes\""
 msgstr ""
 
-#: accessitrans-aria.php:278
-msgid "Traduzca las cadenas como lo haría normalmente en WPML"
+#: includes/class-accessitrans-admin.php:758
+msgid "Traduce las cadenas como lo harías normalmente en WPML"
 msgstr ""
 
-#: accessitrans-aria.php:282
+#: includes/class-accessitrans-admin.php:760
+msgid "Prácticas recomendadas:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:762
+msgid "Navega por el sitio en el idioma principal mientras capturas cadenas para evitar duplicados"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:763
+msgid "Si una traducción no aparece, utiliza la herramienta \"Forzar actualización\" o el diagnóstico"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:764
+msgid "Una vez capturadas todas las cadenas, puedes desactivar el escaneo para mejorar el rendimiento"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:765
+msgid "Si cambias un texto en el idioma original, deberás traducirlo nuevamente en WPML"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:770
 msgid "Acerca del autor"
 msgstr ""
 
-#: accessitrans-aria.php:283
+#: includes/class-accessitrans-admin.php:771
 msgid "Desarrollado por"
 msgstr ""
 
-#: accessitrans-aria.php:285
+#: includes/class-accessitrans-admin.php:773
 msgid "Miembro de IAAP (International Association of Accessibility Professionals)"
 msgstr ""
 
-#: accessitrans-aria.php:286
+#: includes/class-accessitrans-admin.php:774
 msgid "Certificado CPWA (CPACC y WAS)"
 msgstr ""
 
-#: accessitrans-aria.php:287
+#: includes/class-accessitrans-admin.php:775
 msgid "Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)"
 msgstr ""
 
-#: accessitrans-aria.php:289
+#: includes/class-accessitrans-admin.php:777
 msgid "Servicios Profesionales:"
 msgstr ""
 
-#: accessitrans-aria.php:291
+#: includes/class-accessitrans-admin.php:779
 msgid "Formación y consultoría en Accesibilidad Web y eLearning"
 msgstr ""
 
-#: accessitrans-aria.php:292
+#: includes/class-accessitrans-admin.php:780
 msgid "Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)"
 msgstr ""
 
-#: accessitrans-aria.php:294
+#: includes/class-accessitrans-admin.php:782
 msgid "Visita mi perfil de LinkedIn"
 msgstr ""
 
-#: accessitrans-aria.php:295
+#: includes/class-accessitrans-admin.php:783
 msgid "Sitio web y blog"
 msgstr ""
 
-#: accessitrans-aria.php:308
+#: includes/class-accessitrans-admin.php:857
+msgid "Guardando..."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:881
+msgid "Error al guardar la configuración."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:918
+msgid "Procesando..."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:935
+msgid "Error al procesar la solicitud."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:952
+msgid "Por favor, ingresa una cadena para verificar."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:956
+msgid "Error: No se ha ingresado una cadena para verificar."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:961
+#: includes/class-accessitrans-admin.php:962
+msgid "Analizando..."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:981
+msgid "Resultados del diagnóstico:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:983
+msgid "Texto original:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:987
+msgid "✓ Idioma correcto"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:988
+msgid "✗ No es idioma principal"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:990
+msgid "Idioma:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:996
+msgid "✓ Encontrada en WPML"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:999
+msgid "Formatos registrados:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1008
+msgid "✓ Tiene traducciones"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1010
+msgid "Traducciones disponibles:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1023
+msgid "✗ No hay traducción para el idioma actual"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1024
+msgid "Acción recomendada: Traduce esta cadena al idioma actual en WPML → String Translation."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1027
+msgid "✗ No tiene traducciones"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1028
+msgid "Acción recomendada: Traduce esta cadena en WPML → String Translation."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1031
+msgid "✗ No encontrada en WPML"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1034
+msgid "⚠️ Estás navegando en un idioma que no es el principal. Cambia al idioma principal para registrar cadenas."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1036
+msgid "Acción recomendada: Navega por tu sitio con los métodos de captura activados o edita el elemento en Elementor para registrar esta cadena."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1041
+msgid "Consejos para solucionar problemas:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1043
+msgid "Asegúrate de navegar en el idioma principal del sitio al capturar cadenas."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1044
+msgid "Prueba a utilizar \"Forzar actualización\" para limpiar todas las cachés."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1045
+msgid "Si has cambiado el texto en el idioma original, necesitarás traducirlo nuevamente en WPML."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1051
+msgid "Información técnica avanzada"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1058
+msgid "Análisis completado. Se encontraron resultados para la cadena"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1061
+msgid "Error en el análisis:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1065
+#: includes/class-accessitrans-admin.php:1149
+#: includes/class-accessitrans-admin.php:1211
+msgid "Error al procesar la solicitud."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1067
+msgid "Error al realizar el análisis. No se pudo contactar con el servidor."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1097
+#: includes/class-accessitrans-admin.php:1098
+msgid "Verificando..."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1107
+msgid "Estado del sistema:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1111
+msgid "Activo"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1112
+#: includes/class-accessitrans-admin.php:1116
+msgid "Inactivo"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1115
+msgid "Activo"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1119
+msgid "WPML:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1120
+msgid "Elementor:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1123
+msgid "Cadenas registradas:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1124
+msgid "Traducciones disponibles:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1128
+msgid "Idioma principal:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1129
+msgid "Idioma actual:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1131
+msgid "Idiomas disponibles:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1143
+msgid "Configuración actual:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1158
+msgid "Recomendaciones:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1161
+msgid "• No hay cadenas registradas. Navega por tu sitio con los métodos de captura activados."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1165
+msgid "• Hay cadenas registradas pero sin traducciones. Visita WPML → String Translation para traducirlas."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1169
+msgid "• Estás navegando en un idioma que no es el principal. Si quieres registrar nuevas cadenas, cambia al idioma principal."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1174
+msgid "Fecha del servidor:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1175
+msgid "Versión del plugin:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1178
+msgid "Verificación completada. Se encontraron"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1179
+msgid "cadenas registradas y"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1180
+msgid "traducciones."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1183
+msgid "Error en la verificación:"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1213
+msgid "Error al realizar la verificación. No se pudo contactar con el servidor."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1225
+msgid "Settings"
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1236
 msgid "Compatibilidad verificada:"
 msgstr ""
 
-#: accessitrans-aria.php:405
-msgid "Settings"
+#: includes/class-accessitrans-diagnostics.php:39
+msgid "No tienes permisos para realizar esta acción."
+msgstr ""
+
+#: includes/class-accessitrans-diagnostics.php:74
+msgid "No tienes permisos para realizar esta acción."
+msgstr ""
+
+#: includes/class-accessitrans-diagnostics.php:81
+msgid "Por favor, proporciona una cadena para verificar."
+msgstr ""
+
+#: includes/class-accessitrans-diagnostics.php:109
+msgid "No tienes permisos para realizar esta acción."
 msgstr ""
