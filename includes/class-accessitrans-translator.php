@@ -31,6 +31,11 @@ class AccessiTrans_Translator {
     private $translation_cache = [];
     
     /**
+     * Propiedad para rastrear si la caché ha sido actualizada
+     */
+    private $cache_updated = false;
+    
+    /**
      * Constructor
      */
     public function __construct($core) {
@@ -38,6 +43,9 @@ class AccessiTrans_Translator {
         
         // Cargar caché de traducciones
         $this->translation_cache = get_option('accessitrans_translation_cache', []);
+        
+        // Registrar hook de shutdown para guardar caché
+        add_action('shutdown', [$this, 'save_translation_cache']);
     }
     
     /**
@@ -73,7 +81,7 @@ class AccessiTrans_Translator {
     }
     
     /**
-     * Registra un valor para traducción con formato de prefijo
+     * Registra un valor para traducción con formato de prefijo (mejorado)
      */
     public function register_value_for_translation($attr, $value, $element_id = '') {
         if (empty($value)) {
@@ -82,13 +90,29 @@ class AccessiTrans_Translator {
         
         // Verificar si estamos en el idioma principal (doble verificación)
         if (!$this->core->should_capture_in_current_language()) {
+            if ($this->core->options['modo_debug']) {
+                $current_language = apply_filters('wpml_current_language', null);
+                $default_language = apply_filters('wpml_default_language', null);
+                $this->core->log_debug("Ignorando registro de cadena '{$value}' porque idioma actual ({$current_language}) != ({$default_language})");
+            }
             return;
         }
+        
+        // Normalizar el valor
+        $value = $this->prepare_string($value);
         
         // Verificar si esta cadena ya existe como traducción en WPML
         if ($this->is_wpml_translation($value)) {
             if ($this->core->options['modo_debug']) {
                 $this->core->log_debug("Omitiendo registro de cadena que ya existe como traducción: {$value}");
+            }
+            return;
+        }
+        
+        // Verificar si esta cadena ya existe en WPML
+        if ($this->core->exists_in_wpml($value)) {
+            if ($this->core->options['modo_debug']) {
+                $this->core->log_debug("Omitiendo registro de cadena que ya existe en WPML: {$value}");
             }
             return;
         }
@@ -105,7 +129,7 @@ class AccessiTrans_Translator {
         do_action('wpml_register_single_string', $this->core->get_context(), $prefixed_name, $value);
         
         if ($this->core->options['modo_debug']) {
-            $this->core->log_debug("Registrado: \"{$prefixed_name}\" → \"{$value}\"");
+            $this->core->log_debug("Registrado: \"{$prefixed_name}\" → \"{$value}\"" . ($element_id ? " (ID: {$element_id})" : ""));
         }
     }
     
@@ -189,10 +213,8 @@ class AccessiTrans_Translator {
         if ($translated !== $attr_value) {
             $this->translation_cache[$cache_key] = $translated;
             
-            // Actualizar la caché persistente (con límite para evitar que crezca demasiado)
-            if (count($this->translation_cache) <= 1000) {
-                update_option('accessitrans_translation_cache', $this->translation_cache);
-            }
+            // Marcar caché como actualizada
+            $this->cache_updated = true;
             
             if ($this->core->options['modo_debug']) {
                 $this->core->log_debug("TRADUCIDO: {$attr_value} → {$translated}");
@@ -252,6 +274,41 @@ class AccessiTrans_Translator {
         }, $content);
         
         return $result !== null ? $result : $content;
+    }
+    
+    /**
+     * Guarda la caché de traducciones al final de la solicitud
+     */
+    public function save_translation_cache() {
+        // Solo guardar si hubo cambios
+        if (!$this->cache_updated) {
+            return;
+        }
+        
+        // Limitar tamaño de caché
+        if (count($this->translation_cache) > 1000) {
+            // Ordenar por clave para mantener entradas más recientes
+            ksort($this->translation_cache);
+            // Tomar las últimas 1000 entradas
+            $this->translation_cache = array_slice($this->translation_cache, -1000, 1000, true);
+        }
+        
+        update_option('accessitrans_translation_cache', $this->translation_cache);
+        
+        if ($this->core->options['modo_debug']) {
+            $this->core->log_debug("Caché de traducciones guardada con " . count($this->translation_cache) . " entradas");
+        }
+        
+        // Resetear flag
+        $this->cache_updated = false;
+    }
+    
+    /**
+     * Obtiene el tamaño actual de la caché de traducciones
+     * @return int Número de entradas en la caché
+     */
+    public function get_translation_cache_size() {
+        return count($this->translation_cache);
     }
     
     /**

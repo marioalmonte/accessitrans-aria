@@ -199,7 +199,7 @@ class AccessiTrans_Diagnostics {
         
         $partial_results = $wpdb->get_results($partial_match_sql);
         
-        // Combinamos todos los resultados, priorizando las coincidencias exactas
+        // Combinamos resultados, priorizando coincidencias exactas
         $all_results = array_merge($exact_results, $prefix_results);
         
         // Solo añadir resultados parciales si no hay coincidencias exactas
@@ -207,9 +207,20 @@ class AccessiTrans_Diagnostics {
             $all_results = $partial_results;
         }
         
+        // Eliminar duplicados basados en ID
+        $unique_results = [];
+        $seen_ids = [];
+        
+        foreach ($all_results as $result) {
+            if (!in_array($result->id, $seen_ids)) {
+                $seen_ids[] = $result->id;
+                $unique_results[] = $result;
+            }
+        }
+        
         // Procesamos los resultados encontrados
-        if (!empty($all_results)) {
-            foreach ($all_results as $result) {
+        if (!empty($unique_results)) {
+            foreach ($unique_results as $result) {
                 $found_strings[] = [
                     'id' => $result->id,
                     'name' => $result->name,
@@ -241,18 +252,18 @@ class AccessiTrans_Diagnostics {
         // Información de depuración avanzada (solo para admin)
         $debug_info = null;
         if (current_user_can('manage_options')) {
-            // Obtener las propiedades de forma segura
-            $translation_cache_size = 0;
-            $processed_values_count = 0;
+            // Obtener el tamaño de la caché
+            $translation_cache_size = $this->core->translator->get_translation_cache_size();
             
-            // Alternativa más segura sin acceder a propiedades privadas
             $debug_info = [
                 'query_exact' => $exact_match_sql,
                 'exact_count' => count($exact_results),
                 'prefix_count' => count($prefix_results),
                 'partial_count' => count($partial_results),
+                'unique_count' => count($unique_results),
                 'total_matches' => count($all_results),
-                'default_language' => $default_language
+                'default_language' => $default_language,
+                'cache_size' => $translation_cache_size
             ];
         }
         

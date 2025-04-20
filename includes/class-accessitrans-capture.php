@@ -69,7 +69,7 @@ class AccessiTrans_Capture {
             return;
         }
         
-        // Verificar idioma
+        // Verificar idioma usando el método mejorado
         if (!$this->core->should_capture_in_current_language()) {
             return;
         }
@@ -106,13 +106,8 @@ class AccessiTrans_Capture {
             $this->core->log_debug("Procesando HTML para buscar atributos ARIA");
         }
         
-        // Verificamos que estamos en el idioma principal
+        // Verificar si estamos en el idioma principal usando el método mejorado
         if (!$this->core->should_capture_in_current_language()) {
-            if ($this->core->options['modo_debug']) {
-                $current_language = apply_filters('wpml_current_language', null);
-                $default_language = apply_filters('wpml_default_language', null);
-                $this->core->log_debug("Saltando procesamiento de HTML - Idioma actual no es el principal ({$current_language} != {$default_language})");
-            }
             return;
         }
         
@@ -178,7 +173,7 @@ class AccessiTrans_Capture {
      * Procesa el contenido de Elementor para buscar atributos ARIA
      */
     public function capture_aria_in_content($content) {
-        // Verificar si debemos capturar en el idioma actual
+        // Verificar idioma usando el método mejorado
         if (!$this->core->should_capture_in_current_language()) {
             return $content;
         }
@@ -193,7 +188,7 @@ class AccessiTrans_Capture {
      * Procesa cualquier elemento de Elementor
      */
     public function process_element_attributes($element) {
-        // Verificar si debemos capturar solo en idioma principal
+        // Verificar idioma usando el método mejorado
         if (!$this->core->should_capture_in_current_language()) {
             return;
         }
@@ -270,7 +265,7 @@ class AccessiTrans_Capture {
      * Procesa datos de template de Elementor
      */
     public function process_template_data($data, $post_id) {
-        // Verificar si debemos capturar solo en idioma principal
+        // Verificar idioma usando el método mejorado
         if (!$this->core->should_capture_in_current_language()) {
             return $data;
         }

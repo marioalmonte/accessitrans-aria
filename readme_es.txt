@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 0.2.3r
+Stable tag: 0.2.4
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -196,6 +196,13 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Atributo: `aria-description|Navega por las imágenes del producto`
 
 == Registro de cambios ==
+
+= 0.2.4 =
+* Mejorado sistema de verificación de idioma para captura de cadenas
+* Implementado sistema robusto para prevenir duplicados en WPML
+* Optimizado el sistema de caché con persistencia mejorada y control de tamaño
+* Corregido problema de entradas duplicadas en la herramienta de diagnóstico
+* Mejorado rendimiento general reduciendo consultas a la base de datos
 
 = 0.2.3 =
 * Reestructuración del sistema de archivos del plugin

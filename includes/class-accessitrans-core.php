@@ -48,7 +48,7 @@ class AccessiTrans_ARIA_Translator {
     /**
      * Versión del plugin (para gestión de caché)
      */
-    private $version = '0.2.3r';
+    private $version = '0.2.4';
     
     /**
      * Instancias de los componentes
@@ -237,16 +237,79 @@ class AccessiTrans_ARIA_Translator {
     }
     
     /**
-     * Verifica si debe capturar en el idioma actual
+     * Verifica si una cadena ya existe en WPML
+     * @param string $value Valor a verificar
+     * @param string $context Contexto de la cadena (opcional)
+     * @return bool True si existe, False si no
+     */
+    public function exists_in_wpml($value, $context = null) {
+        if (empty($value)) {
+            return false;
+        }
+        
+        $context = $context ?: $this->get_context();
+        
+        global $wpdb;
+        
+        // Buscar por valor exacto
+        $exists = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings 
+             WHERE value = %s AND context = %s",
+            $value,
+            $context
+        ));
+        
+        if ($exists) {
+            return true;
+        }
+        
+        // También buscar por prefijo para cada atributo
+        foreach ($this->get_traducible_attrs() as $attr) {
+            $prefixed_name = "{$attr}_{$value}";
+            
+            $exists = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings 
+                 WHERE name = %s AND context = %s",
+                $prefixed_name,
+                $context
+            ));
+            
+            if ($exists) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Verifica si debe capturar en el idioma actual (método mejorado)
+     * @return bool True si debe capturar, False si no
      */
     public function should_capture_in_current_language() {
+        // Si la opción está desactivada, siempre permitir captura
         if (!$this->options['captura_en_idioma_principal']) {
             return true;
         }
         
+        // Obtener idioma actual y predeterminado con verificación
         $current_language = apply_filters('wpml_current_language', null);
         $default_language = apply_filters('wpml_default_language', null);
         
-        return ($current_language === $default_language);
+        // Si alguno de los idiomas no está definido, ser cauteloso y no capturar
+        if (empty($current_language) || empty($default_language)) {
+            if ($this->options['modo_debug']) {
+                $this->log_debug("No se puede determinar idioma actual o predeterminado");
+            }
+            return false;
+        }
+        
+        $result = ($current_language === $default_language);
+        
+        if ($this->options['modo_debug'] && !$result) {
+            $this->log_debug("Captura omitida - Idioma actual ({$current_language}) no es el principal ({$default_language})");
+        }
+        
+        return $result;
     }
 }
