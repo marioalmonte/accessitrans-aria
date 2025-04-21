@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 0.2.5
+Stable tag: 1.0.0
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -126,10 +126,12 @@ Yes, the plugin works with all types of Elementor content, including global widg
 
 == Screenshots ==
 
-1. Plugin configuration page with capture methods
-2. Adding ARIA attributes in Elementor's Advanced tab
-3. WPML String Translation interface showing ARIA strings
-4. Example of translated ARIA attributes in different languages
+1. Configuration interface showing different capture methods and settings
+2. Elementor's Advanced tab showing where to add custom ARIA attributes
+3. Code transformation process showing how ARIA attributes are processed
+4. WPML String Translation interface displaying ARIA attributes ready for translation
+5. Diagnostic tools interface for troubleshooting translations
+6. Settings interface with activation options for capturing methods
 
 == Usage Instructions ==
 
@@ -196,6 +198,11 @@ For the best experience and website performance, follow these recommendations:
 * Attribute: `aria-description|Navigate through product images`
 
 == Changelog ==
+
+= 1.0.0 =
+* First public release
+* Corrected and updated translation files
+* Ready for WordPress.org repository
 
 = 0.2.5 =
 * Added main toggle to enable/disable scanning for new strings

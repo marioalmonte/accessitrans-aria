@@ -3,9 +3,11 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-6.8-green.svg)](https://wordpress.org/)
 [![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.3-red.svg)](https://elementor.com/)
 [![WPML Compatible](https://img.shields.io/badge/WPML-4.7.3-blue.svg)](https://wpml.org/)
-[![Version](https://img.shields.io/badge/Version-0.2.5-purple.svg)]()
+[![Version](https://img.shields.io/badge/Version-1.0.0-purple.svg)]()
 
 Plugin de WordPress que permite traducir atributos ARIA en sitios Elementor con WPML, mejorando la accesibilidad en entornos multilingües.
+
+![AccessiTrans. ARIA Translator for WPML & Elementor](/.github/assets/banner-accessitrans.png)
 
 ## Descripción
 
@@ -30,11 +32,15 @@ El plugin ofrece varios métodos de captura para asegurar que todos los atributo
 3. **Procesamiento de templates de Elementor**: Procesa los datos de templates de Elementor
 4. **Procesamiento de elementos individuales**: Procesa cada widget y elemento de Elementor individualmente
 
+![Página de configuración del plugin mostrando los métodos de captura disponibles](/.github/assets/screenshots/captura-configuracion-metodos-de-captura.png)
+
 Estos métodos pueden activarse o desactivarse desde la página de configuración del plugin según las necesidades de tu sitio.
 
 ### Formatos de registro para traducción
 
 El plugin registra las cadenas para traducción utilizando el formato `aria-atributo_valor` para obtener la máxima robustez y compatibilidad con el sistema de traducción de cadenas de WPML.
+
+![Interfaz de WPML String Translation con atributos ARIA listos para traducción](/.github/assets/screenshots/screenshot-string-translation-interface.png)
 
 ### Características adicionales
 
@@ -43,6 +49,8 @@ El plugin registra las cadenas para traducción utilizando el formato `aria-atri
 * **Prioridad de traducción configurable**: Ajusta la prioridad de los filtros de traducción
 * **Modo de depuración**: Registro detallado para solución de problemas
 * **Sistema de caché de traducciones**: Sistema de caché persistente que mejora el rendimiento al almacenar las traducciones encontradas
+
+![Interfaz de herramientas de diagnóstico para solucionar problemas de traducción](/.github/assets/screenshots/captura-herramientas-diagnostico.png)
 
 ### Compatibilidad
 
@@ -77,6 +85,8 @@ Funciona con todo tipo de contenido de Elementor:
 3. Busca la sección "Atributos personalizados"
 4. Añade los atributos ARIA que quieras traducir
 
+![Interfaz de Elementor mostrando cómo añadir atributos ARIA personalizados](/.github/assets/screenshots/screenshot-set-custom-aria-attributes.png)
+
 ### Formatos compatibles
 
 Elementor indica: "Configura atributos personalizados para el elemento contenedor. Cada atributo en una línea separada. Separa la clave del atributo del valor usando el carácter `|`."
@@ -96,6 +106,8 @@ aria-description|Otra descripción
 
 Esto generará los atributos HTML correspondientes en el frontend:
 `aria-label="Texto a traducir" aria-description="Otra descripción"`
+
+![Representación visual de cómo se transforman y procesan los atributos ARIA](/.github/assets/screenshots/screenshot-code-transformation.png)
 
 ### Cómo traducir los atributos
 
@@ -165,6 +177,66 @@ El plugin incluye una página de configuración que te permite configurar los m�
 ## Internacionalización
 
 El plugin incluye soporte para internacionalización, lo que lo hace listo para su traducción a múltiples idiomas. Los archivos de traducción deben colocarse en el directorio `/languages`.
+
+## Registro de cambios
+
+### 1.0.0
+* Primera versión pública
+* Corregidos y actualizados los archivos de traducción
+* Listo para el repositorio de WordPress.org
+
+### 0.2.5
+* Añadido interruptor principal para activar/desactivar el escaneo de nuevas cadenas
+* Mejorada toda la interfaz de administración con estructura semántica accesible 
+* Implementados anuncios para lectores de pantalla en procesos interactivos
+* Rediseñada la interfaz con fieldset/legend reemplazando tablas
+* Mejorados los estilos visuales y la activación/desactivación de campos dependientes
+* Optimizado el rendimiento cuando el escaneo está desactivado
+
+### 0.2.4
+* Mejorado sistema de verificación de idioma para captura de cadenas
+* Implementado sistema robusto para prevenir duplicados en WPML
+* Optimizado el sistema de caché con persistencia mejorada y control de tamaño
+* Corregido problema de entradas duplicadas en la herramienta de diagnóstico
+* Mejorado rendimiento general reduciendo consultas a la base de datos
+
+### 0.2.3
+* Añadido sistema de caché de traducciones persistente para mejorar el rendimiento
+* Mejorado algoritmo de búsqueda de traducciones con múltiples métodos alternativos
+* Mejorada la accesibilidad de la interfaz de administración para lectores de pantalla
+* Añadida herramienta de diagnóstico para solucionar problemas de traducción
+* Solucionados problemas con la detección de atributos en plantillas complejas
+
+### 0.2.2
+* Añadida detección del atributo aria-valuetext
+* Mejorado soporte para plantillas de Elementor y widgets globales
+* Mejorada compatibilidad con las últimas versiones de WPML y Elementor
+
+### 0.2.1
+* Solucionados problemas con el registro de cadenas en contextos específicos
+* Mejorado manejo de errores y registro de depuración
+* Mejoras menores en la interfaz de usuario de la página de configuración
+
+### 0.2.0
+* Añadido mecanismo de reintento para traducciones fallidas
+* Añadido botón para forzar actualización y limpiar todas las cachés
+* Mejorada información de depuración con registro detallado
+* Mejorada compatibilidad con WordPress 6.8
+
+### 0.1.0
+* Mejorada la accesibilidad de la página de configuración
+* Mejorada estructura semántica con landmarks ARIA adecuados
+* Mejorado título de página para mejor identificación
+* Añadidos elementos de sección con encabezados semánticos
+
+### 0.0.0
+* Versión inicial con funcionalidad básica
+* Soporte para traducir aria-label, aria-description, aria-roledescription y aria-placeholder
+* Múltiples métodos de captura para detección exhaustiva
+* Integración con WPML String Translation
+* Página de configuración administrativa
+* Modo de depuración para solución de problemas
+* Compatibilidad con todos los tipos de contenido de Elementor
 
 ## Contribuciones
 

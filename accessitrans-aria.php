@@ -3,7 +3,7 @@
  * Plugin Name: AccessiTrans - ARIA Translator for WPML & Elementor
  * Plugin URI: https://github.com/marioalmonte/accessitrans-aria
  * Description: Traduce atributos ARIA en Elementor utilizando WPML, mejorando la accesibilidad de tu sitio web multilingüe. Desarrollado por un profesional certificado en Accesibilidad Web (CPWA).
- * Version: 0.2.5
+ * Version: 1.0.0
  * Author: Mario Germán Almonte Moreno
  * Author URI: https://www.linkedin.com/in/marioalmonte/
  * Text Domain: accessitrans-aria
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Definir constantes del plugin
-define('ACCESSITRANS_VERSION', '0.2.5');
+define('ACCESSITRANS_VERSION', '1.0.0');
 define('ACCESSITRANS_PATH', plugin_dir_path(__FILE__));
 define('ACCESSITRANS_URL', plugin_dir_url(__FILE__));
 

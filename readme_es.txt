@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 0.2.5
+Stable tag: 1.0.0
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -126,10 +126,11 @@ Sí, el plugin funciona con todos los tipos de contenido de Elementor, incluidos
 
 == Capturas de pantalla ==
 
-1. Página de configuración del plugin con métodos de captura
-2. Añadiendo atributos ARIA en la pestaña Avanzado de Elementor
-3. Interfaz de WPML String Translation mostrando cadenas ARIA
-4. Ejemplo de atributos ARIA traducidos en diferentes idiomas
+1. Interfaz de configuración mostrando los diferentes métodos de captura
+2. Pestaña Avanzado de Elementor mostrando dónde añadir atributos ARIA
+3. Proceso de transformación de código mostrando cómo se procesan los atributos ARIA
+4. Interfaz de WPML String Translation mostrando atributos ARIA listos para traducción
+5. Interfaz de herramientas de diagnóstico para solucionar problemas de traducción
 
 == Instrucciones de uso ==
 
@@ -196,6 +197,11 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Atributo: `aria-description|Navega por las imágenes del producto`
 
 == Registro de cambios ==
+
+= 1.0.0 =
+* Primera versión pública
+* Corregidos y actualizados los archivos de traducción
+* Listo para el repositorio de WordPress.org
 
 = 0.2.5 =
 * Añadido interruptor principal para activar/desactivar el escaneo de nuevas cadenas
