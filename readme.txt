@@ -253,17 +253,6 @@ For the best experience and website performance, follow these recommendations:
 * Debug mode for troubleshooting
 * Compatibility with all Elementor content types
 
-== Upgrade Notice ==
-
-= 0.2.3 =
-This update adds a translation cache system for improved performance, enhanced diagnostic tools, and fixes issues with complex templates. Accessibility improvements for admin interface included.
-
-= 0.2.0 =
-This version introduces a translation retry mechanism, a force refresh function, and improved debugging capabilities.
-
-= 0.1.0 =
-This update improves the accessibility of the plugin's configuration page with better semantic structure and screen reader support.
-
 == Author ==
 
 Developed by Mario Germán Almonte Moreno:

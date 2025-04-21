@@ -253,17 +253,6 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Modo de depuración para solución de problemas
 * Compatibilidad con todos los tipos de contenido de Elementor
 
-== Aviso de actualización ==
-
-= 0.2.3 =
-Esta actualización añade un sistema de caché de traducciones para mejorar el rendimiento, herramientas de diagnóstico mejoradas y soluciona problemas con plantillas complejas. Incluye mejoras de accesibilidad para la interfaz de administración.
-
-= 0.2.0 =
-Esta versión introduce un mecanismo de reintento para traducciones fallidas, una función para forzar actualizaciones y capacidades de depuración mejoradas.
-
-= 0.1.0 =
-Esta actualización mejora la accesibilidad de la página de configuración del plugin con mejor estructura semántica y soporte para lectores de pantalla.
-
 == Autor ==
 
 Desarrollado por Mario Germán Almonte Moreno:
