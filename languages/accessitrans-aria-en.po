@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AccessiTrans - ARIA Translator for WPML & Elementor 0.2.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/accessitrans-aria\n"
-"POT-Creation-Date: 2025-04-20T00:00:00+00:00\n"
-"PO-Revision-Date: 2025-04-21 14:37+0200\n"
+"POT-Creation-Date: 2025-04-21T00:00:00+00:00\n"
+"PO-Revision-Date: 2025-04-22 20:28+0200\n"
 "Last-Translator: Mario Germán Almonte <email@example.com>\n"
 "Language-Team: English <en@example.com>\n"
 "Language: en\n"
@@ -137,6 +137,10 @@ msgstr "String scanning disabled. Changes have been saved."
 msgid "Configuración general del plugin."
 msgstr "General plugin settings."
 
+#: includes/class-accessitrans-admin.php:184
+msgid "No se proporcionó ninguna cadena para verificar."
+msgstr "No string was provided for verification."
+
 #: includes/class-accessitrans-admin.php:190
 #: includes/class-accessitrans-admin.php:639
 msgid "Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta."
@@ -145,6 +149,10 @@ msgstr "Configure ARIA attribute capture methods. You can activate multiple meth
 #: includes/class-accessitrans-admin.php:198
 msgid "Configuración avanzada para rendimiento y depuración."
 msgstr "Advanced settings for performance and debugging."
+
+#: includes/class-accessitrans-admin.php:225
+msgid "Caché de traducciones actualizada correctamente."
+msgstr "Translation cache successfully updated."
 
 #: includes/class-accessitrans-admin.php:486
 #: includes/class-accessitrans-admin.php:492
@@ -381,9 +389,12 @@ msgid "Error: No se ha ingresado una cadena para verificar."
 msgstr "Error: No string has been entered to verify."
 
 #: includes/class-accessitrans-admin.php:961
-#: includes/class-accessitrans-admin.php:962
 msgid "Analizando..."
 msgstr "Analyzing..."
+
+#: includes/class-accessitrans-admin.php:962
+msgid "Analizando cadena..."
+msgstr "Analyzing string..."
 
 #: includes/class-accessitrans-admin.php:981
 msgid "Resultados del diagnóstico:"
@@ -484,9 +495,12 @@ msgid "Error al realizar el análisis. No se pudo contactar con el servidor."
 msgstr "Error performing the analysis. Could not contact the server."
 
 #: includes/class-accessitrans-admin.php:1097
-#: includes/class-accessitrans-admin.php:1098
 msgid "Verificando..."
 msgstr "Verifying..."
+
+#: includes/class-accessitrans-admin.php:1098
+msgid "Verificando estado del sistema..."
+msgstr "Verifying system status..."
 
 #: includes/class-accessitrans-admin.php:1107
 msgid "Estado del sistema:"

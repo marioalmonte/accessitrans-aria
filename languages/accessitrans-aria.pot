@@ -463,8 +463,12 @@ msgstr ""
 msgid "Error al realizar el análisis. No se pudo contactar con el servidor."
 msgstr ""
 
-#: includes/class-accessitrans-admin.php:1097 includes/class-accessitrans-admin.php:1098
+#: includes/class-accessitrans-admin.php:1097
 msgid "Verificando..."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:1098
+msgid "Verificando estado del sistema..."
 msgstr ""
 
 #: includes/class-accessitrans-admin.php:1107
@@ -561,4 +565,16 @@ msgstr ""
 
 #: includes/class-accessitrans-diagnostics.php:81
 msgid "Por favor, proporciona una cadena para verificar."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:184
+msgid "No se proporcionó ninguna cadena para verificar."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:225
+msgid "Caché de traducciones actualizada correctamente."
+msgstr ""
+
+#: includes/class-accessitrans-admin.php:962
+msgid "Analizando cadena..."
 msgstr ""
