@@ -88,6 +88,27 @@ class AccessiTrans_Translator {
             return;
         }
         
+        // Verificación previa para omitir registro si está desactivado
+        if (!isset($this->core->options['permitir_escaneo']) || !$this->core->options['permitir_escaneo']) {
+            if ($this->core->options['modo_debug']) {
+                $this->core->log_debug("Omitiendo registro de '{$value}' - escaneo desactivado globalmente");
+            }
+            return;
+        }
+        
+        // Verificación adicional para entorno admin
+        if (is_admin()) {
+            $current_language = apply_filters('wpml_current_language', null);
+            $default_language = apply_filters('wpml_default_language', null);
+            
+            if ($current_language !== $default_language) {
+                if ($this->core->options['modo_debug']) {
+                    $this->core->log_debug("Admin: Ignorando registro de cadena '{$value}' porque idioma actual ({$current_language}) != ({$default_language})");
+                }
+                return;
+            }
+        }
+        
         // Verificar si estamos en el idioma principal (doble verificación)
         if (!$this->core->should_capture_in_current_language()) {
             if ($this->core->options['modo_debug']) {
@@ -247,6 +268,10 @@ class AccessiTrans_Translator {
             return $content;
         }
         
+        // Obtener el idioma actual y predeterminado
+        $current_language = apply_filters('wpml_current_language', null);
+        $default_language = apply_filters('wpml_default_language', null);
+        
         // Crear patrón regex para todos los atributos traducibles
         $attrs_pattern = implode('|', array_map(function($attr) {
             return preg_quote($attr, '/');
@@ -255,7 +280,7 @@ class AccessiTrans_Translator {
         $pattern = '/\s(' . $attrs_pattern . ')\s*=\s*([\'"])((?:(?!\2).)*)\2/is';
         
         // Traducir atributos
-        $result = preg_replace_callback($pattern, function($matches) {
+        $result = preg_replace_callback($pattern, function($matches) use ($current_language, $default_language) {
             $attr_name = $matches[1];
             $quote_type = $matches[2];
             $attr_value = $matches[3];
@@ -266,6 +291,28 @@ class AccessiTrans_Translator {
             
             // Normalizar el valor
             $attr_value = $this->prepare_string($attr_value);
+            
+            // Si no estamos en el idioma predeterminado, y la cadena ya parece estar traducida,
+            // no intentar traducirla nuevamente para evitar mensajes "NO TRADUCIDO" innecesarios
+            if ($current_language !== $default_language) {
+                // Verificar si la cadena ya está traducida consultando si existe en la base de datos
+                global $wpdb;
+                
+                // Buscar si existe alguna traducción para la cadena original en inglés
+                // que coincida con el valor actual (posiblemente ya traducido)
+                $is_already_translated = $wpdb->get_var($wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}icl_string_translations st
+                    JOIN {$wpdb->prefix}icl_strings s ON st.string_id = s.id
+                    WHERE st.value = %s AND st.language = %s",
+                    $attr_value,
+                    $current_language
+                ));
+                
+                if ($is_already_translated) {
+                    // La cadena actual ya es una traducción, mantenerla como está
+                    return " {$attr_name}={$quote_type}{$attr_value}{$quote_type}";
+                }
+            }
             
             // Obtener traducción usando nuestro método mejorado
             $translated = $this->get_translation($attr_name, $attr_value, $attr_value);

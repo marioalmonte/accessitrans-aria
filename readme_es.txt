@@ -1,6 +1,6 @@
 === AccessiTrans - ARIA Translator for WPML & Elementor ===
 Contributors: marioalmonte
-Tags: accessibility, aria, elementor, wpml, translation, wcag, multilingual, a11y
+Tags: accessibility, aria, elementor, wpml, translation
 Requires at least: 5.6
 Tested up to: 6.8
 Stable tag: 1.0.0

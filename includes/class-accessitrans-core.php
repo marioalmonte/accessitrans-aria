@@ -223,19 +223,30 @@ class AccessiTrans_ARIA_Translator {
     }
     
     /**
-     * Logger para debug optimizado
+     * Logger para debug optimizado y seguro
+     * 
+     * @param mixed $message Mensaje o datos a registrar
+     * @return void
      */
     public function log_debug($message) {
-        if (!$this->options['modo_debug']) {
+        // Verificar primero si el modo debug está activo
+        if (empty($this->options['modo_debug'])) {
             return;
         }
         
         $log_file = WP_CONTENT_DIR . '/debug-aria-wpml.log';
+        $timestamp = gmdate('[Y-m-d H:i:s] ');
         
         if (is_array($message) || is_object($message)) {
-            error_log(date('[Y-m-d H:i:s] ') . print_r($message, true) . PHP_EOL, 3, $log_file);
+            // Usar una forma segura de convertir arrays/objetos a string para log
+            $formatted_message = var_export($message, true);
+            // Escribir con marca de tiempo UTC
+            error_log($timestamp . $formatted_message . PHP_EOL, 3, $log_file);
         } else {
-            error_log(date('[Y-m-d H:i:s] ') . $message . PHP_EOL, 3, $log_file);
+            // Asegurar que el mensaje es una cadena
+            $safe_message = sanitize_text_field($message);
+            // Escribir con marca de tiempo UTC
+            error_log($timestamp . $safe_message . PHP_EOL, 3, $log_file);
         }
     }
     
@@ -291,8 +302,16 @@ class AccessiTrans_ARIA_Translator {
      */
     public function should_capture_in_current_language() {
         // Si la opción está desactivada, siempre permitir captura
-        if (!$this->options['captura_en_idioma_principal']) {
+        if (!isset($this->options['captura_en_idioma_principal']) || !$this->options['captura_en_idioma_principal']) {
             return true;
+        }
+        
+        // Verificar si WPML está disponible antes de usar sus filtros
+        if (!function_exists('icl_object_id') || !function_exists('apply_filters')) {
+            if ($this->options['modo_debug']) {
+                $this->log_debug("WPML no está completamente inicializado - omitiendo captura por precaución");
+            }
+            return false;
         }
         
         // Obtener idioma actual y predeterminado con verificación
@@ -322,11 +341,25 @@ class AccessiTrans_ARIA_Translator {
      */
     public function should_capture() {
         // Si la captura está globalmente desactivada, no realizar captura
-        if (isset($this->options['permitir_escaneo']) && !$this->options['permitir_escaneo']) {
+        if (!isset($this->options['permitir_escaneo']) || !$this->options['permitir_escaneo']) {
             if ($this->options['modo_debug']) {
                 $this->log_debug("Captura omitida - Escaneo global desactivado");
             }
             return false;
+        }
+        
+        // Verificación especial para entorno de administración
+        if (is_admin() && !wp_doing_ajax()) {
+            // En admin, ser extra cauteloso y verificar explícitamente idioma
+            $current_language = apply_filters('wpml_current_language', null);
+            $default_language = apply_filters('wpml_default_language', null);
+            
+            if ($current_language !== $default_language) {
+                if ($this->options['modo_debug']) {
+                    $this->log_debug("Captura omitida en admin - Idioma actual ({$current_language}) no es el principal ({$default_language})");
+                }
+                return false;
+            }
         }
         
         // Verificar idioma actual

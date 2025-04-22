@@ -40,7 +40,7 @@ class AccessiTrans_Diagnostics {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
             return;
         }
         
@@ -83,7 +83,7 @@ class AccessiTrans_Diagnostics {
         }
         
         // Responder al AJAX
-        wp_send_json_success(__('Actualización completada correctamente.', 'accessitrans-aria'));
+        wp_send_json_success(esc_html__('Actualización completada correctamente.', 'accessitrans-aria'));
     }
     
     /**
@@ -95,14 +95,14 @@ class AccessiTrans_Diagnostics {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
             return;
         }
         
-        $string_to_check = isset($_POST['string']) ? sanitize_text_field($_POST['string']) : '';
+        $string_to_check = isset($_POST['string']) ? sanitize_text_field(wp_unslash($_POST['string'])) : '';
         
         if (empty($string_to_check)) {
-            wp_send_json_error(__('Por favor, proporciona una cadena para verificar.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('Por favor, proporciona una cadena para verificar.', 'accessitrans-aria'));
             return;
         }
         
@@ -122,7 +122,7 @@ class AccessiTrans_Diagnostics {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
             return;
         }
         
@@ -134,10 +134,23 @@ class AccessiTrans_Diagnostics {
     }
     
     /**
+     * Verifica el estado general de las traducciones y el plugin
+     * Método público para ser llamado desde otras clases
+     * 
+     * @return array Datos de salud del sistema
+     */
+    public function check_health() {
+        return $this->check_translation_health();
+    }
+    
+    /**
      * Diagnóstica problemas con una traducción específica (método mejorado)
      * Este método busca la cadena directamente en la base de datos de WPML
+     * 
+     * @param string $string_to_check Cadena a diagnosticar
+     * @return array Resultados del diagnóstico
      */
-    private function diagnose_translation_improved($string_to_check) {
+    public function diagnose_translation_improved($string_to_check) {
         global $wpdb;
         
         // Preparar la cadena (normalización)
@@ -154,50 +167,51 @@ class AccessiTrans_Diagnostics {
         $has_current_language_translation = false;
         
         // Búsqueda directa por valor
-        $exact_match_sql = $wpdb->prepare(
-            "SELECT s.id, s.name, s.value 
-             FROM {$wpdb->prefix}icl_strings s
-             WHERE s.value = %s 
-             AND s.context = %s",
-            $string_to_check,
-            $this->core->get_context()
+        $exact_results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT s.id, s.name, s.value 
+                 FROM {$wpdb->prefix}icl_strings s
+                 WHERE s.value = %s 
+                 AND s.context = %s",
+                $string_to_check,
+                $this->core->get_context()
+            )
         );
-        
-        $exact_results = $wpdb->get_results($exact_match_sql);
         
         // Búsqueda por nombre (formato de prefijo)
         $prefix_results = [];
         foreach ($this->core->get_traducible_attrs() as $attr) {
             $prefixed_name = "{$attr}_{$string_to_check}";
             
-            $prefix_match_sql = $wpdb->prepare(
-                "SELECT s.id, s.name, s.value 
-                 FROM {$wpdb->prefix}icl_strings s
-                 WHERE s.name = %s 
-                 AND s.context = %s",
-                $prefixed_name,
-                $this->core->get_context()
+            $result = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT s.id, s.name, s.value 
+                     FROM {$wpdb->prefix}icl_strings s
+                     WHERE s.name = %s 
+                     AND s.context = %s",
+                    $prefixed_name,
+                    $this->core->get_context()
+                )
             );
             
-            $result = $wpdb->get_results($prefix_match_sql);
             if (!empty($result)) {
                 $prefix_results = array_merge($prefix_results, $result);
             }
         }
         
         // Búsqueda parcial (para textos que contienen la cadena buscada)
-        $partial_match_sql = $wpdb->prepare(
-            "SELECT s.id, s.name, s.value 
-             FROM {$wpdb->prefix}icl_strings s
-             WHERE (s.value LIKE %s OR s.name LIKE %s)
-             AND s.context = %s
-             LIMIT 10", // Limitamos para evitar muchos resultados irrelevantes
-            "%{$string_to_check}%",
-            "%{$string_to_check}%",
-            $this->core->get_context()
+        $partial_results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT s.id, s.name, s.value 
+                 FROM {$wpdb->prefix}icl_strings s
+                 WHERE (s.value LIKE %s OR s.name LIKE %s)
+                 AND s.context = %s
+                 LIMIT 10", // Limitamos para evitar muchos resultados irrelevantes
+                '%' . $wpdb->esc_like($string_to_check) . '%',
+                '%' . $wpdb->esc_like($string_to_check) . '%',
+                $this->core->get_context()
+            )
         );
-        
-        $partial_results = $wpdb->get_results($partial_match_sql);
         
         // Combinamos resultados, priorizando coincidencias exactas
         $all_results = array_merge($exact_results, $prefix_results);
@@ -218,6 +232,9 @@ class AccessiTrans_Diagnostics {
             }
         }
         
+        // Para guardar las consultas SQL para debug
+        $debug_queries = [];
+        
         // Procesamos los resultados encontrados
         if (!empty($unique_results)) {
             foreach ($unique_results as $result) {
@@ -228,14 +245,14 @@ class AccessiTrans_Diagnostics {
                 ];
                 
                 // Verificar si tiene traducciones
-                $trans_sql = $wpdb->prepare(
-                    "SELECT st.language, st.value 
-                     FROM {$wpdb->prefix}icl_string_translations st
-                     WHERE st.string_id = %d",
-                    $result->id
+                $trans_results = $wpdb->get_results(
+                    $wpdb->prepare(
+                        "SELECT st.language, st.value 
+                         FROM {$wpdb->prefix}icl_string_translations st
+                         WHERE st.string_id = %d",
+                        $result->id
+                    )
                 );
-                
-                $trans_results = $wpdb->get_results($trans_sql);
                 
                 if (!empty($trans_results)) {
                     $has_translations = true;
@@ -256,7 +273,6 @@ class AccessiTrans_Diagnostics {
             $translation_cache_size = $this->core->translator->get_translation_cache_size();
             
             $debug_info = [
-                'query_exact' => $exact_match_sql,
                 'exact_count' => count($exact_results),
                 'prefix_count' => count($prefix_results),
                 'partial_count' => count($partial_results),
@@ -283,23 +299,29 @@ class AccessiTrans_Diagnostics {
     
     /**
      * Verifica el estado general de las traducciones y el plugin
+     *
+     * @return array Datos sobre el estado general del sistema
      */
     private function check_translation_health() {
         global $wpdb;
         
         // Contar cadenas registradas
-        $string_count = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings WHERE context = %s",
-            $this->core->get_context()
-        ));
+        $string_count = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->prefix}icl_strings WHERE context = %s",
+                $this->core->get_context()
+            )
+        );
         
         // Contar traducciones
-        $translation_count = $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}icl_string_translations st 
-             JOIN {$wpdb->prefix}icl_strings s ON st.string_id = s.id
-             WHERE s.context = %s",
-            $this->core->get_context()
-        ));
+        $translation_count = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->prefix}icl_string_translations st 
+                 JOIN {$wpdb->prefix}icl_strings s ON st.string_id = s.id
+                 WHERE s.context = %s",
+                $this->core->get_context()
+            )
+        );
         
         // Obtener idiomas
         $languages = [];
@@ -323,7 +345,7 @@ class AccessiTrans_Diagnostics {
             'elementor_active' => did_action('elementor/loaded'),
             'languages' => $languages,
             'options' => $this->core->options,
-            'system_time' => current_time('mysql'),
+            'system_time' => gmdate('Y-m-d H:i:s'),
             'plugin_version' => $this->core->get_version()
         ];
     }

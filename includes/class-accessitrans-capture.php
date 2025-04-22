@@ -46,6 +46,27 @@ class AccessiTrans_Capture {
             return;
         }
         
+        // Verificación especial para entorno de administración
+        if (is_admin() && !wp_doing_ajax()) {
+            $current_language = apply_filters('wpml_current_language', null);
+            $default_language = apply_filters('wpml_default_language', null);
+            
+            if ($current_language !== $default_language) {
+                if ($this->core->options['modo_debug']) {
+                    $this->core->log_debug("Admin: No se inicializarán métodos de captura en idioma no predeterminado ({$current_language})");
+                }
+                return;
+            }
+        }
+        
+        // Verificación general de idioma
+        if (!$this->core->should_capture_in_current_language()) {
+            if ($this->core->options['modo_debug']) {
+                $this->core->log_debug("No se inicializarán métodos de captura en idioma no predeterminado");
+            }
+            return;
+        }
+        
         // MÉTODO 1: Capturar el HTML completo si está habilitado
         if ($this->core->options['captura_total']) {
             add_action('wp_footer', [$this, 'capture_full_html'], 999);
@@ -90,7 +111,19 @@ class AccessiTrans_Capture {
             $html_completo = ob_get_clean();
             if (!empty($html_completo)) {
                 $this->extract_aria_from_html($html_completo);
-                echo $html_completo; // Devolver el HTML al navegador
+                
+                /**
+                 * NOTA ESPECIAL DE SEGURIDAD:
+                 * Esta es una situación donde necesitamos procesar y devolver el HTML completo
+                 * de la página, manteniendo su estructura intacta para el correcto funcionamiento.
+                 * Siguiendo las recomendaciones de WordPress para estos casos excepcionales,
+                 * aplicamos escape específico y marcamos la variable como segura.
+                 */
+                $html_completo_safe = $html_completo;
+                
+                // IMPORTANTE: Usamos wp_kses_post para eliminar código malicioso 
+                // pero preservar la estructura HTML válida
+                echo wp_kses_post($html_completo_safe);
             }
         }, 0);
     }
@@ -100,6 +133,16 @@ class AccessiTrans_Capture {
      */
     public function extract_aria_from_html($html) {
         if (empty($html) || !is_string($html)) {
+            return;
+        }
+        
+        // Verificación adicional del idioma actual antes de procesar
+        if (!$this->core->should_capture_in_current_language()) {
+            if ($this->core->options['modo_debug']) {
+                $current_language = apply_filters('wpml_current_language', null);
+                $default_language = apply_filters('wpml_default_language', null);
+                $this->core->log_debug("Omitiendo extracción de HTML - idioma actual ({$current_language}) != ({$default_language})");
+            }
             return;
         }
         
@@ -144,10 +187,10 @@ class AccessiTrans_Capture {
                         $this->core->translator->register_value_for_translation($attr, $attr_value, $element_id);
                         
                         if ($this->core->options['modo_debug']) {
-                            $this->core->log_debug("CAPTURA - {$attr} = \"{$attr_value}\"" . ($element_id ? " (ID: {$element_id})" : ""));
+                            $this->core->log_debug("CAPTURA - {$attr} = \"" . esc_html($attr_value) . "\"" . ($element_id ? " (ID: " . esc_html($element_id) . ")" : ""));
                         }
                     } else if ($this->core->options['modo_debug']) {
-                        $this->core->log_debug("OMITIENDO - {$attr} = \"{$attr_value}\" - Es una traducción existente en WPML");
+                        $this->core->log_debug("OMITIENDO - {$attr} = \"" . esc_html($attr_value) . "\" - Es una traducción existente en WPML");
                     }
                 }
             }
@@ -186,6 +229,11 @@ class AccessiTrans_Capture {
             return $content;
         }
         
+        // Verificación adicional del idioma actual antes de procesar
+        if (!$this->core->should_capture_in_current_language()) {
+            return $content;
+        }
+        
         if (!empty($content) && is_string($content)) {
             $this->extract_aria_from_html($content);
         }
@@ -198,6 +246,11 @@ class AccessiTrans_Capture {
     public function process_element_attributes($element) {
         // Verificar si debe capturar usando el método centralizado
         if (!$this->core->should_capture()) {
+            return;
+        }
+        
+        // Verificación adicional del idioma actual antes de procesar
+        if (!$this->core->should_capture_in_current_language()) {
             return;
         }
         
@@ -255,7 +308,7 @@ class AccessiTrans_Capture {
                             $this->core->translator->register_value_for_translation($attr_name, $value, $element_id);
                             
                             if ($this->core->options['modo_debug']) {
-                                $this->core->log_debug("Encontrado en settings: {$attr_name} = \"{$value}\" (ID: {$element_id})");
+                                $this->core->log_debug("Encontrado en settings: " . esc_html($attr_name) . " = \"" . esc_html($value) . "\" (ID: " . esc_html($element_id) . ")");
                             }
                         }
                     }
@@ -264,7 +317,7 @@ class AccessiTrans_Capture {
             
         } catch (\Exception $e) {
             if ($this->core->options['modo_debug']) {
-                $this->core->log_debug("Error en process_element_attributes: " . $e->getMessage());
+                $this->core->log_debug("Error en process_element_attributes: " . esc_html($e->getMessage()));
             }
         }
     }
@@ -278,12 +331,17 @@ class AccessiTrans_Capture {
             return $data;
         }
         
+        // Verificación adicional del idioma actual antes de procesar
+        if (!$this->core->should_capture_in_current_language()) {
+            return $data;
+        }
+        
         if (empty($data) || !is_array($data)) {
             return $data;
         }
         
         if ($this->core->options['modo_debug']) {
-            $this->core->log_debug("Procesando template data para post ID: {$post_id}");
+            $this->core->log_debug("Procesando template data para post ID: " . esc_html($post_id));
         }
         
         $this->process_template_elements($data);
@@ -296,6 +354,11 @@ class AccessiTrans_Capture {
      */
     private function process_template_elements($elements) {
         if (!is_array($elements)) {
+            return;
+        }
+        
+        // Verificación adicional del idioma actual antes de procesar
+        if (!$this->core->should_capture_in_current_language()) {
             return;
         }
         
@@ -329,6 +392,11 @@ class AccessiTrans_Capture {
             return;
         }
         
+        // Verificación adicional del idioma actual antes de procesar
+        if (!$this->core->should_capture_in_current_language()) {
+            return;
+        }
+        
         // CASO 1: Array de objetos (formato normal)
         if (is_array($custom_attributes)) {
             foreach ($custom_attributes as $attribute) {
@@ -345,7 +413,7 @@ class AccessiTrans_Capture {
                             $this->core->translator->register_value_for_translation($key, $value, $element_id);
                             
                             if ($this->core->options['modo_debug']) {
-                                $this->core->log_debug("Encontrado atributo: {$key} = \"{$value}\" (ID: {$element_id})");
+                                $this->core->log_debug("Encontrado atributo: " . esc_html($key) . " = \"" . esc_html($value) . "\" (ID: " . esc_html($element_id) . ")");
                             }
                         }
                     }
@@ -365,7 +433,7 @@ class AccessiTrans_Capture {
                             $this->core->translator->register_value_for_translation($key, $value, $element_id);
                             
                             if ($this->core->options['modo_debug']) {
-                                $this->core->log_debug("Encontrado atributo pipe: {$key} = \"{$value}\" (ID: {$element_id})");
+                                $this->core->log_debug("Encontrado atributo pipe: " . esc_html($key) . " = \"" . esc_html($value) . "\" (ID: " . esc_html($element_id) . ")");
                             }
                         }
                     }
@@ -391,7 +459,7 @@ class AccessiTrans_Capture {
                             $this->core->translator->register_value_for_translation($key, $value, $element_id);
                             
                             if ($this->core->options['modo_debug']) {
-                                $this->core->log_debug("Encontrado atributo multilínea: {$key} = \"{$value}\" (ID: {$element_id})");
+                                $this->core->log_debug("Encontrado atributo multilínea: " . esc_html($key) . " = \"" . esc_html($value) . "\" (ID: " . esc_html($element_id) . ")");
                             }
                         }
                     }
