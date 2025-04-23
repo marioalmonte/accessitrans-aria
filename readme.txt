@@ -49,7 +49,6 @@ The plugin offers several capture methods to ensure that all ARIA attributes are
 = Advanced Settings =
 
 * **Retry Failed Translations**: Automatically retries translations that failed on first attempt
-* **Translation Priority**: Configure the priority of translation filters
 * **Debug Mode**: Enables detailed event logging
 * **Admin-Only Capture**: Limits resource-intensive capture methods to admin users
 * **Capture in Primary Language Only**: Only captures strings when browsing in the default language
@@ -66,7 +65,7 @@ Works with all types of Elementor content:
 
 **Tested with:**
 * WordPress 6.8
-* Elementor 3.28.3
+* Elementor 3.28.4
 * WPML Multilingual CMS 4.7.3
 * WPML String Translation 3.3.2
 

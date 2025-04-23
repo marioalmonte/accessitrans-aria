@@ -1372,7 +1372,7 @@ class AccessiTrans_Admin {
     public function after_plugin_row($plugin_file, $plugin_data, $status) {
         if (plugin_basename(ACCESSITRANS_PATH . 'accessitrans-aria.php') == $plugin_file) {
             echo '<tr class="plugin-update-tr active"><td colspan="4" class="plugin-update colspanchange"><div class="notice inline notice-info" style="margin:0; padding:5px;">';
-            echo '<strong>' . esc_html__('Compatibilidad verificada:', 'accessitrans-aria') . '</strong> WordPress 6.7-6.8, Elementor 3.28.3, WPML Multilingual CMS 4.7.3, WPML String Translation 3.3.2.';
+            echo '<strong>' . esc_html__('Compatibilidad verificada:', 'accessitrans-aria') . '</strong> WordPress 6.7-6.8, Elementor 3.28.4, WPML Multilingual CMS 4.7.3, WPML String Translation 3.3.2.';
             echo '</div></td></tr>';
         }
     }

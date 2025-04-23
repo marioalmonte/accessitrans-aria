@@ -1,7 +1,7 @@
 # AccessiTrans - ARIA Translator for WPML & Elementor
 
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-6.8-green.svg)](https://wordpress.org/)
-[![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.3-red.svg)](https://elementor.com/)
+[![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.4-red.svg)](https://elementor.com/)
 [![WPML Compatible](https://img.shields.io/badge/WPML-4.7.3-blue.svg)](https://wpml.org/)
 [![Version](https://img.shields.io/badge/Version-1.0.0-purple.svg)]()
 
@@ -46,7 +46,6 @@ El plugin registra las cadenas para traducción utilizando el formato `aria-atri
 
 * **Mecanismo de reintento de traducciones**: Reintenta automáticamente las traducciones fallidas para mejorar la tasa de éxito
 * **Función de actualización forzada**: Botón para limpiar todas las cachés y forzar la actualización de traducciones
-* **Prioridad de traducción configurable**: Ajusta la prioridad de los filtros de traducción
 * **Modo de depuración**: Registro detallado para solución de problemas
 * **Sistema de caché de traducciones**: Sistema de caché persistente que mejora el rendimiento al almacenar las traducciones encontradas
 
@@ -64,7 +63,7 @@ Funciona con todo tipo de contenido de Elementor:
 
 **Probado con:**
 * WordPress 6.8
-* Elementor 3.28.3
+* Elementor 3.28.4
 * WPML Multilingual CMS 4.7.3
 * WPML String Translation 3.3.2
 
@@ -107,8 +106,6 @@ aria-description|Otra descripción
 Esto generará los atributos HTML correspondientes en el frontend:
 `aria-label="Texto a traducir" aria-description="Otra descripción"`
 
-![Representación visual de cómo se transforman y procesan los atributos ARIA](/.github/assets/screenshots/screenshot-code-transformation.png)
-
 ### Cómo traducir los atributos
 
 1. Una vez añadidos los atributos, guarda la página o template
@@ -117,6 +114,8 @@ Esto generará los atributos HTML correspondientes en el frontend:
 4. Traduce las cadenas como lo harías normalmente en WPML
 
 **Nota:** Cada texto puede aparecer varias veces con diferentes identificadores. Esto es normal y forma parte del mecanismo que asegura que las traducciones funcionen en todos los tipos de contenido y métodos de captura.
+
+![Representación visual de cómo se transforman y procesan los atributos ARIA](/.github/assets/screenshots/screenshot-code-transformation.png)
 
 ## Mejores prácticas
 

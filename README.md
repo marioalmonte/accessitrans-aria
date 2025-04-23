@@ -1,7 +1,7 @@
 # AccessiTrans - ARIA Translator for WPML & Elementor
 
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-6.8-green.svg)](https://wordpress.org/)
-[![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.3-red.svg)](https://elementor.com/)
+[![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.4-red.svg)](https://elementor.com/)
 [![WPML Compatible](https://img.shields.io/badge/WPML-4.7.3-blue.svg)](https://wpml.org/)
 [![Version](https://img.shields.io/badge/Version-1.0.0-purple.svg)]()
 
@@ -46,7 +46,6 @@ The plugin registers strings for translation using the format `aria-attribute_va
 
 * **Translation Retry Mechanism**: Automatically retries failed translations to improve success rate
 * **Force Refresh Function**: Button to clear all caches and force update translations
-* **Configurable Translation Priority**: Adjust the priority of translation filters
 * **Debug Mode**: Detailed logging for troubleshooting
 * **Translation Cache System**: Persistent cache system that improves performance by storing found translations
 
@@ -64,7 +63,7 @@ Works with all types of Elementor content:
 
 **Tested with:**
 * WordPress 6.8
-* Elementor 3.28.3
+* Elementor 3.28.4
 * WPML Multilingual CMS 4.7.3
 * WPML String Translation 3.3.2
 
@@ -107,8 +106,6 @@ aria-description|Another description
 This will generate the corresponding HTML attributes in the frontend:
 `aria-label="Text to translate" aria-description="Another description"`
 
-![Visual representation of how ARIA attributes are transformed and processed](/.github/assets/screenshots/screenshot-code-transformation.png)
-
 ### How to translate the attributes
 
 1. Once you've added the attributes, save the page or template
@@ -117,6 +114,8 @@ This will generate the corresponding HTML attributes in the frontend:
 4. Translate the strings as you would with any other text in WPML
 
 **Note:** Each text might appear multiple times with different identifiers. This is normal and part of the mechanism that ensures translations work in all content types and capture methods.
+
+![Visual representation of how ARIA attributes are transformed and processed](/.github/assets/screenshots/screenshot-code-transformation.png)
 
 ## Best Practices
 

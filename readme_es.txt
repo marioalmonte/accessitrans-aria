@@ -49,7 +49,6 @@ El plugin ofrece varios métodos de captura para asegurar que todos los atributo
 = Configuración avanzada =
 
 * **Reintentar traducciones fallidas**: Reintenta automáticamente las traducciones que fallaron en el primer intento
-* **Prioridad de traducción**: Configura la prioridad de los filtros de traducción
 * **Modo de depuración**: Activa el registro detallado de eventos
 * **Captura solo para administradores**: Limita los métodos de captura intensivos en recursos a usuarios administradores
 * **Captura solo en idioma principal**: Solo captura cadenas al navegar en el idioma predeterminado
@@ -66,7 +65,7 @@ Funciona con todo tipo de contenido de Elementor:
 
 **Versiones probadas:**
 * WordPress 6.8
-* Elementor 3.28.3
+* Elementor 3.28.4
 * WPML Multilingual CMS 4.7.3
 * WPML String Translation 3.3.2
 
