@@ -48,7 +48,7 @@ class AccessiTrans_ARIA_Translator {
     /**
      * Versión del plugin (para gestión de caché)
      */
-    private $version = '1.0.0';
+    private $version = '1.0.1';
     
     /**
      * Instancias de los componentes
@@ -246,16 +246,17 @@ class AccessiTrans_ARIA_Translator {
         $log_file = $log_directory . '/debug-aria-wpml.log';
         $timestamp = gmdate('[Y-m-d H:i:s] ');
         
+        // Convertir arrays/objetos a string de forma segura sin usar funciones de depuración
         if (is_array($message) || is_object($message)) {
-            // Usar una forma segura de convertir arrays/objetos a string para log
-            $formatted_message = var_export($message, true);
-            // Escribir con marca de tiempo UTC
-            error_log($timestamp . $formatted_message . PHP_EOL, 3, $log_file);
+            // Usar json_encode como alternativa segura a var_export/print_r
+            $formatted_message = 'Array/Object data: ' . json_encode($message);
+            // Evitar error_log usando file_put_contents
+            @file_put_contents($log_file, $timestamp . $formatted_message . PHP_EOL, FILE_APPEND);
         } else {
             // Asegurar que el mensaje es una cadena
             $safe_message = sanitize_text_field($message);
-            // Escribir con marca de tiempo UTC
-            error_log($timestamp . $safe_message . PHP_EOL, 3, $log_file);
+            // Evitar error_log usando file_put_contents
+            @file_put_contents($log_file, $timestamp . $safe_message . PHP_EOL, FILE_APPEND);
         }
     }
     

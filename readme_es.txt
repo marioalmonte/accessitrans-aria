@@ -66,8 +66,8 @@ Funciona con todo tipo de contenido de Elementor:
 **Versiones probadas:**
 * WordPress 6.8
 * Elementor 3.28.4
-* WPML Multilingual CMS 4.7.3
-* WPML String Translation 3.3.2
+* WPML Multilingual CMS 4.7.4
+* WPML String Translation 3.3.3
 
 = Por qué este plugin es importante para la accesibilidad =
 
@@ -196,6 +196,26 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Atributo: `aria-description|Navega por las imágenes del producto`
 
 == Registro de cambios ==
+
+= 1.0.1 =
+* Mejora de seguridad: Implementada sanitización adecuada de inputs
+* Optimizado el sistema de logging para entornos de producción
+* Testeado con WPML 4.7.4 y String Translations 3.3.3
+* Corregido el uso de register_setting() para mejor seguridad
+* Implementado correcto encolado de JavaScript y CSS:
+  - Eliminados scripts y estilos inline del código PHP
+  - Creada estructura de carpetas assets/css y assets/js
+  - Extraídos estilos a admin-styles.css y scripts a admin-scripts.js
+  - Implementados wp_enqueue_style() y wp_enqueue_script()
+  - Usado wp_localize_script() para pasar variables a JavaScript
+* Corrección de ubicación de archivos/directorios:
+  - Reemplazado uso directo de WP_CONTENT_DIR para archivos de log
+  - Implementado wp_upload_dir() para determinar ubicación correcta
+  - Creado directorio específico 'accessitrans-logs' en uploads
+* Eliminación de load_plugin_textdomain():
+  - Eliminada función innecesaria desde WordPress 4.6+
+  - Mantenida estructura de carpetas /languages para traducciones
+* Actualizada la documentación
 
 = 1.0.0 =
 * Primera versión pública

@@ -2,8 +2,8 @@
 
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-6.8-green.svg)](https://wordpress.org/)
 [![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.4-red.svg)](https://elementor.com/)
-[![WPML Compatible](https://img.shields.io/badge/WPML-4.7.3-blue.svg)](https://wpml.org/)
-[![Version](https://img.shields.io/badge/Version-1.0.0-purple.svg)]()
+[![WPML Compatible](https://img.shields.io/badge/WPML-4.7.4-blue.svg)](https://wpml.org/)
+[![Version](https://img.shields.io/badge/Version-1.0.1-purple.svg)]()
 
 Plugin de WordPress que permite traducir atributos ARIA en sitios Elementor con WPML, mejorando la accesibilidad en entornos multilingües.
 
@@ -64,8 +64,8 @@ Funciona con todo tipo de contenido de Elementor:
 **Probado con:**
 * WordPress 6.8
 * Elementor 3.28.4
-* WPML Multilingual CMS 4.7.3
-* WPML String Translation 3.3.2
+* WPML Multilingual CMS 4.7.4
+* WPML String Translation 3.3.3
 
 ## Instalación
 
@@ -179,10 +179,29 @@ El plugin incluye soporte para internacionalización, lo que lo hace listo para 
 
 ## Registro de cambios
 
+### 1.0.1
+* Mejora de seguridad: Implementada sanitización adecuada de inputs
+* Optimizado el sistema de logging para entornos de producción
+* Testeado con WPML 4.7.4 y String Translations 3.3.3
+* Corregido el uso de register_setting() para mejor seguridad
+* Implementado correcto encolado de JavaScript y CSS:
+  - Eliminados scripts y estilos inline del código PHP
+  - Creada estructura de carpetas assets/css y assets/js
+  - Extraídos estilos a admin-styles.css y scripts a admin-scripts.js
+  - Implementados wp_enqueue_style() y wp_enqueue_script()
+  - Usado wp_localize_script() para pasar variables a JavaScript
+* Corrección de ubicación de archivos/directorios:
+  - Reemplazado uso directo de WP_CONTENT_DIR para archivos de log
+  - Implementado wp_upload_dir() para determinar ubicación correcta
+  - Creado directorio específico 'accessitrans-logs' en uploads
+* Eliminación de load_plugin_textdomain():
+  - Eliminada función innecesaria desde WordPress 4.6+
+  - Mantenida estructura de carpetas /languages para traducciones
+* Actualizada la documentación
+
 ### 1.0.0
 * Primera versión pública
 * Corregidos y actualizados los archivos de traducción
-* Listo para el repositorio de WordPress.org
 
 ### 0.2.5
 * Añadido interruptor principal para activar/desactivar el escaneo de nuevas cadenas

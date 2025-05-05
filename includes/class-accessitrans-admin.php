@@ -524,7 +524,7 @@ class AccessiTrans_Admin {
             check_admin_referer('accessitrans_aria_settings');
             
             // Deseslashear y sanitizar las opciones del formulario
-            $raw_options = isset($_POST['accessitrans_aria_options']) ? wp_unslash($_POST['accessitrans_aria_options']) : [];
+            $raw_options = isset($_POST['accessitrans_aria_options']) ? map_deep(wp_unslash($_POST['accessitrans_aria_options']), 'sanitize_text_field') : [];
             
             // Verificar el campo oculto que refleja el estado del toggle AJAX
             $permitir_escaneo = false;

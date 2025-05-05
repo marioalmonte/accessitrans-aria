@@ -2,8 +2,8 @@
 
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-6.8-green.svg)](https://wordpress.org/)
 [![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.4-red.svg)](https://elementor.com/)
-[![WPML Compatible](https://img.shields.io/badge/WPML-4.7.3-blue.svg)](https://wpml.org/)
-[![Version](https://img.shields.io/badge/Version-1.0.0-purple.svg)]()
+[![WPML Compatible](https://img.shields.io/badge/WPML-4.7.4-blue.svg)](https://wpml.org/)
+[![Version](https://img.shields.io/badge/Version-1.0.1-purple.svg)]()
 
 WordPress plugin that allows translation of ARIA attributes in Elementor sites with WPML, improving accessibility in multilingual environments.
 
@@ -64,8 +64,8 @@ Works with all types of Elementor content:
 **Tested with:**
 * WordPress 6.8
 * Elementor 3.28.4
-* WPML Multilingual CMS 4.7.3
-* WPML String Translation 3.3.2
+* WPML Multilingual CMS 4.7.4
+* WPML String Translation 3.3.3
 
 ## Installation
 
@@ -180,6 +180,26 @@ The plugin comes with a settings page that allows you to configure the capture m
 The plugin includes internationalization support, making it ready for translation into multiple languages. The translation files should be placed in the `/languages` directory.
 
 ## Changelog
+
+### 1.0.1
+* Security improvement: Implemented proper input sanitization
+* Optimized logging system for production environments
+* Tested with WPML 4.7.4 and String Translations 3.3.3
+* Fixed register_setting() usage for better security
+* Implemented proper JavaScript and CSS enqueuing:
+  - Removed inline scripts and styles from PHP code
+  - Created assets/css and assets/js folder structure
+  - Extracted styles to admin-styles.css and scripts to admin-scripts.js
+  - Implemented wp_enqueue_style() and wp_enqueue_script()
+  - Used wp_localize_script() to pass variables to JavaScript
+* Fixed file/directory location:
+  - Replaced direct use of WP_CONTENT_DIR for log files
+  - Implemented wp_upload_dir() to determine correct location
+  - Created specific 'accessitrans-logs' directory in uploads
+* Removed load_plugin_textdomain():
+  - Removed unnecessary function since WordPress 4.6+
+  - Maintained /languages folder structure for translations
+* Updated documentation
 
 ### 1.0.0
 * First public release
