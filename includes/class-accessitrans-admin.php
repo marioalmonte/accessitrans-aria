@@ -31,10 +31,9 @@ class AccessiTrans_Admin {
         
         // Añadir enlaces en la página de plugins
         add_filter('plugin_action_links_' . plugin_basename(ACCESSITRANS_PATH . 'accessitrans-aria.php'), [$this, 'add_action_links']);
-        add_action('after_plugin_row', [$this, 'after_plugin_row'], 10, 3);
         
-        // Agregar estilos para la interfaz de administración
-        add_action('admin_head-settings_page_accessitrans-aria', [$this, 'add_admin_styles']);
+        // Encolar scripts y estilos para la interfaz de administración
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_admin_assets']);
         
         // Registrar funciones AJAX
         add_action('wp_ajax_accessitrans_toggle_scan', [$this, 'toggle_scan_callback']);
@@ -54,6 +53,112 @@ class AccessiTrans_Admin {
             'manage_options',
             'accessitrans-aria',
             [$this, 'settings_page']
+        );
+    }
+    /**
+     * Encola scripts y estilos para la interfaz de administración
+     *
+     * @param string $hook_suffix La página de administración actual
+     */
+    public function enqueue_admin_assets($hook_suffix) {
+        // Solo cargar en la página de configuración del plugin
+        if ('settings_page_accessitrans-aria' !== $hook_suffix) {
+            return;
+        }
+        
+        // Encolar estilos CSS
+        wp_enqueue_style(
+            'accessitrans-admin-styles',
+            ACCESSITRANS_URL . 'assets/css/admin-styles.css',
+            [],
+            ACCESSITRANS_VERSION
+        );
+        
+        // Encolar scripts JS
+        wp_enqueue_script(
+            'accessitrans-admin-scripts',
+            ACCESSITRANS_URL . 'assets/js/admin-scripts.js',
+            ['jquery'],
+            ACCESSITRANS_VERSION,
+            true // Cargar en el footer para mejor rendimiento
+        );
+        
+        // Pasar variables a JavaScript
+        wp_localize_script(
+            'accessitrans-admin-scripts',
+            'accessitransAdmin',
+            [
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'nonces' => [
+                    'toggle_scan' => wp_create_nonce('accessitrans-toggle-scan'),
+                    'diagnostics' => wp_create_nonce('accessitrans-diagnostics'),
+                    'force_refresh' => wp_create_nonce('accessitrans-force-refresh'),
+                    'check_health' => wp_create_nonce('accessitrans-check-health')
+                ],
+                'strings' => [
+                    'saving' => __('Guardando...', 'accessitrans-aria'),
+                    'saveError' => __('Error al guardar la configuración.', 'accessitrans-aria'),
+                    'processing' => __('Procesando...', 'accessitrans-aria'),
+                    'requestError' => __('Error al procesar la solicitud.', 'accessitrans-aria'),
+                    'noString' => __('Por favor, ingresa una cadena para verificar.', 'accessitrans-aria'),
+                    'analyzing' => __('Analizando...', 'accessitrans-aria'),
+                    'analyzingMessage' => __('Analizando cadena...', 'accessitrans-aria'),
+                    'errorNoString' => __('Error: No se ha ingresado una cadena para verificar.', 'accessitrans-aria'),
+                    'scanEnabledMessage' => __('Escaneo activado. Los métodos de captura están disponibles.', 'accessitrans-aria'),
+                    'scanDisabledMessage' => __('Escaneo desactivado. Los métodos de captura están deshabilitados.', 'accessitrans-aria'),
+                    'diagnosticResults' => __('Resultados del diagnóstico:', 'accessitrans-aria'),
+                    'originalText' => __('Texto original:', 'accessitrans-aria'),
+                    'language' => __('Idioma:', 'accessitrans-aria'),
+                    'languageCorrect' => __('✓ Idioma correcto', 'accessitrans-aria'),
+                    'languageNotPrimary' => __('✗ No es idioma principal', 'accessitrans-aria'),
+                    
+                    // Añadir todas las cadenas que faltan
+                    'foundInWPML' => __('✓ Encontrada en WPML', 'accessitrans-aria'),
+                    'notFoundInWPML' => __('✗ No encontrada en WPML', 'accessitrans-aria'),
+                    'registeredFormats' => __('Formatos registrados:', 'accessitrans-aria'),
+                    'hasTranslations' => __('✓ Tiene traducciones', 'accessitrans-aria'),
+                    'noTranslations' => __('✗ No tiene traducciones', 'accessitrans-aria'),
+                    'availableTranslations' => __('Traducciones disponibles:', 'accessitrans-aria'),
+                    'noCurrentLanguageTranslation' => __('✗ No hay traducción para el idioma actual', 'accessitrans-aria'),
+                    'recommendedActionTranslate' => __('Acción recomendada: Traduce esta cadena al idioma actual en WPML → String Translation.', 'accessitrans-aria'),
+                    'translateAction' => __('Acción recomendada: Traduce esta cadena en WPML → String Translation.', 'accessitrans-aria'),
+                    'notPrimaryLanguageWarning' => __('⚠️ Estás navegando en un idioma que no es el principal. Cambia al idioma principal para registrar cadenas.', 'accessitrans-aria'),
+                    'recommendedActionNavigate' => __('Acción recomendada: Navega por tu sitio con los métodos de captura activados o edita el elemento en Elementor para registrar esta cadena.', 'accessitrans-aria'),
+                    'troubleshootingTips' => __('Consejos para solucionar problemas:', 'accessitrans-aria'),
+                    'tip1' => __('Asegúrate de navegar en el idioma principal del sitio al capturar cadenas.', 'accessitrans-aria'),
+                    'tip2' => __('Prueba a utilizar "Forzar actualización" para limpiar todas las cachés.', 'accessitrans-aria'),
+                    'tip3' => __('Si has cambiado el texto en el idioma original, necesitarás traducirlo nuevamente en WPML.', 'accessitrans-aria'),
+                    'technicalInfo' => __('Información técnica avanzada', 'accessitrans-aria'),
+                    'analysisComplete' => __('Análisis completado. Se encontraron resultados para la cadena', 'accessitrans-aria'),
+                    'analysisError' => __('Error en el análisis:', 'accessitrans-aria'),
+                    'connectionError' => __('Error al realizar el análisis. No se pudo contactar con el servidor.', 'accessitrans-aria'),
+                    
+                    // Cadenas para verificación de salud
+                    'verifying' => __('Verificando...', 'accessitrans-aria'),
+                    'verifyingStatus' => __('Verificando estado del sistema...', 'accessitrans-aria'),
+                    'systemStatus' => __('Estado del sistema:', 'accessitrans-aria'),
+                    'active' => __('Activo', 'accessitrans-aria'),
+                    'inactive' => __('Inactivo', 'accessitrans-aria'),
+                    'wpml' => __('WPML:', 'accessitrans-aria'),
+                    'elementor' => __('Elementor:', 'accessitrans-aria'),
+                    'registeredStrings' => __('Cadenas registradas:', 'accessitrans-aria'),
+                    'primaryLanguage' => __('Idioma principal:', 'accessitrans-aria'),
+                    'currentLanguage' => __('Idioma actual:', 'accessitrans-aria'),
+                    'availableLanguages' => __('Idiomas disponibles:', 'accessitrans-aria'),
+                    'currentConfiguration' => __('Configuración actual:', 'accessitrans-aria'),
+                    'recommendations' => __('Recomendaciones:', 'accessitrans-aria'),
+                    'noStringsRegistered' => __('• No hay cadenas registradas. Navega por tu sitio con los métodos de captura activados.', 'accessitrans-aria'),
+                    'stringsNoTranslations' => __('• Hay cadenas registradas pero sin traducciones. Visita WPML → String Translation para traducirlas.', 'accessitrans-aria'),
+                    'navigatingNonPrimary' => __('• Estás navegando en un idioma que no es el principal. Si quieres registrar nuevas cadenas, cambia al idioma principal.', 'accessitrans-aria'),
+                    'serverDate' => __('Fecha del servidor:', 'accessitrans-aria'),
+                    'pluginVersion' => __('Versión del plugin:', 'accessitrans-aria'),
+                    'verificationComplete' => __('Verificación completada. Se encontraron', 'accessitrans-aria'),
+                    'registeredStringsText' => __('cadenas registradas y', 'accessitrans-aria'),
+                    'translationsText' => __('traducciones.', 'accessitrans-aria'),
+                    'verificationError' => __('Error en la verificación:', 'accessitrans-aria'),
+                    'connectionVerificationError' => __('Error al realizar la verificación. No se pudo contactar con el servidor.', 'accessitrans-aria')
+                ]
+            ]
         );
     }
     
@@ -189,7 +294,7 @@ class AccessiTrans_Admin {
             [$this, 'checkbox_callback'],
             'accessitrans-aria',
             'accessitrans_aria_advanced',
-            ['label_for' => 'modo_debug', 'descripcion' => __('Activa el registro detallado de eventos. Se almacena en wp-content/debug-aria-wpml.log', 'accessitrans-aria')]
+            ['label_for' => 'modo_debug', 'descripcion' => __('Activa el registro detallado de eventos. Se almacena en uploads/accessitrans-logs.', 'accessitrans-aria')]
         );
         
         add_settings_field(
@@ -359,273 +464,6 @@ class AccessiTrans_Admin {
     }
     
     /**
-     * Agrega estilos CSS para la interfaz de administración
-     */
-    public function add_admin_styles() {
-        ?>
-        <style>
-            /* Estilos generales */
-            .accessitrans-admin-container {
-                max-width: 800px !important;
-                width: 100% !important;
-                box-sizing: border-box !important;
-            }
-            
-            .accessitrans-admin-container .card {
-                background-color: #fff;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                padding: 15px 20px;
-                margin-bottom: 20px;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                width: 100% !important;
-                box-sizing: border-box !important;
-            }
-            
-            /* Estilos para fieldsets y leyendas */
-            .accessitrans-admin-container fieldset {
-                border: 1px solid #ddd;
-                padding: 15px;
-                margin-bottom: 20px;
-                border-radius: 4px;
-                background-color: #fff;
-                width: 100% !important;
-                box-sizing: border-box !important;
-                min-width: 0 !important; /* Evitar que se desborde */
-            }
-            
-            .accessitrans-admin-container legend {
-                background-color: #fff;
-                padding: 0 10px;
-                font-weight: 600;
-                font-size: 14px;
-            }
-            
-            /* Estilo para campos de formulario */
-            .accessitrans-field {
-                margin-bottom: 12px;
-                padding: 8px 0;
-                width: 100%;
-            }
-            
-            .accessitrans-field.indent {
-                margin-left: 20px;
-                position: relative;
-            }
-            
-            .accessitrans-field.indent::before {
-                content: "";
-                position: absolute;
-                left: -12px;
-                top: 0;
-                height: 100%;
-                border-left: 2px solid #ddd;
-            }
-            
-            .accessitrans-field label {
-                display: inline-block;
-                margin-left: 8px;
-                vertical-align: middle;
-            }
-            
-            /* Estilos para campos desactivados */
-            .accessitrans-field.disabled {
-                opacity: 0.6;
-                cursor: not-allowed;
-            }
-            
-            .accessitrans-field.disabled input,
-            .accessitrans-field.disabled select,
-            .accessitrans-field.disabled textarea {
-                pointer-events: none;
-            }
-            
-            /* Estilos para el interruptor tipo toggle */
-            .accessitrans-switch {
-                position: relative;
-                display: inline-block;
-                width: 60px;
-                height: 34px;
-                vertical-align: middle;
-            }
-            
-            .accessitrans-switch input {
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
-            
-            .accessitrans-slider {
-                position: absolute;
-                cursor: pointer;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-color: #ccc;
-                transition: .4s;
-            }
-            
-            .accessitrans-slider:before {
-                position: absolute;
-                content: "";
-                height: 26px;
-                width: 26px;
-                left: 4px;
-                bottom: 4px;
-                background-color: white;
-                transition: .4s;
-            }
-            
-            input:checked + .accessitrans-slider {
-                background-color: #2196F3;
-            }
-            
-            input:focus + .accessitrans-slider {
-                box-shadow: 0 0 3px #2196F3;
-                outline: 2px solid #2196F3;
-            }
-            
-            input:checked + .accessitrans-slider:before {
-                transform: translateX(26px);
-            }
-            
-            .accessitrans-slider.round {
-                border-radius: 34px;
-            }
-            
-            .accessitrans-slider.round:before {
-                border-radius: 50%;
-            }
-            
-            /* Estilos para status en tools */
-            .tool-section {
-                margin-bottom: 20px;
-                padding-bottom: 20px;
-                border-bottom: 1px solid #eee;
-                width: 100%;
-            }
-            
-            .tool-section:last-child {
-                border-bottom: none;
-            }
-            
-            /* Estilo específico para el diagnóstico para mantener el tamaño limitado del campo */
-            .diagnostics-form {
-                margin-bottom: 10px;
-                display: flex;
-                align-items: center;
-                flex-wrap: nowrap;
-                gap: 10px;
-                width: 80%;
-            }
-            
-            .diagnostics-form label {
-                flex: 0 0 auto;
-                white-space: nowrap;
-            }
-            
-            .diagnostics-form input[type="text"] {
-                flex: 1 1 auto;
-                min-width: 200px;
-            }
-            
-            .diagnostics-form button {
-                flex: 0 0 auto;
-            }
-            
-            /* En pantallas pequeñas, permitir el wrapping */
-            @media (max-width: 782px) {
-                .diagnostics-form {
-                    flex-wrap: wrap;
-                }
-                
-                .diagnostics-form input[type="text"] {
-                    flex: 1 1 100%;
-                }
-            }
-            
-            .diagnostic-results, 
-            .health-results {
-                margin-top: 15px;
-                padding: 10px;
-                background: #f8f8f8;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                max-height: 300px;
-                overflow-y: auto;
-                display: none;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            
-            .diagnostic-results.active, 
-            .health-results.active {
-                display: block;
-            }
-            
-            .diagnostic-item {
-                margin-bottom: 5px;
-                padding: 5px;
-                border-bottom: 1px dotted #eee;
-            }
-            
-            .diagnostic-success {
-                color: green;
-            }
-            
-            .diagnostic-error {
-                color: #d63638;
-            }
-            
-            #refresh-status {
-                margin-left: 10px;
-                display: inline-block;
-            }
-            
-            .screen-reader-text {
-                position: absolute;
-                width: 1px;
-                height: 1px;
-                padding: 0;
-                margin: -1px;
-                overflow: hidden;
-                clip: rect(0, 0, 0, 0);
-                white-space: nowrap;
-                border: 0;
-            }
-            
-            /* Estilos para avisos informativos */
-            .accessitrans-notice {
-                background-color: #f0f6fc;
-                border-left: 4px solid #72aee6;
-                padding: 10px 12px;
-                margin: 10px 0;
-                border-radius: 2px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            
-            .accessitrans-notice strong {
-                display: block;
-                margin-bottom: 5px;
-            }
-            
-            /* Estilos específicos para WordPress admin */
-            .wrap.accessitrans-admin-container {
-                margin-right: 0 !important;
-                margin-left: 0 !important;
-            }
-            
-            /* Forzar ancho completo para todos los elementos internos */
-            .accessitrans-admin-container * {
-                max-width: 100% !important;
-            }
-        </style>
-        <?php
-    }
-    
-    /**
      * Callback para campos checkbox
      */
     public function checkbox_callback($args) {
@@ -671,48 +509,6 @@ class AccessiTrans_Admin {
         echo '</div>';
         
         echo '</div>';
-        
-        // Agregar JavaScript para controlar los campos dependientes
-        echo '<script>
-            jQuery(document).ready(function($) {
-                // Función para actualizar estados de campos dependientes
-                function updateDependentFields() {
-                    var enabled = $("#' . esc_attr($option_name) . '").is(":checked");
-                    
-                    // Obtener todos los campos de métodos de captura
-                    $(".accessitrans-methods-fieldset input[type=checkbox]").prop("disabled", !enabled);
-                    $(".accessitrans-methods-fieldset .accessitrans-field").toggleClass("disabled", !enabled);
-                    
-                    // Actualizar atributos ARIA
-                    if (!enabled) {
-                        $(".accessitrans-methods-fieldset input[type=checkbox]").attr("aria-disabled", "true");
-                        $(".accessitrans-methods-fieldset").attr("aria-describedby", "scan-disabled-message");
-                    } else {
-                        $(".accessitrans-methods-fieldset input[type=checkbox]").removeAttr("aria-disabled");
-                        $(".accessitrans-methods-fieldset").removeAttr("aria-describedby");
-                    }
-                    
-                    // Anunciar cambio para lectores de pantalla
-                    if (window.accessitrans_announce) {
-                        clearTimeout(window.accessitrans_announce);
-                    }
-                    
-                    window.accessitrans_announce = setTimeout(function() {
-                        var message = enabled ? 
-                            "' . esc_js(__('Escaneo activado. Los métodos de captura están disponibles.', 'accessitrans-aria')) . '" : 
-                            "' . esc_js(__('Escaneo desactivado. Los métodos de captura están deshabilitados.', 'accessitrans-aria')) . '";
-                            
-                        $("#accessitrans-aria-live").text(message);
-                    }, 100);
-                }
-                
-                // Inicializar
-                updateDependentFields();
-                
-                // Actualizar cuando cambie
-                $("#' . esc_attr($option_name) . '").on("change", updateDependentFields);
-            });
-        </script>';
     }
     
     /**
@@ -775,9 +571,6 @@ class AccessiTrans_Admin {
             // Mensaje de éxito con atributos para lectores de pantalla
             echo '<div class="notice notice-success is-dismissible" role="alert" aria-live="polite"><p>' . esc_html__('Configuración guardada correctamente.', 'accessitrans-aria') . '</p></div>';
         }
-        
-        // Incluir scripts para las herramientas interactivas
-        $this->enqueue_admin_scripts();
         
         // Contar cadenas registradas
         $strings_count = 0;
@@ -877,7 +670,7 @@ class AccessiTrans_Admin {
                         <?php 
                         // Renderizar los campos avanzados
                         $advanced_fields = [
-                            'modo_debug' => esc_html__('Activa el registro detallado de eventos. Se almacena en wp-content/debug-aria-wpml.log', 'accessitrans-aria'),
+                            'modo_debug' => esc_html__('Activa el registro detallado de eventos. Se almacena en uploads/accessitrans-logs.', 'accessitrans-aria'),
                             'solo_admin' => esc_html__('Solo procesa la captura total cuando un administrador está conectado.', 'accessitrans-aria'),
                             'captura_en_idioma_principal' => esc_html__('Solo captura cadenas cuando se navega en el idioma principal. Previene duplicados.', 'accessitrans-aria')
                         ];
@@ -993,371 +786,6 @@ class AccessiTrans_Admin {
     }
     
     /**
-     * Registra e incluye scripts para la página de administración
-     */
-    private function enqueue_admin_scripts() {
-        ?>
-        <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            // Switch AJAX para activar/desactivar escaneo
-            $('#permitir_escaneo_ajax').on('change', function() {
-                const $switch = $(this);
-                const $status = $('#switch-status');
-                const enabled = $switch.is(':checked');
-                
-                $switch.prop('disabled', true);
-                $status.html('<?php echo esc_js(__('Guardando...', 'accessitrans-aria')); ?>');
-                
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'accessitrans_toggle_scan',
-                        nonce: '<?php echo esc_attr(wp_create_nonce('accessitrans-toggle-scan')); ?>',
-                        enabled: enabled ? 1 : 0
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            $status.html('<div class="notice notice-success inline"><p>' + response.data + '</p></div>');
-                            
-                            // Actualizar los campos dependientes
-                            updateDependentFields(enabled);
-                            
-                            // Actualizar campo oculto en el formulario
-                            $('#hidden_permitir_escaneo').val(enabled ? '1' : '0');
-                            
-                            // Anuncio para lectores de pantalla
-                            $('#accessitrans-aria-live').text(response.data);
-                        } else {
-                            $status.html('<div class="notice notice-error inline"><p>' + response.data + '</p></div>');
-                            $switch.prop('checked', !enabled); // Revertir estado
-                        }
-                        
-                        $switch.prop('disabled', false);
-                        
-                        // Ocultar mensaje después de 3 segundos
-                        setTimeout(function() {
-                            $status.empty();
-                        }, 3000);
-                    },
-                    error: function() {
-                        $status.html('<div class="notice notice-error inline"><p><?php echo esc_js(__('Error al guardar la configuración.', 'accessitrans-aria')); ?></p></div>');
-                        $switch.prop('checked', !enabled); // Revertir estado
-                        $switch.prop('disabled', false);
-                    }
-                });
-            });
-            
-            // Función para actualizar estados de campos dependientes
-            function updateDependentFields(enabled) {
-                // Obtener todos los campos de métodos de captura
-                $(".accessitrans-methods-fieldset input[type=checkbox]").prop("disabled", !enabled);
-                $(".accessitrans-methods-fieldset .accessitrans-field").toggleClass("disabled", !enabled);
-                
-                // Actualizar atributos ARIA
-                if (!enabled) {
-                    $(".accessitrans-methods-fieldset input[type=checkbox]").attr("aria-disabled", "true");
-                    $(".accessitrans-methods-fieldset").attr("aria-describedby", "scan-disabled-message");
-                } else {
-                    $(".accessitrans-methods-fieldset input[type=checkbox]").removeAttr("aria-disabled");
-                    $(".accessitrans-methods-fieldset").removeAttr("aria-describedby");
-                }
-            }
-            
-            // Actualizar la interfaz cuando se carga la página
-            $(window).on('load', function() {
-                // Asegurarse de que los controles AJAX y hidden estén sincronizados
-                var enabled = $('#hidden_permitir_escaneo').val() === '1';
-                $('#permitir_escaneo_ajax').prop('checked', enabled);
-                
-                // Actualizar la UI dependiente
-                updateDependentFields(enabled);
-            });
-            
-            // Forzar actualización de traducciones
-            $('#accessitrans-force-refresh').on('click', function(e) {
-                e.preventDefault();
-                
-                const $button = $(this);
-                const $status = $('#refresh-status');
-                
-                $button.prop('disabled', true);
-                $status.html('<?php echo esc_js(__('Procesando...', 'accessitrans-aria')); ?>');
-                
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'accessitrans_force_refresh',
-                        nonce: '<?php echo esc_attr(wp_create_nonce('accessitrans-force-refresh')); ?>'
-                    },
-                    success: function(response) {
-                        $status.html(response.data);
-                        $button.prop('disabled', false);
-                        
-                        // Anuncio para lectores de pantalla
-                        $('#accessitrans-aria-live').text(response.data);
-                    },
-                    error: function() {
-                        $status.html('<?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?>');
-                        $button.prop('disabled', false);
-                        
-                        // Anuncio para lectores de pantalla
-                        $('#accessitrans-aria-live').text('<?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?>');
-                    }
-                });
-            });
-            
-            // Diagnóstico de traducciones
-            window.runDiagnostic = function(e) {
-                e.preventDefault();
-                
-                const $button = $('#accessitrans-diagnostic');
-                const $results = $('#diagnostic-results');
-                const $proceso = $('#diagnostico-proceso');
-                const stringToCheck = $('#string-to-check').val().trim();
-                
-                if (!stringToCheck) {
-                    $results.html('<div class="diagnostic-error"><?php echo esc_js(__('Por favor, ingresa una cadena para verificar.', 'accessitrans-aria')); ?></div>');
-                    $results.addClass('active');
-                    
-                    // Anuncio para lectores de pantalla
-                    $proceso.text('<?php echo esc_js(__('Error: No se ha ingresado una cadena para verificar.', 'accessitrans-aria')); ?>');
-                    return;
-                }
-                
-                $button.prop('disabled', true);
-                $results.html('<?php echo esc_js(__('Analizando...', 'accessitrans-aria')); ?>');
-                $results.addClass('active');
-                $proceso.text('<?php echo esc_js(__('Analizando cadena...', 'accessitrans-aria')); ?>');
-                
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'accessitrans_diagnostics',
-                        nonce: '<?php echo esc_attr(wp_create_nonce('accessitrans-diagnostics')); ?>',
-                        string: stringToCheck
-                    },
-                    success: function(response) {
-                        $results.empty();
-                        
-                        if (response.success) {
-                            const data = response.data;
-                            
-                            $results.append('<h4><?php echo esc_js(__('Resultados del diagnóstico:', 'accessitrans-aria')); ?></h4>');
-                            
-                            $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Texto original:', 'accessitrans-aria')); ?></strong> ' + data.string + '</div>');
-                            
-                            // Verificación de idioma
-                            let languageStatus = data.is_default_language ? 
-                                '<span class="diagnostic-success"><?php echo esc_js(__('✓ Idioma correcto', 'accessitrans-aria')); ?></span>' : 
-                                '<span class="diagnostic-error"><?php echo esc_js(__('✗ No es idioma principal', 'accessitrans-aria')); ?></span>';
-                            
-                            $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Idioma:', 'accessitrans-aria')); ?></strong> ' + 
-                                data.current_language + ' (' + languageStatus + ')</div>');
-                            
-                            // Información sobre esta cadena en WPML
-                            if (data.found_in_wpml) {
-                                $results.append('<div class="diagnostic-item diagnostic-success"><strong><?php echo esc_js(__('✓ Encontrada en WPML', 'accessitrans-aria')); ?></strong></div>');
-                                
-                                if (data.string_forms && data.string_forms.length > 0) {
-                                    $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Formatos registrados:', 'accessitrans-aria')); ?></strong></div>');
-                                    
-                                    $.each(data.string_forms, function(index, form) {
-                                        $results.append('<div class="diagnostic-item" style="margin-left: 15px;">' + 
-                                            '<strong>' + form.name + '</strong> (ID: ' + form.id + ')</div>');
-                                    });
-                                }
-                                
-                                if (data.has_translation) {
-                                    $results.append('<div class="diagnostic-item diagnostic-success"><strong><?php echo esc_js(__('✓ Tiene traducciones', 'accessitrans-aria')); ?></strong></div>');
-                                    
-                                    $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Traducciones disponibles:', 'accessitrans-aria')); ?></strong></div>');
-                                    
-                                    // Mostrar traducciones disponibles
-                                    $.each(data.translations, function(lang, translation) {
-                                        let langDisplay = lang === data.current_language ? 
-                                            '<strong>' + lang + ' (idioma actual):</strong>' : 
-                                            '<strong>' + lang + ':</strong>';
-                                        
-                                        $results.append('<div class="diagnostic-item" style="margin-left: 15px;">' + 
-                                            langDisplay + ' ' + translation + '</div>');
-                                    });
-                                    
-                                    // Verificar si la traducción al idioma actual existe
-                                    if (!data.has_current_language_translation) {
-                                        $results.append('<div class="diagnostic-item diagnostic-error"><strong><?php echo esc_js(__('✗ No hay traducción para el idioma actual', 'accessitrans-aria')); ?></strong></div>');
-                                        $results.append('<div class="diagnostic-item"><?php echo esc_js(__('Acción recomendada: Traduce esta cadena al idioma actual en WPML → String Translation.', 'accessitrans-aria')); ?></div>');
-                                    }
-                                } else {
-                                    $results.append('<div class="diagnostic-item diagnostic-error"><strong><?php echo esc_js(__('✗ No tiene traducciones', 'accessitrans-aria')); ?></strong></div>');
-                                    $results.append('<div class="diagnostic-item"><?php echo esc_js(__('Acción recomendada: Traduce esta cadena en WPML → String Translation.', 'accessitrans-aria')); ?></div>');
-                                }
-                            } else {
-                                $results.append('<div class="diagnostic-item diagnostic-error"><strong><?php echo esc_js(__('✗ No encontrada en WPML', 'accessitrans-aria')); ?></strong></div>');
-                                
-                                if (!data.is_default_language) {
-                                    $results.append('<div class="diagnostic-item"><?php echo esc_js(__('⚠️ Estás navegando en un idioma que no es el principal. Cambia al idioma principal para registrar cadenas.', 'accessitrans-aria')); ?></div>');
-                                } else {
-                                    $results.append('<div class="diagnostic-item"><?php echo esc_js(__('Acción recomendada: Navega por tu sitio con los métodos de captura activados o edita el elemento en Elementor para registrar esta cadena.', 'accessitrans-aria')); ?></div>');
-                                }
-                            }
-                            
-                            // Consejos adicionales
-                            $results.append('<h4><?php echo esc_js(__('Consejos para solucionar problemas:', 'accessitrans-aria')); ?></h4>');
-                            $results.append('<ul>' +
-                                '<li><?php echo esc_js(__('Asegúrate de navegar en el idioma principal del sitio al capturar cadenas.', 'accessitrans-aria')); ?></li>' +
-                                '<li><?php echo esc_js(__('Prueba a utilizar "Forzar actualización" para limpiar todas las cachés.', 'accessitrans-aria')); ?></li>' +
-                                '<li><?php echo esc_js(__('Si has cambiado el texto en el idioma original, necesitarás traducirlo nuevamente en WPML.', 'accessitrans-aria')); ?></li>' +
-                                '</ul>');
-                            
-                            // Información técnica para depuración
-                            if (data.debug_info) {
-                                $results.append('<details><summary><?php echo esc_js(__('Información técnica avanzada', 'accessitrans-aria')); ?></summary>' +
-                                    '<pre style="font-size: 11px; overflow: auto; max-height: 150px;">' + JSON.stringify(data.debug_info, null, 2) + '</pre>' +
-                                    '</details>');
-                            }
-                            
-                            // Anuncio para lectores de pantalla
-                            $proceso.text('<?php echo esc_js(__('Análisis completado. Se encontraron resultados para la cadena', 'accessitrans-aria')); ?> ' + data.string);
-                        } else {
-                            $results.html('<div class="diagnostic-error">' + response.data + '</div>');
-                            $proceso.text('<?php echo esc_js(__('Error en el análisis:', 'accessitrans-aria')); ?> ' + response.data);
-                        }
-                        
-                        $button.prop('disabled', false);
-                    },
-                    error: function() {
-                        $results.html('<div class="diagnostic-error"><?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?></div>');
-                        $button.prop('disabled', false);
-                        $proceso.text('<?php echo esc_js(__('Error al realizar el análisis. No se pudo contactar con el servidor.', 'accessitrans-aria')); ?>');
-                    }
-                });
-            };
-            
-            // Permitir ejecutar el diagnóstico al presionar Enter en el campo de texto
-            $('#string-to-check').on('keydown', function(e) {
-                if (e.keyCode === 13) {
-                    e.preventDefault();
-                    window.runDiagnostic(e);
-                }
-            });
-            
-            // Verificar salud del sistema
-            $('#accessitrans-check-health').on('click', function(e) {
-                e.preventDefault();
-                
-                const $button = $(this);
-                const $results = $('#health-results');
-                const $proceso = $('#salud-proceso');
-                
-                $button.prop('disabled', true);
-                $results.html('<?php echo esc_js(__('Verificando...', 'accessitrans-aria')); ?>');
-                $results.addClass('active');
-                $proceso.text('<?php echo esc_js(__('Verificando estado del sistema...', 'accessitrans-aria')); ?>');
-                
-                $.ajax({
-                    url: ajaxurl,
-                    type: 'POST',
-                    data: {
-                        action: 'accessitrans_check_health',
-                        nonce: '<?php echo esc_attr(wp_create_nonce('accessitrans-check-health')); ?>'
-                    },
-                    success: function(response) {
-                        $results.empty();
-                        
-                        if (response.success) {
-                            const data = response.data;
-                            
-                            $results.append('<h4><?php echo esc_js(__('Estado del sistema:', 'accessitrans-aria')); ?></h4>');
-                            
-                            // WPML e instalación
-                            let wpmlStatus = data.wpml_active ? 
-                                '<span class="diagnostic-success">✓ <?php echo esc_js(__('Activo', 'accessitrans-aria')); ?></span>' : 
-                                '<span class="diagnostic-error">✗ <?php echo esc_js(__('Inactivo', 'accessitrans-aria')); ?></span>';
-                            
-                            let elementorStatus = data.elementor_active ? 
-                                '<span class="diagnostic-success">✓ <?php echo esc_js(__('Activo', 'accessitrans-aria')); ?></span>' : 
-                                '<span class="diagnostic-error">✗ <?php echo esc_js(__('Inactivo', 'accessitrans-aria')); ?></span>';
-                            
-                            $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('WPML:', 'accessitrans-aria')); ?></strong> ' + wpmlStatus + '</div>');
-                            $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Elementor:', 'accessitrans-aria')); ?></strong> ' + elementorStatus + '</div>');
-                            
-                            // Estadísticas
-                            $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Cadenas registradas:', 'accessitrans-aria')); ?></strong> ' + data.string_count + '</div>');
-                            $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Traducciones disponibles:', 'accessitrans-aria')); ?></strong> ' + data.translation_count + '</div>');
-                            
-                            // Idiomas
-                            if (data.languages) {
-                                $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Idioma principal:', 'accessitrans-aria')); ?></strong> ' + data.languages.default + '</div>');
-                                $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Idioma actual:', 'accessitrans-aria')); ?></strong> ' + data.languages.current + '</div>');
-                                
-                                let langList = '<div class="diagnostic-item"><strong><?php echo esc_js(__('Idiomas disponibles:', 'accessitrans-aria')); ?></strong> ';
-                                $.each(data.languages.available, function(code, name) {
-                                    langList += code + ' (' + name + '), ';
-                                });
-                                langList = langList.slice(0, -2); // Eliminar última coma
-                                langList += '</div>';
-                                $results.append(langList);
-                            }
-                            
-                            // Configuración del plugin
-                            $results.append('<h4><?php echo esc_js(__('Configuración actual:', 'accessitrans-aria')); ?></h4>');
-                            
-                            $.each(data.options, function(option, value) {
-                                let formattedOption = option.replace(/_/g, ' ');
-                                formattedOption = formattedOption.charAt(0).toUpperCase() + formattedOption.slice(1);
-                                
-                                let statusIcon = value ? '✓' : '✗';
-                                let statusClass = value ? 'diagnostic-success' : '';
-                                
-                                $results.append('<div class="diagnostic-item"><strong>' + formattedOption + ':</strong> <span class="' + statusClass + '">' + statusIcon + '</span></div>');
-                            });
-                            
-                            // Recomendaciones
-                            $results.append('<h4><?php echo esc_js(__('Recomendaciones:', 'accessitrans-aria')); ?></h4>');
-                            
-                            if (data.string_count === 0) {
-                                $results.append('<div class="diagnostic-item diagnostic-error"><?php echo esc_js(__('• No hay cadenas registradas. Navega por tu sitio con los métodos de captura activados.', 'accessitrans-aria')); ?></div>');
-                            }
-                            
-                            if (data.translation_count === 0 && data.string_count > 0) {
-                                $results.append('<div class="diagnostic-item diagnostic-error"><?php echo esc_js(__('• Hay cadenas registradas pero sin traducciones. Visita WPML → String Translation para traducirlas.', 'accessitrans-aria')); ?></div>');
-                            }
-                            
-                            if (data.languages && data.languages.current !== data.languages.default) {
-                                $results.append('<div class="diagnostic-item diagnostic-error"><?php echo esc_js(__('• Estás navegando en un idioma que no es el principal. Si quieres registrar nuevas cadenas, cambia al idioma principal.', 'accessitrans-aria')); ?></div>');
-                            }
-                            
-                            // Información del sistema
-                            $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Fecha del servidor:', 'accessitrans-aria')); ?></strong> ' + data.system_time + '</div>');
-                            $results.append('<div class="diagnostic-item"><strong><?php echo esc_js(__('Versión del plugin:', 'accessitrans-aria')); ?></strong> ' + data.plugin_version + '</div>');
-                            
-                            // Anuncio para lectores de pantalla
-                            $proceso.text('<?php echo esc_js(__('Verificación completada. Se encontraron', 'accessitrans-aria')); ?> ' + 
-                                data.string_count + ' <?php echo esc_js(__('cadenas registradas y', 'accessitrans-aria')); ?> ' + 
-                                data.translation_count + ' <?php echo esc_js(__('traducciones.', 'accessitrans-aria')); ?>');
-                        } else {
-                            $results.html('<div class="diagnostic-error">' + response.data + '</div>');
-                            $proceso.text('<?php echo esc_js(__('Error en la verificación:', 'accessitrans-aria')); ?> ' + response.data);
-                        }
-                        
-                        $button.prop('disabled', false);
-                    },
-                    error: function() {
-                        $results.html('<div class="diagnostic-error"><?php echo esc_js(__('Error al procesar la solicitud.', 'accessitrans-aria')); ?></div>');
-                        $button.prop('disabled', false);
-                        $proceso.text('<?php echo esc_js(__('Error al realizar la verificación. No se pudo contactar con el servidor.', 'accessitrans-aria')); ?>');
-                    }
-                });
-            });
-        });
-        </script>
-        <?php
-    }
-    
-    /**
      * Añade enlaces a la página de configuración en la lista de plugins
      */
     public function add_action_links($links) {
@@ -1366,14 +794,5 @@ class AccessiTrans_Admin {
         return $links;
     }
     
-    /**
-     * Añade información en la lista de plugins
-     */
-    public function after_plugin_row($plugin_file, $plugin_data, $status) {
-        if (plugin_basename(ACCESSITRANS_PATH . 'accessitrans-aria.php') == $plugin_file) {
-            echo '<tr class="plugin-update-tr active"><td colspan="4" class="plugin-update colspanchange"><div class="notice inline notice-info" style="margin:0; padding:5px;">';
-            echo '<strong>' . esc_html__('Compatibilidad verificada:', 'accessitrans-aria') . '</strong> WordPress 6.7-6.8, Elementor 3.28.4, WPML Multilingual CMS 4.7.3, WPML String Translation 3.3.2.';
-            echo '</div></td></tr>';
-        }
-    }
+
 }

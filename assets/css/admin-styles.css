@@ -1,0 +1,257 @@
+/* Estilos generales */
+.accessitrans-admin-container {
+    max-width: 800px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.accessitrans-admin-container .card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Estilos para fieldsets y leyendas */
+.accessitrans-admin-container fieldset {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    background-color: #fff;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important; /* Evitar que se desborde */
+}
+
+.accessitrans-admin-container legend {
+    background-color: #fff;
+    padding: 0 10px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Estilo para campos de formulario */
+.accessitrans-field {
+    margin-bottom: 12px;
+    padding: 8px 0;
+    width: 100%;
+}
+
+.accessitrans-field.indent {
+    margin-left: 20px;
+    position: relative;
+}
+
+.accessitrans-field.indent::before {
+    content: "";
+    position: absolute;
+    left: -12px;
+    top: 0;
+    height: 100%;
+    border-left: 2px solid #ddd;
+}
+
+.accessitrans-field label {
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* Estilos para campos desactivados */
+.accessitrans-field.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.accessitrans-field.disabled input,
+.accessitrans-field.disabled select,
+.accessitrans-field.disabled textarea {
+    pointer-events: none;
+}
+
+/* Estilos para el interruptor tipo toggle */
+.accessitrans-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    vertical-align: middle;
+}
+
+.accessitrans-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.accessitrans-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.accessitrans-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .accessitrans-slider {
+    background-color: #2196F3;
+}
+
+input:focus + .accessitrans-slider {
+    box-shadow: 0 0 3px #2196F3;
+    outline: 2px solid #2196F3;
+}
+
+input:checked + .accessitrans-slider:before {
+    transform: translateX(26px);
+}
+
+.accessitrans-slider.round {
+    border-radius: 34px;
+}
+
+.accessitrans-slider.round:before {
+    border-radius: 50%;
+}
+
+/* Estilos para status en tools */
+.tool-section {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    width: 100%;
+}
+
+.tool-section:last-child {
+    border-bottom: none;
+}
+
+/* Estilo específico para el diagnóstico para mantener el tamaño limitado del campo */
+.diagnostics-form {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: 80%;
+}
+
+.diagnostics-form label {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.diagnostics-form input[type="text"] {
+    flex: 1 1 auto;
+    min-width: 200px;
+}
+
+.diagnostics-form button {
+    flex: 0 0 auto;
+}
+
+/* En pantallas pequeñas, permitir el wrapping */
+@media (max-width: 782px) {
+    .diagnostics-form {
+        flex-wrap: wrap;
+    }
+    
+    .diagnostics-form input[type="text"] {
+        flex: 1 1 100%;
+    }
+}
+
+.diagnostic-results, 
+.health-results {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.diagnostic-results.active, 
+.health-results.active {
+    display: block;
+}
+
+.diagnostic-item {
+    margin-bottom: 5px;
+    padding: 5px;
+    border-bottom: 1px dotted #eee;
+}
+
+.diagnostic-success {
+    color: green;
+}
+
+.diagnostic-error {
+    color: #d63638;
+}
+
+#refresh-status {
+    margin-left: 10px;
+    display: inline-block;
+}
+
+.screen-reader-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Estilos para avisos informativos */
+.accessitrans-notice {
+    background-color: #f0f6fc;
+    border-left: 4px solid #72aee6;
+    padding: 10px 12px;
+    margin: 10px 0;
+    border-radius: 2px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.accessitrans-notice strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Estilos específicos para WordPress admin */
+.wrap.accessitrans-admin-container {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* Forzar ancho completo para todos los elementos internos */
+.accessitrans-admin-container * {
+    max-width: 100% !important;
+}

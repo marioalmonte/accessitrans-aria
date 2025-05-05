@@ -171,7 +171,7 @@ The plugin comes with a settings page that allows you to configure the capture m
 ### Advanced Settings
 * **Retry Failed Translations**: Attempts to reapply translations that failed on first try
 * **Translation Priority**: Priority of translation filters (higher values execute later)
-* **Debug Mode**: Enables detailed event logging (stored in wp-content/debug-aria-wpml.log)
+* **Debug Mode**: Enables detailed event logging (stored in uploads/accessitrans-logs)
 * **Capture for Admins Only**: Only processes full capture when an admin is logged in
 * **Capture in Main Language Only**: Only captures strings when browsing in the default language
 

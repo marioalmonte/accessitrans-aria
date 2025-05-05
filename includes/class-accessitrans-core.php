@@ -234,7 +234,16 @@ class AccessiTrans_ARIA_Translator {
             return;
         }
         
-        $log_file = WP_CONTENT_DIR . '/debug-aria-wpml.log';
+        // Obtener el directorio de uploads
+        $upload_dir = wp_upload_dir();
+        $log_directory = $upload_dir['basedir'] . '/accessitrans-logs';
+        
+        // Crear directorio si no existe
+        if (!file_exists($log_directory)) {
+            wp_mkdir_p($log_directory);
+        }
+        
+        $log_file = $log_directory . '/debug-aria-wpml.log';
         $timestamp = gmdate('[Y-m-d H:i:s] ');
         
         if (is_array($message) || is_object($message)) {

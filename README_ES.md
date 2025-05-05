@@ -169,7 +169,7 @@ El plugin incluye una página de configuración que te permite configurar los m�
 ### Configuración avanzada
 * **Reintentar traducciones fallidas**: Intenta volver a aplicar traducciones que fallaron en el primer intento
 * **Prioridad de traducción**: Prioridad de los filtros de traducción (valores más altos se ejecutan más tarde)
-* **Modo de depuración**: Habilita el registro detallado de eventos (almacenado en wp-content/debug-aria-wpml.log)
+* **Modo de depuración**: Habilita el registro detallado de eventos (almacenado en uploads/accessitrans-logs)
 * **Captura solo para administradores**: Solo procesa la captura completa cuando un administrador está conectado
 * **Captura solo en idioma principal**: Solo captura cadenas al navegar en el idioma predeterminado
 

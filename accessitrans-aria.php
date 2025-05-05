@@ -24,18 +24,6 @@ define('ACCESSITRANS_VERSION', '1.0.0');
 define('ACCESSITRANS_PATH', plugin_dir_path(__FILE__));
 define('ACCESSITRANS_URL', plugin_dir_url(__FILE__));
 
-/**
- * Carga el dominio de texto para la internacionalización
- */
-function accessitrans_aria_load_textdomain() {
-    load_plugin_textdomain(
-        'accessitrans-aria',
-        false,
-        dirname(plugin_basename(__FILE__)) . '/languages'
-    );
-}
-add_action('plugins_loaded', 'accessitrans_aria_load_textdomain', 10);
-
 // Incluir archivos necesarios
 require_once ACCESSITRANS_PATH . 'includes/class-accessitrans-core.php';
 require_once ACCESSITRANS_PATH . 'includes/class-accessitrans-admin.php';
