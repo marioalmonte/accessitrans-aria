@@ -19,7 +19,7 @@ if (!defined('ABSPATH')) {
     exit; // Salir si se accede directamente
 }
 
-// Definir constantes del plugin
+// Definir constantes del plugin usando funciones seguras
 define('ACCESSITRANS_VERSION', '1.0.1');
 define('ACCESSITRANS_PATH', plugin_dir_path(__FILE__));
 define('ACCESSITRANS_URL', plugin_dir_url(__FILE__));

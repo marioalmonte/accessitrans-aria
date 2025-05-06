@@ -169,11 +169,15 @@ class AccessiTrans_Admin {
      * @return array Las opciones sanitizadas
      */
     public function sanitize_plugin_options($input) {
+        if (!is_array($input)) {
+            return array();
+        }
+        
         // Crear array para las opciones sanitizadas
-        $sanitized_options = [];
+        $sanitized_options = array();
         
         // Lista de opciones esperadas tipo checkbox
-        $checkbox_options = [
+        $checkbox_options = array(
             'captura_total',
             'captura_elementor',
             'procesar_templates',
@@ -182,11 +186,11 @@ class AccessiTrans_Admin {
             'solo_admin',
             'captura_en_idioma_principal',
             'permitir_escaneo'
-        ];
+        );
         
         // Sanitizar checkbox options (true/false)
         foreach ($checkbox_options as $option) {
-            $sanitized_options[$option] = isset($input[$option]) ? (bool)$input[$option] : false;
+            $sanitized_options[$option] = isset($input[$option]) && filter_var($input[$option], FILTER_VALIDATE_BOOLEAN);
         }
         
         return $sanitized_options;
@@ -196,23 +200,29 @@ class AccessiTrans_Admin {
      * Registra los ajustes del plugin
      */
     public function register_settings() {
+        // Registrar la opción principal del plugin
         register_setting(
-            'accessitrans_aria',
-            'accessitrans_aria_options',
-            [
-                'sanitize_callback' => [$this, 'sanitize_plugin_options'],
-                'default' => [
-                    'captura_total' => true,
-                    'captura_elementor' => true,
-                    'procesar_templates' => true,
-                    'procesar_elementos' => true,
-                    'modo_debug' => false,
-                    'solo_admin' => true,
-                    'captura_en_idioma_principal' => true,
-                    'permitir_escaneo' => true
-                ]
-            ]
+            'accessitrans_aria',          // Option group
+            'accessitrans_aria_options',  // Option name
+            'array'                       // Simple data type - no array anidado
         );
+        
+        // Utilizar la función de sanitización en el hook pre_update en lugar de en register_setting
+        add_filter('pre_update_option_accessitrans_aria_options', array($this, 'sanitize_plugin_options'), 10, 2);
+        
+        // Establecer valores por defecto si la opción no existe
+        if (!get_option('accessitrans_aria_options')) {
+            update_option('accessitrans_aria_options', array(
+                'captura_total' => true,
+                'captura_elementor' => true,
+                'procesar_templates' => true,
+                'procesar_elementos' => true,
+                'modo_debug' => false,
+                'solo_admin' => true,
+                'captura_en_idioma_principal' => true,
+                'permitir_escaneo' => true
+            ));
+        }
         
         // Esta sección no se usa directamente en el render, está configurada 
         // solo para mantener compatibilidad con la API de WordPress
@@ -221,7 +231,7 @@ class AccessiTrans_Admin {
         add_settings_section(
             'accessitrans_aria_general',
             __('Configuración general', 'accessitrans-aria'),
-            [$this, 'section_general_callback'],
+            array($this, 'section_general_callback'),
             'accessitrans-aria'
         );
         
@@ -329,7 +339,7 @@ class AccessiTrans_Admin {
             return;
         }
         
-        $enabled = isset($_POST['enabled']) && (int)$_POST['enabled'] === 1;
+        $enabled = isset($_POST['enabled']) ? absint($_POST['enabled']) === 1 : false;
         
         // Obtener opciones actuales
         $options = get_option('accessitrans_aria_options', []);
@@ -521,6 +531,7 @@ class AccessiTrans_Admin {
         
         // Guardar opciones si se ha enviado el formulario
         if (isset($_POST['submit'])) {
+            // Verificar nonce de seguridad
             check_admin_referer('accessitrans_aria_settings');
             
             // Deseslashear y sanitizar las opciones del formulario
@@ -793,6 +804,4 @@ class AccessiTrans_Admin {
         array_unshift($links, $settings_link);
         return $links;
     }
-    
-
 }
