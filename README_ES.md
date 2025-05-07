@@ -3,7 +3,7 @@
 [![WordPress Compatible](https://img.shields.io/badge/WordPress-6.8-green.svg)](https://wordpress.org/)
 [![Elementor Compatible](https://img.shields.io/badge/Elementor-3.28.4-red.svg)](https://elementor.com/)
 [![WPML Compatible](https://img.shields.io/badge/WPML-4.7.4-blue.svg)](https://wpml.org/)
-[![Version](https://img.shields.io/badge/Version-1.0.1-purple.svg)]()
+[![Version](https://img.shields.io/badge/Version-1.0.2-purple.svg)]()
 
 Plugin de WordPress que permite traducir atributos ARIA en sitios Elementor con WPML, mejorando la accesibilidad en entornos multilingües.
 
@@ -178,6 +178,10 @@ El plugin incluye una página de configuración que te permite configurar los m�
 El plugin incluye soporte para internacionalización, lo que lo hace listo para su traducción a múltiples idiomas. Los archivos de traducción deben colocarse en el directorio `/languages`.
 
 ## Registro de cambios
+
+### 1.0.2
+* Corrección de seguridad: Implementado sanitize_callback en register_setting()
+* Mejorada la estructura de sanitización para cumplir con las mejores prácticas de WordPress
 
 ### 1.0.1
 * Mejora de seguridad: Implementada sanitización adecuada de inputs

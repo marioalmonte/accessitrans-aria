@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -196,6 +196,10 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Atributo: `aria-description|Navega por las imágenes del producto`
 
 == Registro de cambios ==
+
+= 1.0.2 =
+* Corrección de seguridad: Implementado sanitize_callback en register_setting()
+* Mejorada la estructura de sanitización para cumplir con las mejores prácticas de WordPress
 
 = 1.0.1 =
 * Mejora de seguridad: Implementada sanitización adecuada de inputs

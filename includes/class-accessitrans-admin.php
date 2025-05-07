@@ -204,12 +204,12 @@ class AccessiTrans_Admin {
         register_setting(
             'accessitrans_aria',          // Option group
             'accessitrans_aria_options',  // Option name
-            'array'                       // Simple data type - no array anidado
+            array(
+                'type'              => 'array',
+                'sanitize_callback' => array($this, 'sanitize_plugin_options'),
+            )
         );
-        
-        // Utilizar la función de sanitización en el hook pre_update en lugar de en register_setting
-        add_filter('pre_update_option_accessitrans_aria_options', array($this, 'sanitize_plugin_options'), 10, 2);
-        
+       
         // Establecer valores por defecto si la opción no existe
         if (!get_option('accessitrans_aria_options')) {
             update_option('accessitrans_aria_options', array(
