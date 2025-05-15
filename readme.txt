@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -197,6 +197,9 @@ For the best experience and website performance, follow these recommendations:
 
 == Changelog ==
 
+= 1.0.5 =
+* Translated one more string
+
 = 1.0.4 =
 * Translated two missing strings
 
@@ -292,6 +295,9 @@ For the best experience and website performance, follow these recommendations:
 * Compatibility with all Elementor content types
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+Internationalization update: Translated one more string
 
 = 1.0.4 =
 Internationalization update: Translated two missing strings
