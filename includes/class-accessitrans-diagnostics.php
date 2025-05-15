@@ -83,7 +83,7 @@ class AccessiTrans_Diagnostics {
         }
         
         // Responder al AJAX
-        wp_send_json_success(esc_html__('Actualización completada correctamente.', 'accessitrans-aria'));
+        wp_send_json_success(esc_html__('Update completed successfully.', 'accessitrans-aria'));
     }
     
     /**
@@ -122,7 +122,7 @@ class AccessiTrans_Diagnostics {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(esc_html__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('You don\'t have permission to perform this action.', 'accessitrans-aria'));
             return;
         }
         

@@ -48,7 +48,7 @@ class AccessiTrans_ARIA_Translator {
     /**
      * Versión del plugin (para gestión de caché)
      */
-    private $version = '1.0.3';
+    private $version = '1.0.4';
     
     /**
      * Instancias de los componentes
