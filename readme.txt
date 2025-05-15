@@ -75,11 +75,10 @@ In multilingual websites, accessibility information should be available in all l
 
 == Installation ==
 
-1. Download the `accessitrans-aria.zip` file from the GitHub releases page
-2. Upload the files to the `/wp-content/plugins/accessitrans-aria/` directory of your WordPress installation or install directly through WordPress by uploading the ZIP file
-3. Activate the plugin through the 'Plugins' menu in WordPress
-4. Go to Settings → AccessiTrans to configure the plugin options
-5. Configure ARIA attributes in Elementor (see usage instructions)
+1. Install the plugin via the WordPress.org plugin repository, or upload the files to the `/wp-content/plugins/accessitrans-aria/` directory
+2. Activate the plugin through the 'Plugins' menu in WordPress
+3. Go to Settings → AccessiTrans to configure the plugin options
+4. Configure ARIA attributes in Elementor (see usage instructions)
 
 == Frequently Asked Questions ==
 
@@ -89,7 +88,7 @@ No, currently the plugin is specifically designed to work with Elementor.
 
 = Is it compatible with the latest version of WPML? =
 
-Yes, the plugin has been tested with version 4.7.3 of WPML Multilingual CMS and 3.3.2 of WPML String Translation.
+Yes, the plugin has been tested with version 4.7.4 of WPML Multilingual CMS and 3.3.3 of WPML String Translation.
 
 = Why do I see duplicate entries in WPML String Translation? =
 
@@ -282,6 +281,17 @@ For the best experience and website performance, follow these recommendations:
 * Admin settings page for configuration
 * Debug mode for troubleshooting
 * Compatibility with all Elementor content types
+
+== Upgrade Notice ==
+
+= 1.0.2 =
+Security update: Improved sanitization practices and fixed minor security issues. All users are recommended to update.
+
+= 1.0.1 =
+Security improvement and performance optimization. Recommended update for all users.
+
+= 1.0.0 =
+First stable release, ready for production environments.
 
 == Author ==
 

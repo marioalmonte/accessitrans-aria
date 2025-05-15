@@ -1,4 +1,4 @@
-=== AccessiTrans - ARIA Translator for WPML & Elementor ===
+=== AccessiTrans - Traductor ARIA para WPML y Elementor ===
 Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation
 Requires at least: 5.6
@@ -43,7 +43,7 @@ El plugin ofrece varios métodos de captura para asegurar que todos los atributo
 
 1. **Captura total de HTML**: Captura todo el HTML de la página (altamente efectivo pero puede afectar al rendimiento)
 2. **Filtro de contenido de Elementor**: Procesa el contenido generado por Elementor
-3. **Procesamiento de templates de Elementor**: Procesa los datos de templates de Elementor
+3. **Procesamiento de plantillas de Elementor**: Procesa los datos de plantillas de Elementor
 4. **Procesamiento de elementos individuales**: Procesa cada widget y elemento de Elementor individualmente
 
 = Configuración avanzada =
@@ -58,10 +58,10 @@ El plugin ofrece varios métodos de captura para asegurar que todos los atributo
 Funciona con todo tipo de contenido de Elementor:
 
 * Páginas regulares
-* Templates
+* Plantillas
 * Secciones globales
-* Headers y footers
-* Popups y otros elementos dinámicos
+* Cabeceras y pies de página
+* Ventanas emergentes y otros elementos dinámicos
 
 **Versiones probadas:**
 * WordPress 6.8
@@ -75,11 +75,10 @@ En sitios web multilingües, la información de accesibilidad debe estar disponi
 
 == Instalación ==
 
-1. Descarga el archivo `accessitrans-aria.zip` desde la página de releases de GitHub
-2. Sube los archivos al directorio `/wp-content/plugins/accessitrans-aria/` de tu WordPress o instala directamente a través de WordPress subiendo el archivo ZIP
-3. Activa el plugin a través del menú 'Plugins' en WordPress
-4. Ve a Ajustes → AccessiTrans para configurar las opciones del plugin
-5. Configura los atributos ARIA en Elementor (ver instrucciones de uso)
+1. Instala el plugin a través del repositorio de plugins de WordPress.org, o sube los archivos al directorio `/wp-content/plugins/accessitrans-aria/` de tu WordPress
+2. Activa el plugin a través del menú 'Plugins' en WordPress
+3. Ve a Ajustes → AccessiTrans para configurar las opciones del plugin
+4. Configura los atributos ARIA en Elementor (ver instrucciones de uso)
 
 == Preguntas frecuentes ==
 
@@ -89,7 +88,7 @@ No, actualmente el plugin está diseñado específicamente para trabajar con Ele
 
 = ¿Es compatible con la última versión de WPML? =
 
-Sí, el plugin ha sido probado con la versión 4.7.3 de WPML Multilingual CMS y 3.3.2 de WPML String Translation.
+Sí, el plugin ha sido probado con la versión 4.7.4 de WPML Multilingual CMS y 3.3.3 de WPML String Translation.
 
 = ¿Por qué veo entradas duplicadas en WPML String Translation? =
 
@@ -130,6 +129,7 @@ Sí, el plugin funciona con todos los tipos de contenido de Elementor, incluidos
 3. Proceso de transformación de código mostrando cómo se procesan los atributos ARIA
 4. Interfaz de WPML String Translation mostrando atributos ARIA listos para traducción
 5. Interfaz de herramientas de diagnóstico para solucionar problemas de traducción
+6. Interfaz de configuración con opciones de activación para métodos de captura
 
 == Instrucciones de uso ==
 
@@ -162,7 +162,7 @@ Esto generará los atributos HTML correspondientes en el frontend:
 
 = Cómo traducir los atributos =
 
-1. Una vez añadidos los atributos, guarda la página o template
+1. Una vez añadidos los atributos, guarda la página o plantilla
 2. Ve a WPML → String Translation (Traducción de cadenas)
 3. Filtra por el contexto "AccessiTrans ARIA Attributes"
 4. Traduce las cadenas como harías con cualquier otro texto en WPML
@@ -281,6 +281,17 @@ Para la mejor experiencia y rendimiento del sitio web, sigue estas recomendacion
 * Página de configuración administrativa
 * Modo de depuración para solución de problemas
 * Compatibilidad con todos los tipos de contenido de Elementor
+
+== Upgrade Notice ==
+
+= 1.0.2 =
+Actualización de seguridad: Mejoras en las prácticas de sanitización y corrección de problemas menores de seguridad. Se recomienda a todos los usuarios actualizar.
+
+= 1.0.1 =
+Mejora de seguridad y optimización de rendimiento. Actualización recomendada para todos los usuarios.
+
+= 1.0.0 =
+Primera versión estable, lista para entornos de producción.
 
 == Autor ==
 
