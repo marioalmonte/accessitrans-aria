@@ -180,7 +180,7 @@ class AccessiTrans_ARIA_Translator {
      */
     public function show_dependencies_notice() {
         $class = 'notice notice-error';
-        $message = __('AccessiTrans requiere que Elementor y WPML estén instalados y activados.', 'accessitrans-aria');
+        $message = __('AccessiTrans requires Elementor and WPML to be installed and activated.', 'accessitrans-aria');
         printf('<div class="%1$s"><p>%2$s</p></div>', esc_attr($class), esc_html($message));
     }
     

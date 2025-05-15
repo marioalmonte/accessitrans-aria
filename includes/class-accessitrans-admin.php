@@ -48,7 +48,7 @@ class AccessiTrans_Admin {
     public function add_settings_page() {
         add_submenu_page(
             'options-general.php',
-            __('Configuración de', 'accessitrans-aria') . ' AccessiTrans',
+            __('Settings for', 'accessitrans-aria') . ' AccessiTrans',
             __('AccessiTrans', 'accessitrans-aria'),
             'manage_options',
             'accessitrans-aria',
@@ -96,67 +96,67 @@ class AccessiTrans_Admin {
                     'check_health' => wp_create_nonce('accessitrans-check-health')
                 ],
                 'strings' => [
-                    'saving' => __('Guardando...', 'accessitrans-aria'),
-                    'saveError' => __('Error al guardar la configuración.', 'accessitrans-aria'),
-                    'processing' => __('Procesando...', 'accessitrans-aria'),
-                    'requestError' => __('Error al procesar la solicitud.', 'accessitrans-aria'),
-                    'noString' => __('Por favor, ingresa una cadena para verificar.', 'accessitrans-aria'),
-                    'analyzing' => __('Analizando...', 'accessitrans-aria'),
-                    'analyzingMessage' => __('Analizando cadena...', 'accessitrans-aria'),
-                    'errorNoString' => __('Error: No se ha ingresado una cadena para verificar.', 'accessitrans-aria'),
-                    'scanEnabledMessage' => __('Escaneo activado. Los métodos de captura están disponibles.', 'accessitrans-aria'),
-                    'scanDisabledMessage' => __('Escaneo desactivado. Los métodos de captura están deshabilitados.', 'accessitrans-aria'),
-                    'diagnosticResults' => __('Resultados del diagnóstico:', 'accessitrans-aria'),
-                    'originalText' => __('Texto original:', 'accessitrans-aria'),
-                    'language' => __('Idioma:', 'accessitrans-aria'),
-                    'languageCorrect' => __('✓ Idioma correcto', 'accessitrans-aria'),
-                    'languageNotPrimary' => __('✗ No es idioma principal', 'accessitrans-aria'),
+                    'saving' => __('Saving...', 'accessitrans-aria'),
+                    'saveError' => __('Error saving settings.', 'accessitrans-aria'),
+                    'processing' => __('Processing...', 'accessitrans-aria'),
+                    'requestError' => __('Error processing request.', 'accessitrans-aria'),
+                    'noString' => __('Please enter a string to verify.', 'accessitrans-aria'),
+                    'analyzing' => __('Analyzing...', 'accessitrans-aria'),
+                    'analyzingMessage' => __('Analyzing string...', 'accessitrans-aria'),
+                    'errorNoString' => __('Error: No string has been entered to verify.', 'accessitrans-aria'),
+                    'scanEnabledMessage' => __('Scanning enabled. Capture methods are available.', 'accessitrans-aria'),
+                    'scanDisabledMessage' => __('Scanning disabled. Capture methods are disabled.', 'accessitrans-aria'),
+                    'diagnosticResults' => __('Diagnostic results:', 'accessitrans-aria'),
+                    'originalText' => __('Original text:', 'accessitrans-aria'),
+                    'language' => __('Language:', 'accessitrans-aria'),
+                    'languageCorrect' => __('✓ Correct language', 'accessitrans-aria'),
+                    'languageNotPrimary' => __('✗ Not primary language', 'accessitrans-aria'),
                     
                     // Añadir todas las cadenas que faltan
-                    'foundInWPML' => __('✓ Encontrada en WPML', 'accessitrans-aria'),
-                    'notFoundInWPML' => __('✗ No encontrada en WPML', 'accessitrans-aria'),
-                    'registeredFormats' => __('Formatos registrados:', 'accessitrans-aria'),
-                    'hasTranslations' => __('✓ Tiene traducciones', 'accessitrans-aria'),
-                    'noTranslations' => __('✗ No tiene traducciones', 'accessitrans-aria'),
-                    'availableTranslations' => __('Traducciones disponibles:', 'accessitrans-aria'),
-                    'noCurrentLanguageTranslation' => __('✗ No hay traducción para el idioma actual', 'accessitrans-aria'),
-                    'recommendedActionTranslate' => __('Acción recomendada: Traduce esta cadena al idioma actual en WPML → String Translation.', 'accessitrans-aria'),
-                    'translateAction' => __('Acción recomendada: Traduce esta cadena en WPML → String Translation.', 'accessitrans-aria'),
-                    'notPrimaryLanguageWarning' => __('⚠️ Estás navegando en un idioma que no es el principal. Cambia al idioma principal para registrar cadenas.', 'accessitrans-aria'),
-                    'recommendedActionNavigate' => __('Acción recomendada: Navega por tu sitio con los métodos de captura activados o edita el elemento en Elementor para registrar esta cadena.', 'accessitrans-aria'),
-                    'troubleshootingTips' => __('Consejos para solucionar problemas:', 'accessitrans-aria'),
-                    'tip1' => __('Asegúrate de navegar en el idioma principal del sitio al capturar cadenas.', 'accessitrans-aria'),
-                    'tip2' => __('Prueba a utilizar "Forzar actualización" para limpiar todas las cachés.', 'accessitrans-aria'),
-                    'tip3' => __('Si has cambiado el texto en el idioma original, necesitarás traducirlo nuevamente en WPML.', 'accessitrans-aria'),
-                    'technicalInfo' => __('Información técnica avanzada', 'accessitrans-aria'),
-                    'analysisComplete' => __('Análisis completado. Se encontraron resultados para la cadena', 'accessitrans-aria'),
-                    'analysisError' => __('Error en el análisis:', 'accessitrans-aria'),
-                    'connectionError' => __('Error al realizar el análisis. No se pudo contactar con el servidor.', 'accessitrans-aria'),
+                    'foundInWPML' => __('✓ Found in WPML', 'accessitrans-aria'),
+                    'notFoundInWPML' => __('✗ Not found in WPML', 'accessitrans-aria'),
+                    'registeredFormats' => __('Registered formats:', 'accessitrans-aria'),
+                    'hasTranslations' => __('✓ Has translations', 'accessitrans-aria'),
+                    'noTranslations' => __('✗ No translations', 'accessitrans-aria'),
+                    'availableTranslations' => __('Available translations:', 'accessitrans-aria'),
+                    'noCurrentLanguageTranslation' => __('✗ No translation for current language', 'accessitrans-aria'),
+                    'recommendedActionTranslate' => __('Recommended action: Translate this string to the current language in WPML → String Translation.', 'accessitrans-aria'),
+                    'translateAction' => __('Recommended action: Translate this string in WPML → String Translation.', 'accessitrans-aria'),
+                    'notPrimaryLanguageWarning' => __('⚠️ You are browsing in a language that is not the primary one. Switch to the primary language to register strings.', 'accessitrans-aria'),
+                    'recommendedActionNavigate' => __('Recommended action: Browse your site with capture methods enabled or edit the element in Elementor to register this string.', 'accessitrans-aria'),
+                    'troubleshootingTips' => __('Troubleshooting tips:', 'accessitrans-aria'),
+                    'tip1' => __('Make sure to browse in the site\'s primary language when capturing strings.', 'accessitrans-aria'),
+                    'tip2' => __('Try using "Force Update" to clear all caches.', 'accessitrans-aria'),
+                    'tip3' => __('If you\'ve changed the text in the original language, you\'ll need to translate it again in WPML.', 'accessitrans-aria'),
+                    'technicalInfo' => __('Advanced technical information', 'accessitrans-aria'),
+                    'analysisComplete' => __('Analysis completed. Results were found for the string', 'accessitrans-aria'),
+                    'analysisError' => __('Error in analysis:', 'accessitrans-aria'),
+                    'connectionError' => __('Error performing the analysis. Could not contact the server.', 'accessitrans-aria'),
                     
                     // Cadenas para verificación de salud
-                    'verifying' => __('Verificando...', 'accessitrans-aria'),
-                    'verifyingStatus' => __('Verificando estado del sistema...', 'accessitrans-aria'),
-                    'systemStatus' => __('Estado del sistema:', 'accessitrans-aria'),
-                    'active' => __('Activo', 'accessitrans-aria'),
-                    'inactive' => __('Inactivo', 'accessitrans-aria'),
+                    'verifying' => __('Verifying...', 'accessitrans-aria'),
+                    'verifyingStatus' => __('Verifying system status...', 'accessitrans-aria'),
+                    'systemStatus' => __('System status:', 'accessitrans-aria'),
+                    'active' => __('Active', 'accessitrans-aria'),
+                    'inactive' => __('Inactive', 'accessitrans-aria'),
                     'wpml' => __('WPML:', 'accessitrans-aria'),
                     'elementor' => __('Elementor:', 'accessitrans-aria'),
-                    'registeredStrings' => __('Cadenas registradas:', 'accessitrans-aria'),
-                    'primaryLanguage' => __('Idioma principal:', 'accessitrans-aria'),
-                    'currentLanguage' => __('Idioma actual:', 'accessitrans-aria'),
-                    'availableLanguages' => __('Idiomas disponibles:', 'accessitrans-aria'),
-                    'currentConfiguration' => __('Configuración actual:', 'accessitrans-aria'),
-                    'recommendations' => __('Recomendaciones:', 'accessitrans-aria'),
-                    'noStringsRegistered' => __('• No hay cadenas registradas. Navega por tu sitio con los métodos de captura activados.', 'accessitrans-aria'),
-                    'stringsNoTranslations' => __('• Hay cadenas registradas pero sin traducciones. Visita WPML → String Translation para traducirlas.', 'accessitrans-aria'),
-                    'navigatingNonPrimary' => __('• Estás navegando en un idioma que no es el principal. Si quieres registrar nuevas cadenas, cambia al idioma principal.', 'accessitrans-aria'),
-                    'serverDate' => __('Fecha del servidor:', 'accessitrans-aria'),
-                    'pluginVersion' => __('Versión del plugin:', 'accessitrans-aria'),
-                    'verificationComplete' => __('Verificación completada. Se encontraron', 'accessitrans-aria'),
-                    'registeredStringsText' => __('cadenas registradas y', 'accessitrans-aria'),
-                    'translationsText' => __('traducciones.', 'accessitrans-aria'),
-                    'verificationError' => __('Error en la verificación:', 'accessitrans-aria'),
-                    'connectionVerificationError' => __('Error al realizar la verificación. No se pudo contactar con el servidor.', 'accessitrans-aria')
+                    'registeredStrings' => __('Registered strings:', 'accessitrans-aria'),
+                    'primaryLanguage' => __('Primary language:', 'accessitrans-aria'),
+                    'currentLanguage' => __('Current language:', 'accessitrans-aria'),
+                    'availableLanguages' => __('Available languages:', 'accessitrans-aria'),
+                    'currentConfiguration' => __('Current configuration:', 'accessitrans-aria'),
+                    'recommendations' => __('Recommendations:', 'accessitrans-aria'),
+                    'noStringsRegistered' => __('• No registered strings. Browse your site with capture methods enabled.', 'accessitrans-aria'),
+                    'stringsNoTranslations' => __('• There are registered strings but no translations. Visit WPML → String Translation to translate them.', 'accessitrans-aria'),
+                    'navigatingNonPrimary' => __('• You are browsing in a language that is not the primary one. If you want to register new strings, switch to the primary language.', 'accessitrans-aria'),
+                    'serverDate' => __('Server date:', 'accessitrans-aria'),
+                    'pluginVersion' => __('Plugin version:', 'accessitrans-aria'),
+                    'verificationComplete' => __('Verification completed. Found', 'accessitrans-aria'),
+                    'registeredStringsText' => __('registered strings and', 'accessitrans-aria'),
+                    'translationsText' => __('translations.', 'accessitrans-aria'),
+                    'verificationError' => __('Error in verification:', 'accessitrans-aria'),
+                    'connectionVerificationError' => __('Error performing the verification. Could not contact the server.', 'accessitrans-aria')
                 ]
             ]
         );
@@ -230,7 +230,7 @@ class AccessiTrans_Admin {
         // Nueva sección general para el interruptor principal
         add_settings_section(
             'accessitrans_aria_general',
-            __('Configuración general', 'accessitrans-aria'),
+            __('General settings', 'accessitrans-aria'),
             array($this, 'section_general_callback'),
             'accessitrans-aria'
         );
@@ -238,91 +238,91 @@ class AccessiTrans_Admin {
         // Nuevo campo para el interruptor principal de escaneo
         add_settings_field(
             'permitir_escaneo',
-            __('Permitir escaneo de nuevas cadenas', 'accessitrans-aria'),
+            __('Allow scanning for new strings', 'accessitrans-aria'),
             [$this, 'toggle_callback'],
             'accessitrans-aria',
             'accessitrans_aria_general',
             [
                 'label_for' => 'permitir_escaneo', 
-                'descripcion' => __('Activa la captura de nuevas cadenas ARIA. Desactívalo después de capturar todas las cadenas para mejorar el rendimiento.', 'accessitrans-aria')
+                'descripcion' => __('Activates the capture of new ARIA strings. Disable it after capturing all strings to improve performance.', 'accessitrans-aria')
             ]
         );
         
         add_settings_section(
             'accessitrans_aria_main',
-            __('Configuración de métodos de captura', 'accessitrans-aria'),
+            __('Capture methods settings', 'accessitrans-aria'),
             [$this, 'section_callback'],
             'accessitrans-aria'
         );
         
         add_settings_field(
             'captura_total',
-            __('Captura total de HTML', 'accessitrans-aria'),
+            __('Full HTML capture', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
             'accessitrans-aria',
             'accessitrans_aria_main',
-            ['label_for' => 'captura_total', 'descripcion' => __('Captura todo el HTML de la página. Altamente efectivo pero puede afectar al rendimiento.', 'accessitrans-aria')]
+            ['label_for' => 'captura_total', 'descripcion' => __('Captures all HTML of the page. Highly effective but may affect performance.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'captura_elementor',
-            __('Filtro de contenido de Elementor', 'accessitrans-aria'),
+            __('Elementor content filter', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
             'accessitrans-aria',
             'accessitrans_aria_main',
-            ['label_for' => 'captura_elementor', 'descripcion' => __('Procesa el contenido generado por Elementor.', 'accessitrans-aria')]
+            ['label_for' => 'captura_elementor', 'descripcion' => __('Processes content generated by Elementor.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'procesar_templates',
-            __('Procesar templates de Elementor', 'accessitrans-aria'),
+            __('Process Elementor templates', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
             'accessitrans-aria',
             'accessitrans_aria_main',
-            ['label_for' => 'procesar_templates', 'descripcion' => __('Procesa los datos de templates de Elementor.', 'accessitrans-aria')]
+            ['label_for' => 'procesar_templates', 'descripcion' => __('Processes Elementor template data.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'procesar_elementos',
-            __('Procesar elementos individuales', 'accessitrans-aria'),
+            __('Process individual elements', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
             'accessitrans-aria',
             'accessitrans_aria_main',
-            ['label_for' => 'procesar_elementos', 'descripcion' => __('Procesa cada widget y elemento de Elementor individualmente.', 'accessitrans-aria')]
+            ['label_for' => 'procesar_elementos', 'descripcion' => __('Processes each Elementor widget and element individually.', 'accessitrans-aria')]
         );
         
         add_settings_section(
             'accessitrans_aria_advanced',
-            __('Configuración avanzada', 'accessitrans-aria'),
+            __('Advanced settings', 'accessitrans-aria'),
             [$this, 'section_advanced_callback'],
             'accessitrans-aria'
         );
         
         add_settings_field(
             'modo_debug',
-            __('Modo de depuración', 'accessitrans-aria'),
+            __('Debug mode', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
             'accessitrans-aria',
             'accessitrans_aria_advanced',
-            ['label_for' => 'modo_debug', 'descripcion' => __('Activa el registro detallado de eventos. Se almacena en uploads/accessitrans-logs.', 'accessitrans-aria')]
+            ['label_for' => 'modo_debug', 'descripcion' => __('Enables detailed event logging. Stored in uploads/accessitrans-logs.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'solo_admin',
-            __('Captura solo para administradores', 'accessitrans-aria'),
+            __('Capture for admins only', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
             'accessitrans-aria',
             'accessitrans_aria_advanced',
-            ['label_for' => 'solo_admin', 'descripcion' => __('Solo procesa la captura total cuando un administrador está conectado.', 'accessitrans-aria')]
+            ['label_for' => 'solo_admin', 'descripcion' => __('Only processes full capture when an admin is logged in.', 'accessitrans-aria')]
         );
         
         add_settings_field(
             'captura_en_idioma_principal',
-            __('Capturar solo en idioma principal', 'accessitrans-aria'),
+            __('Capture in main language only', 'accessitrans-aria'),
             [$this, 'checkbox_callback'],
             'accessitrans-aria',
             'accessitrans_aria_advanced',
-            ['label_for' => 'captura_en_idioma_principal', 'descripcion' => __('Solo captura cadenas cuando se navega en el idioma principal. Previene duplicados.', 'accessitrans-aria')]
+            ['label_for' => 'captura_en_idioma_principal', 'descripcion' => __('Only captures strings when browsing in the default language. Prevents duplicates.', 'accessitrans-aria')]
         );
     }
     
@@ -335,7 +335,7 @@ class AccessiTrans_Admin {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(__('You don\'t have permission to perform this action.', 'accessitrans-aria'));
             return;
         }
         
@@ -355,9 +355,9 @@ class AccessiTrans_Admin {
         
         // Mensaje para el usuario
         if ($enabled) {
-            wp_send_json_success(__('Escaneo de cadenas activado. Los cambios se han guardado.', 'accessitrans-aria'));
+            wp_send_json_success(__('String scanning enabled. Changes have been saved.', 'accessitrans-aria'));
         } else {
-            wp_send_json_success(__('Escaneo de cadenas desactivado. Los cambios se han guardado.', 'accessitrans-aria'));
+            wp_send_json_success(__('String scanning disabled. Changes have been saved.', 'accessitrans-aria'));
         }
     }
     
@@ -370,14 +370,14 @@ class AccessiTrans_Admin {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(esc_html__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('You don\'t have permission to perform this action.', 'accessitrans-aria'));
             return;
         }
         
         // Obtener la cadena a verificar - sanitizar y deseslashear
         $string = isset($_POST['string']) ? sanitize_text_field(wp_unslash($_POST['string'])) : '';
         if (empty($string)) {
-            wp_send_json_error(esc_html__('No se proporcionó ninguna cadena para verificar.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('No string was provided for verification.', 'accessitrans-aria'));
             return;
         }
         
@@ -404,7 +404,7 @@ class AccessiTrans_Admin {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(esc_html__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('You don\'t have permission to perform this action.', 'accessitrans-aria'));
             return;
         }
         
@@ -422,7 +422,7 @@ class AccessiTrans_Admin {
         // Restaurar estado original
         $this->core->options['permitir_escaneo'] = $original_scan_state;
         
-        wp_send_json_success(esc_html__('Caché de traducciones actualizada correctamente.', 'accessitrans-aria'));
+        wp_send_json_success(esc_html__('Translation cache successfully updated.', 'accessitrans-aria'));
     }
     
     /**
@@ -434,7 +434,7 @@ class AccessiTrans_Admin {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(esc_html__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('You don\'t have permission to perform this action.', 'accessitrans-aria'));
             return;
         }
         
@@ -456,21 +456,21 @@ class AccessiTrans_Admin {
      * Callback para la sección general
      */
     public function section_general_callback() {
-        echo '<p>' . esc_html__('Configuración general del plugin.', 'accessitrans-aria') . '</p>';
+        echo '<p>' . esc_html__('General plugin settings.', 'accessitrans-aria') . '</p>';
     }
     
     /**
      * Callback para la sección principal de ajustes
      */
     public function section_callback() {
-        echo '<p>' . esc_html__('Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta.', 'accessitrans-aria') . '</p>';
+        echo '<p>' . esc_html__('Configure ARIA attribute capture methods. You can activate multiple methods simultaneously for more robust detection.', 'accessitrans-aria') . '</p>';
     }
     
     /**
      * Callback para la sección avanzada
      */
     public function section_advanced_callback() {
-        echo '<p>' . esc_html__('Configuración avanzada para rendimiento y depuración.', 'accessitrans-aria') . '</p>';
+        echo '<p>' . esc_html__('Advanced settings for performance and debugging.', 'accessitrans-aria') . '</p>';
     }
     
     /**
@@ -514,8 +514,8 @@ class AccessiTrans_Admin {
         
         // Mensaje informativo destacado sobre la desactivación del escaneo
         echo '<div class="accessitrans-notice">';
-        echo '<strong>' . esc_html__('Consejo de rendimiento:', 'accessitrans-aria') . '</strong>';
-        echo esc_html__('Una vez hayas capturado todas las cadenas ARIA de tu sitio, puedes desactivar el escaneo para mejorar el rendimiento. Las traducciones seguirán funcionando.', 'accessitrans-aria');
+        echo '<strong>' . esc_html__('Performance tip:', 'accessitrans-aria') . '</strong>';
+        echo esc_html__('Once you\'ve captured all ARIA strings from your site, you can disable scanning to improve performance. Translations will continue to work.', 'accessitrans-aria');
         echo '</div>';
         
         echo '</div>';
@@ -580,7 +580,7 @@ class AccessiTrans_Admin {
             $this->core->options = $sanitized_options;
             
             // Mensaje de éxito con atributos para lectores de pantalla
-            echo '<div class="notice notice-success is-dismissible" role="alert" aria-live="polite"><p>' . esc_html__('Configuración guardada correctamente.', 'accessitrans-aria') . '</p></div>';
+            echo '<div class="notice notice-success is-dismissible" role="alert" aria-live="polite"><p>' . esc_html__('Settings saved successfully.', 'accessitrans-aria') . '</p></div>';
         }
         
         // Contar cadenas registradas
@@ -597,22 +597,22 @@ class AccessiTrans_Admin {
         echo '<div id="accessitrans-aria-live" class="screen-reader-text" aria-live="polite"></div>';
         
         // Mensaje para cuando el escaneo está desactivado
-        echo '<div id="scan-disabled-message" class="screen-reader-text">' . esc_html__('El escaneo global está desactivado. Estos controles no están disponibles.', 'accessitrans-aria') . '</div>';
+        echo '<div id="scan-disabled-message" class="screen-reader-text">' . esc_html__('Global scanning is disabled. These controls are not available.', 'accessitrans-aria') . '</div>';
         
         // Mostrar formulario de ajustes con estructura semántica mejorada
         ?>
         <div class="wrap accessitrans-admin-container">
-            <h1><?php echo esc_html(__('Configuración de', 'accessitrans-aria') . ' AccessiTrans'); ?></h1>
+            <h1><?php echo esc_html(__('Settings for', 'accessitrans-aria') . ' AccessiTrans'); ?></h1>
             
-            <p class="plugin-description"><?php esc_html_e('Este plugin permite traducir atributos ARIA en sitios desarrollados con Elementor y WPML.', 'accessitrans-aria'); ?></p>
+            <p class="plugin-description"><?php esc_html_e('This plugin allows you to translate ARIA attributes in sites developed with Elementor and WPML.', 'accessitrans-aria'); ?></p>
             
-            <div class="notice notice-info" role="region" aria-label="<?php esc_attr_e('Estado actual', 'accessitrans-aria'); ?>">
+            <div class="notice notice-info" role="region" aria-label="<?php esc_attr_e('Current status', 'accessitrans-aria'); ?>">
                 <p>
-                    <strong><?php esc_html_e('Estado actual:', 'accessitrans-aria'); ?></strong>
+                    <strong><?php esc_html_e('Current status:', 'accessitrans-aria'); ?></strong>
                     <?php 
                     printf(
-                    /* translators: %d: número de cadenas registradas */
-                        esc_html__('Cadenas registradas: %d', 'accessitrans-aria'),
+                    /* translators: %d: number of registered strings */
+                        esc_html__('Registered strings: %d', 'accessitrans-aria'),
                         esc_html($strings_count)
                     ); 
                     ?>
@@ -621,19 +621,19 @@ class AccessiTrans_Admin {
             
             <!-- Activación general (independiente) con AJAX -->
             <section class="card" aria-labelledby="activacion-general-titulo">
-                <h2 id="activacion-general-titulo"><?php esc_html_e('Activación general', 'accessitrans-aria'); ?></h2>
+                <h2 id="activacion-general-titulo"><?php esc_html_e('General activation', 'accessitrans-aria'); ?></h2>
                 
                 <div class="accessitrans-field">
                     <label class="accessitrans-switch" for="permitir_escaneo_ajax">
                         <input type="checkbox" id="permitir_escaneo_ajax" <?php echo isset($this->core->options['permitir_escaneo']) && $this->core->options['permitir_escaneo'] ? 'checked' : ''; ?> aria-describedby="desc-permitir_escaneo_ajax" role="switch" />
                         <span class="accessitrans-slider round"></span>
                     </label>
-                    <span style="display: inline-block; margin-left: 10px; vertical-align: middle;"><?php esc_html_e('Permitir escaneo de nuevas cadenas', 'accessitrans-aria'); ?></span>
-                    <p class="description" id="desc-permitir_escaneo_ajax"><?php esc_html_e('Activa la captura de nuevas cadenas ARIA. Desactívalo después de capturar todas las cadenas para mejorar el rendimiento.', 'accessitrans-aria'); ?></p>
+                    <span style="display: inline-block; margin-left: 10px; vertical-align: middle;"><?php esc_html_e('Allow scanning for new strings', 'accessitrans-aria'); ?></span>
+                    <p class="description" id="desc-permitir_escaneo_ajax"><?php esc_html_e('Activates the capture of new ARIA strings. Disable it after capturing all strings to improve performance.', 'accessitrans-aria'); ?></p>
                     
                     <div class="accessitrans-notice">
-                        <strong><?php esc_html_e('Consejo de rendimiento:', 'accessitrans-aria'); ?></strong>
-                        <?php esc_html_e('Una vez hayas capturado todas las cadenas ARIA de tu sitio, puedes desactivar el escaneo para mejorar el rendimiento. Las traducciones seguirán funcionando.', 'accessitrans-aria'); ?>
+                        <strong><?php esc_html_e('Performance tip:', 'accessitrans-aria'); ?></strong>
+                        <?php esc_html_e('Once you\'ve captured all ARIA strings from your site, you can disable scanning to improve performance. Translations will continue to work.', 'accessitrans-aria'); ?>
                     </div>
                     
                     <div id="switch-status" aria-live="polite" style="margin-top: 10px;"></div>
@@ -642,7 +642,7 @@ class AccessiTrans_Admin {
             
             <!-- Formulario principal -->
             <section class="card" aria-labelledby="configuracion-detallada-titulo">
-                <h2 id="configuracion-detallada-titulo"><?php esc_html_e('Configuración detallada', 'accessitrans-aria'); ?></h2>
+                <h2 id="configuracion-detallada-titulo"><?php esc_html_e('Detailed configuration', 'accessitrans-aria'); ?></h2>
                 <form method="post" action="" id="accessitrans-settings-form">
                     <?php wp_nonce_field('accessitrans_aria_settings'); ?>
                     
@@ -650,17 +650,17 @@ class AccessiTrans_Admin {
                     <input type="hidden" id="hidden_permitir_escaneo" name="hidden_permitir_escaneo" value="<?php echo isset($this->core->options['permitir_escaneo']) && $this->core->options['permitir_escaneo'] ? '1' : '0'; ?>" />
                     
                     <fieldset class="accessitrans-methods-fieldset">
-                        <legend><?php esc_html_e('Métodos de captura', 'accessitrans-aria'); ?></legend>
+                        <legend><?php esc_html_e('Capture methods', 'accessitrans-aria'); ?></legend>
                         
-                        <p class="description"><?php esc_html_e('Configura los métodos de captura de atributos ARIA. Puedes activar varios métodos simultáneamente para una detección más robusta.', 'accessitrans-aria'); ?></p>
+                        <p class="description"><?php esc_html_e('Configure ARIA attribute capture methods. You can activate multiple methods simultaneously for more robust detection.', 'accessitrans-aria'); ?></p>
                         
                         <?php 
                         // Renderizar los campos de métodos de captura
                         $capture_fields = [
-                            'captura_total' => esc_html__('Captura todo el HTML de la página. Altamente efectivo pero puede afectar al rendimiento.', 'accessitrans-aria'),
-                            'captura_elementor' => esc_html__('Procesa el contenido generado por Elementor.', 'accessitrans-aria'),
-                            'procesar_templates' => esc_html__('Procesa los datos de templates de Elementor.', 'accessitrans-aria'),
-                            'procesar_elementos' => esc_html__('Procesa cada widget y elemento de Elementor individualmente.', 'accessitrans-aria')
+                            'captura_total' => esc_html__('Captures all HTML of the page. Highly effective but may affect performance.', 'accessitrans-aria'),
+                            'captura_elementor' => esc_html__('Processes content generated by Elementor.', 'accessitrans-aria'),
+                            'procesar_templates' => esc_html__('Processes Elementor template data.', 'accessitrans-aria'),
+                            'procesar_elementos' => esc_html__('Processes each Elementor widget and element individually.', 'accessitrans-aria')
                         ];
                         
                         foreach ($capture_fields as $field => $desc) {
@@ -674,16 +674,16 @@ class AccessiTrans_Admin {
                     </fieldset>
                     
                     <fieldset>
-                        <legend><?php esc_html_e('Configuración avanzada', 'accessitrans-aria'); ?></legend>
+                        <legend><?php esc_html_e('Advanced settings', 'accessitrans-aria'); ?></legend>
                         
-                        <p class="description"><?php esc_html_e('Configuración avanzada para rendimiento y depuración.', 'accessitrans-aria'); ?></p>
+                        <p class="description"><?php esc_html_e('Advanced settings for performance and debugging.', 'accessitrans-aria'); ?></p>
                         
                         <?php 
                         // Renderizar los campos avanzados
                         $advanced_fields = [
-                            'modo_debug' => esc_html__('Activa el registro detallado de eventos. Se almacena en uploads/accessitrans-logs.', 'accessitrans-aria'),
-                            'solo_admin' => esc_html__('Solo procesa la captura total cuando un administrador está conectado.', 'accessitrans-aria'),
-                            'captura_en_idioma_principal' => esc_html__('Solo captura cadenas cuando se navega en el idioma principal. Previene duplicados.', 'accessitrans-aria')
+                            'modo_debug' => esc_html__('Enables detailed event logging. Stored in uploads/accessitrans-logs.', 'accessitrans-aria'),
+                            'solo_admin' => esc_html__('Only processes full capture when an admin is logged in.', 'accessitrans-aria'),
+                            'captura_en_idioma_principal' => esc_html__('Only captures strings when browsing in the default language. Prevents duplicates.', 'accessitrans-aria')
                         ];
                         
                         foreach ($advanced_fields as $field => $desc) {
@@ -701,29 +701,29 @@ class AccessiTrans_Admin {
             </section>
             
             <section class="card" aria-labelledby="herramientas-titulo">
-                <h2 id="herramientas-titulo"><?php esc_html_e('Herramientas de mantenimiento', 'accessitrans-aria'); ?></h2>
+                <h2 id="herramientas-titulo"><?php esc_html_e('Maintenance tools', 'accessitrans-aria'); ?></h2>
                 
                 <div class="tool-section">
-                    <h3 id="actualizacion-titulo"><?php esc_html_e('Forzar actualización de traducciones', 'accessitrans-aria'); ?></h3>
-                    <p><?php esc_html_e('Si encuentras problemas con las traducciones, puedes intentar forzar una actualización que limpiará las cachés internas y renovará el estado del plugin.', 'accessitrans-aria'); ?></p>
+                    <h3 id="actualizacion-titulo"><?php esc_html_e('Force translation update', 'accessitrans-aria'); ?></h3>
+                    <p><?php esc_html_e('If you encounter issues with translations, you can try forcing an update that will clear internal caches and renew the plugin state.', 'accessitrans-aria'); ?></p>
                     <button id="accessitrans-force-refresh" class="button button-secondary" aria-describedby="actualizacion-descripcion">
-                        <?php esc_html_e('Forzar actualización', 'accessitrans-aria'); ?>
+                        <?php esc_html_e('Force update', 'accessitrans-aria'); ?>
                     </button>
                     <span id="refresh-status" aria-live="polite"></span>
                     <p id="actualizacion-descripcion" class="description">
-                        <?php esc_html_e('Esta operación limpia todas las cachés de WordPress y WPML y puede resolver problemas donde las traducciones están registradas pero no se muestran correctamente.', 'accessitrans-aria'); ?>
+                        <?php esc_html_e('This operation clears all WordPress and WPML caches and can resolve issues where translations are registered but not displaying correctly.', 'accessitrans-aria'); ?>
                     </p>
                 </div>
                 
                 <div class="tool-section">
-                    <h3 id="diagnostico-titulo"><?php esc_html_e('Diagnóstico de traducciones', 'accessitrans-aria'); ?></h3>
-                    <p><?php esc_html_e('Si una cadena específica no se traduce correctamente, puedes diagnosticar el problema aquí:', 'accessitrans-aria'); ?></p>
+                    <h3 id="diagnostico-titulo"><?php esc_html_e('Translation diagnostics', 'accessitrans-aria'); ?></h3>
+                    <p><?php esc_html_e('If a specific string is not translating correctly, you can diagnose the problem here:', 'accessitrans-aria'); ?></p>
                     
                     <form class="diagnostics-form" onsubmit="runDiagnostic(event)">
-                        <label for="string-to-check"><?php esc_html_e('Cadena a verificar:', 'accessitrans-aria'); ?></label>
-                        <input type="text" id="string-to-check" class="regular-text" placeholder="<?php esc_attr_e('Ejemplo: Next', 'accessitrans-aria'); ?>" />
+                        <label for="string-to-check"><?php esc_html_e('String to check:', 'accessitrans-aria'); ?></label>
+                        <input type="text" id="string-to-check" class="regular-text" placeholder="<?php esc_attr_e('Example: Next', 'accessitrans-aria'); ?>" />
                         <button id="accessitrans-diagnostic" type="submit" class="button button-secondary" aria-describedby="diagnostico-descripcion">
-                            <?php esc_html_e('Ejecutar diagnóstico', 'accessitrans-aria'); ?>
+                            <?php esc_html_e('Run diagnostic', 'accessitrans-aria'); ?>
                         </button>
                         <div role="status" id="diagnostico-proceso" class="screen-reader-text" aria-live="polite"></div>
                     </form>
@@ -731,66 +731,66 @@ class AccessiTrans_Admin {
                     <div id="diagnostic-results" class="diagnostic-results" aria-live="polite"></div>
                     
                     <p id="diagnostico-descripcion" class="description">
-                        <?php esc_html_e('Esta herramienta verifica si una cadena está correctamente registrada para traducción y si tiene traducciones asignadas.', 'accessitrans-aria'); ?>
+                        <?php esc_html_e('This tool verifies if a string is correctly registered for translation and if it has assigned translations.', 'accessitrans-aria'); ?>
                     </p>
                 </div>
                 
                 <div class="tool-section">
-                    <h3 id="salud-titulo"><?php esc_html_e('Verificar salud del sistema', 'accessitrans-aria'); ?></h3>
-                    <p><?php esc_html_e('Comprueba el estado general de las traducciones y la configuración del plugin:', 'accessitrans-aria'); ?></p>
+                    <h3 id="salud-titulo"><?php esc_html_e('Check system health', 'accessitrans-aria'); ?></h3>
+                    <p><?php esc_html_e('Check the general status of translations and plugin configuration:', 'accessitrans-aria'); ?></p>
                     
                     <button id="accessitrans-check-health" class="button button-secondary" aria-describedby="salud-descripcion">
-                        <?php esc_html_e('Verificar salud', 'accessitrans-aria'); ?>
+                        <?php esc_html_e('Check health', 'accessitrans-aria'); ?>
                     </button>
                     <span class="screen-reader-text" id="salud-proceso" aria-live="polite"></span>
                     
                     <div id="health-results" class="health-results" aria-live="polite"></div>
                     
                     <p id="salud-descripcion" class="description">
-                        <?php esc_html_e('Esta herramienta verifica la configuración general del sistema y muestra estadísticas sobre las traducciones registradas.', 'accessitrans-aria'); ?>
+                        <?php esc_html_e('This tool verifies the general system configuration and displays statistics about registered translations.', 'accessitrans-aria'); ?>
                     </p>
                 </div>
             </section>
             
             <section class="card" aria-labelledby="instrucciones-uso-titulo">
-                <h2 id="instrucciones-uso-titulo"><?php esc_html_e('Instrucciones de uso', 'accessitrans-aria'); ?></h2>
-                <p><?php esc_html_e('Para agregar atributos ARIA en Elementor:', 'accessitrans-aria'); ?></p>
+                <h2 id="instrucciones-uso-titulo"><?php esc_html_e('Usage instructions', 'accessitrans-aria'); ?></h2>
+                <p><?php esc_html_e('To add ARIA attributes in Elementor:', 'accessitrans-aria'); ?></p>
                 <ol>
-                    <li><?php esc_html_e('Edita cualquier elemento en Elementor', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Ve a la pestaña "Avanzado"', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Encuentra la sección "Atributos personalizados"', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Añade los atributos ARIA que desees traducir (ej: aria-label|Texto a traducir)', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Edit any element in Elementor', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Go to the "Advanced" tab', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Find the "Custom Attributes" section', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Add the ARIA attributes you want to translate (e.g., aria-label|Text to translate)', 'accessitrans-aria'); ?></li>
                 </ol>
-                <p><?php esc_html_e('Para traducir los atributos:', 'accessitrans-aria'); ?></p>
+                <p><?php esc_html_e('To translate the attributes:', 'accessitrans-aria'); ?></p>
                 <ol>
-                    <li><?php esc_html_e('Ve a WPML → Traducción de cadenas', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Filtra por el contexto "AccessiTrans ARIA Attributes"', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Traduce las cadenas como lo harías normalmente en WPML', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Go to WPML → String Translation', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Filter by the "AccessiTrans ARIA Attributes" context', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Translate the strings as you would normally in WPML', 'accessitrans-aria'); ?></li>
                 </ol>
-                <p><?php esc_html_e('Prácticas recomendadas:', 'accessitrans-aria'); ?></p>
+                <p><?php esc_html_e('Best practices:', 'accessitrans-aria'); ?></p>
                 <ul>
-                    <li><?php esc_html_e('Navega por el sitio en el idioma principal mientras capturas cadenas para evitar duplicados', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Si una traducción no aparece, utiliza la herramienta "Forzar actualización" o el diagnóstico', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Una vez capturadas todas las cadenas, puedes desactivar el escaneo para mejorar el rendimiento', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Si cambias un texto en el idioma original, deberás traducirlo nuevamente en WPML', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Browse the site in the primary language while capturing strings to avoid duplicates', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('If a translation doesn\'t appear, use the "Force Update" tool or the diagnostic', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Once all strings are captured, you can disable scanning to improve performance', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('If you change text in the original language, you\'ll need to translate it again in WPML', 'accessitrans-aria'); ?></li>
                 </ul>
             </section>
             
             <section class="card" aria-labelledby="acerca-autor-titulo">
-                <h2 id="acerca-autor-titulo"><?php esc_html_e('Acerca del autor', 'accessitrans-aria'); ?></h2>
-                <p><?php esc_html_e('Desarrollado por', 'accessitrans-aria'); ?> Mario Germán Almonte Moreno:</p>
+                <h2 id="acerca-autor-titulo"><?php esc_html_e('About the author', 'accessitrans-aria'); ?></h2>
+                <p><?php esc_html_e('Developed by', 'accessitrans-aria'); ?> Mario Germán Almonte Moreno:</p>
                 <ul>
-                    <li><?php esc_html_e('Miembro de IAAP (International Association of Accessibility Professionals)', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Certificado CPWA (CPACC y WAS)', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Profesor en el Curso de especialización en Accesibilidad Digital (Universidad de Lleida)', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Member of IAAP (International Association of Accessibility Professionals)', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('CPWA Certified (CPACC and WAS)', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Professor in the Digital Accessibility Specialization Course (University of Lleida)', 'accessitrans-aria'); ?></li>
                 </ul>
-                <h3><?php esc_html_e('Servicios Profesionales:', 'accessitrans-aria'); ?></h3>
+                <h3><?php esc_html_e('Professional services:', 'accessitrans-aria'); ?></h3>
                 <ul>
-                    <li><?php esc_html_e('Formación y consultoría en Accesibilidad Web y eLearning', 'accessitrans-aria'); ?></li>
-                    <li><?php esc_html_e('Auditorías de accesibilidad web según EN 301 549 (WCAG 2.2, ATAG 2.0)', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Web Accessibility and eLearning Training and Consulting', 'accessitrans-aria'); ?></li>
+                    <li><?php esc_html_e('Web accessibility audits according to EN 301 549 (WCAG 2.2, ATAG 2.0)', 'accessitrans-aria'); ?></li>
                 </ul>
-                <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank"><?php esc_html_e('Visita mi perfil de LinkedIn', 'accessitrans-aria'); ?></a></p>
-                <p><a href="https://aprendizajeenred.es" target="_blank"><?php esc_html_e('Sitio web y blog', 'accessitrans-aria'); ?></a></p>
+                <p><a href="https://www.linkedin.com/in/marioalmonte/" target="_blank"><?php esc_html_e('Visit my LinkedIn profile', 'accessitrans-aria'); ?></a></p>
+                <p><a href="https://aprendizajeenred.es" target="_blank"><?php esc_html_e('Website and blog', 'accessitrans-aria'); ?></a></p>
             </section>
         </div>
         <?php

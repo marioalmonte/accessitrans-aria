@@ -95,14 +95,14 @@ class AccessiTrans_Diagnostics {
         
         // Verificar permisos
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(esc_html__('No tienes permisos para realizar esta acción.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('You don\'t have permission to perform this action.', 'accessitrans-aria'));
             return;
         }
         
         $string_to_check = isset($_POST['string']) ? sanitize_text_field(wp_unslash($_POST['string'])) : '';
         
         if (empty($string_to_check)) {
-            wp_send_json_error(esc_html__('Por favor, proporciona una cadena para verificar.', 'accessitrans-aria'));
+            wp_send_json_error(esc_html__('Please provide a string to verify.', 'accessitrans-aria'));
             return;
         }
         

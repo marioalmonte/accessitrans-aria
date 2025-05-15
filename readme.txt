@@ -3,7 +3,7 @@ Contributors: marioalmonte
 Tags: accessibility, aria, elementor, wpml, translation
 Requires at least: 5.6
 Tested up to: 6.8
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 Requires PHP: 7.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -197,6 +197,12 @@ For the best experience and website performance, follow these recommendations:
 
 == Changelog ==
 
+= 1.0.3 =
+* Internationalization improvements: Updated all plugin strings to English to comply with WordPress.org guidelines
+* Made plugin fully compatible with WordPress.org translation system
+* Improved translation workflow for better language support
+* Minor code refinements for better maintainability
+
 = 1.0.2 =
 * Security fix: Implemented sanitize_callback in register_setting()
 * Improved sanitization structure to follow WordPress best practices
@@ -283,6 +289,9 @@ For the best experience and website performance, follow these recommendations:
 * Compatibility with all Elementor content types
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Internationalization update: This version updates all plugin strings to English to comply with WordPress.org guidelines and improve translation workflow. Recommended for all users.
 
 = 1.0.2 =
 Security update: Improved sanitization practices and fixed minor security issues. All users are recommended to update.
